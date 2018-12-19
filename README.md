@@ -1,2 +1,2 @@
 # SwitchThemeEditor
-A Theme editor for Nintendo Switch Themes
+This is a Work In Progress
