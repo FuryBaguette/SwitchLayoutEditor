@@ -33,7 +33,7 @@ namespace Theme_Editor
                 }
             };*/
             
-            Document.Body.AppendChild(jsonBtn);
+            Document.GetElementById<HTMLDivElement>("uploadFile").AppendChild(jsonBtn);
             //Document.Body.AppendChild(button);
         }
 
@@ -57,10 +57,7 @@ namespace Theme_Editor
             var layout = JsonConvert.DeserializeObject<Layout>(json);
             LayoutFiles RdtBase = getFileByName(layout, "RdtBase");
             if (RdtBase != null)
-            {
                 SetDefaultsByFile(RdtBase, "RdtBase");
-                //StartEditor(layout);
-            }
             return;
         }
 
@@ -156,10 +153,14 @@ namespace Theme_Editor
         public static void StartEditor(List<Patches> patch)
         {
             var editorView = Document.GetElementById<HTMLDivElement>("editor_view");
+            var uploadFile = Document.GetElementById<HTMLDivElement>("uploadFile");
             editorView.Hidden = false;
-            
+            uploadFile.Hidden = true;
+
             Script.Call("checkClick", JsonConvert.SerializeObject(patch));
         }
+
+        
     }
 
     public class Layout
