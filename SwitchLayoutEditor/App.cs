@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-namespace Theme_Editor
+namespace SwitchLayoutEditor
 {
     public class App
     {
@@ -24,15 +24,15 @@ namespace Theme_Editor
                 }
             };
 
-           /* var button = new HTMLButtonElement
-            {
-                InnerHTML = "Upload CSZ",
-                OnClick = (ev) =>
-                {
-                    UploadSZSBtn();
-                }
-            };*/
-            
+            /* var button = new HTMLButtonElement
+             {
+                 InnerHTML = "Upload CSZ",
+                 OnClick = (ev) =>
+                 {
+                     UploadSZSBtn();
+                 }
+             };*/
+
             Document.GetElementById<HTMLDivElement>("uploadFile").AppendChild(jsonBtn);
             //Document.Body.AppendChild(button);
         }
@@ -117,7 +117,8 @@ namespace Theme_Editor
                                 patches[patchNb].Size.X = defaultPatches[i].Size.X;
                             if (String.IsNullOrEmpty(patches[patchNb].Size.Y))
                                 patches[patchNb].Size.Y = defaultPatches[i].Size.Y;
-                        } else patches[patchNb].Size = defaultPatches[i].Size;
+                        }
+                        else patches[patchNb].Size = defaultPatches[i].Size;
 
                         if (patches[patchNb].Scale != null)
                         {
@@ -131,10 +132,10 @@ namespace Theme_Editor
                         if (String.IsNullOrEmpty(patches[patchNb].ParentName)) patches[patchNb].ParentName = defaultPatches[i].ParentName;
                     }
                 }
-                
+
                 StartEditor(patches);
             };
-            req.Open("GET", "defaults/" + name + ".json", true); 
+            req.Open("GET", "defaults/" + name + ".json", true);
             req.Send();
         }
 
@@ -160,7 +161,7 @@ namespace Theme_Editor
             Script.Call("checkClick", JsonConvert.SerializeObject(patch));
         }
 
-        
+
     }
 
     public class Layout

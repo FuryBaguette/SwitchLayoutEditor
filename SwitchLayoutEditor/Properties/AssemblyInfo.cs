@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Theme_Editor")]
+[assembly: AssemblyTitle("SwitchLayoutEditor")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Theme_Editor")]
+[assembly: AssemblyProduct("SwitchLayoutEditor")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("1eb6caef-7308-45f3-8ec8-ae20826f0d09")]
+[assembly: Guid("b9567e76-3c4b-46bd-a20f-f04cfd12ffa7")]
 
 // Version information for an assembly consists of the following four values:
 //

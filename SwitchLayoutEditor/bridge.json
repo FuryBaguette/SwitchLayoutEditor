@@ -63,7 +63,7 @@
   // and add the file to the output directory.
   // Default is false.
   "html": {
-    "disabled": true
+    "disabled": false
   },
 
   // Add compilation logging to your Project.

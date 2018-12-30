@@ -1,5 +1,5 @@
 /**
- * @version   : 17.5.0 - Bridge.NET
+ * @version   : 17.6.0 - Bridge.NET
  * @author    : Object.NET, Inc. http://bridge.net/
  * @copyright : Copyright 2008-2018 Object.NET, Inc. http://object.net/
  * @license   : See license.txt and https://github.com/bridgedotnet/Bridge/blob/master/LICENSE.md
@@ -488,7 +488,7 @@
             var ctors = Bridge.Reflection.getMembers(type, 1, 54);
 
             if (ctors.length > 0) {
-                var pctors = ctors.filter(function (c) { return !c.isSynthetic; });
+                var pctors = ctors.filter(function (c) { return !c.isSynthetic && !c.sm; });
 
                 for (var idx = 0; idx < pctors.length; idx++) {
                     var c = pctors[idx],
@@ -3471,8 +3471,8 @@
     // @source SystemAssemblyVersion.js
 
     Bridge.init(function () {
-        Bridge.SystemAssembly.version = "17.5.0";
-        Bridge.SystemAssembly.compiler = "17.5.0";
+        Bridge.SystemAssembly.version = "17.6.0";
+        Bridge.SystemAssembly.compiler = "17.6.0";
     });
 
     Bridge.define("Bridge.Utils.SystemAssemblyVersion");
@@ -4260,7 +4260,8 @@
                 }
             }
 
-            var f = function (m) {
+            var idx = 0,
+                f = function (m) {
                 if ((memberTypes & m.t) && (((bindingAttr & 4) && !m.is) || ((bindingAttr & 8) && m.is)) && (!name || ((bindingAttr & 1) === 1 ? (m.n.toUpperCase() === name.toUpperCase()) : (m.n === name)))) {
                     if ((bindingAttr & 16) === 16 && m.a === 2 ||
                         (bindingAttr & 32) === 32 && m.a !== 2) {
@@ -4276,7 +4277,13 @@
                             }
                         }
 
-                        result.push(m);
+                        if (m.ov || m.v) {
+                            result = result.filter(function (a) {
+                                return !(a.n == m.n && a.t == m.t);
+                            });
+                        }
+
+                        result.splice(idx++, 0, m);
                     }
                 }
             };
@@ -7611,7 +7618,7 @@ Bridge.define("System.ValueType", {
                     }
                 }
 
-                if (Bridge.Int.isInfinite(x)) {
+                if (Bridge.Int.isInfinite(x) || isNaN(x)) {
                     if (System.Int64.is64BitType(type)) {
                         return type.MinValue;
                     }
@@ -7623,43 +7630,43 @@ Bridge.define("System.ValueType", {
             },
 
             sxb: function (x) {
-                return Bridge.isNumber(x) ? (x | (x & 0x80 ? 0xffffff00 : 0)) : (Bridge.Int.isInfinite(x) ? System.SByte.min : null);
+                return Bridge.isNumber(x) ? (x | (x & 0x80 ? 0xffffff00 : 0)) : ((Bridge.Int.isInfinite(x) || isNaN(x)) ? System.SByte.min : null);
             },
 
             sxs: function (x) {
-                return Bridge.isNumber(x) ? (x | (x & 0x8000 ? 0xffff0000 : 0)) : (Bridge.Int.isInfinite(x) ? System.Int16.min : null);
+                return Bridge.isNumber(x) ? (x | (x & 0x8000 ? 0xffff0000 : 0)) : ((Bridge.Int.isInfinite(x) || isNaN(x)) ? System.Int16.min : null);
             },
 
             clip8: function (x) {
-                return Bridge.isNumber(x) ? Bridge.Int.sxb(x & 0xff) : (Bridge.Int.isInfinite(x) ? System.SByte.min : null);
+                return Bridge.isNumber(x) ? Bridge.Int.sxb(x & 0xff) : ((Bridge.Int.isInfinite(x) || isNaN(x)) ? System.SByte.min : null);
             },
 
             clipu8: function (x) {
-                return Bridge.isNumber(x) ? x & 0xff : (Bridge.Int.isInfinite(x) ? System.Byte.min : null);
+                return Bridge.isNumber(x) ? x & 0xff : ((Bridge.Int.isInfinite(x) || isNaN(x)) ? System.Byte.min : null);
             },
 
             clip16: function (x) {
-                return Bridge.isNumber(x) ? Bridge.Int.sxs(x & 0xffff) : (Bridge.Int.isInfinite(x) ? System.Int16.min : null);
+                return Bridge.isNumber(x) ? Bridge.Int.sxs(x & 0xffff) : ((Bridge.Int.isInfinite(x) || isNaN(x)) ? System.Int16.min : null);
             },
 
             clipu16: function (x) {
-                return Bridge.isNumber(x) ? x & 0xffff : (Bridge.Int.isInfinite(x) ? System.UInt16.min : null);
+                return Bridge.isNumber(x) ? x & 0xffff : ((Bridge.Int.isInfinite(x) || isNaN(x)) ? System.UInt16.min : null);
             },
 
             clip32: function (x) {
-                return Bridge.isNumber(x) ? x | 0 : (Bridge.Int.isInfinite(x) ? System.Int32.min : null);
+                return Bridge.isNumber(x) ? x | 0 : ((Bridge.Int.isInfinite(x) || isNaN(x)) ? System.Int32.min : null);
             },
 
             clipu32: function (x) {
-                return Bridge.isNumber(x) ? x >>> 0 : (Bridge.Int.isInfinite(x) ? System.UInt32.min : null);
+                return Bridge.isNumber(x) ? x >>> 0 : ((Bridge.Int.isInfinite(x) || isNaN(x)) ? System.UInt32.min : null);
             },
 
             clip64: function (x) {
-                return Bridge.isNumber(x) ? System.Int64(Bridge.Int.trunc(x)) : (Bridge.Int.isInfinite(x) ? System.Int64.MinValue : null);
+                return Bridge.isNumber(x) ? System.Int64(Bridge.Int.trunc(x)) : ((Bridge.Int.isInfinite(x) || isNaN(x)) ? System.Int64.MinValue : null);
             },
 
             clipu64: function (x) {
-                return Bridge.isNumber(x) ? System.UInt64(Bridge.Int.trunc(x)) : (Bridge.Int.isInfinite(x) ? System.UInt64.MinValue : null);
+                return Bridge.isNumber(x) ? System.UInt64(Bridge.Int.trunc(x)) : ((Bridge.Int.isInfinite(x) || isNaN(x)) ? System.UInt64.MinValue : null);
             },
 
             sign: function (x) {
@@ -17967,14 +17974,14 @@ if (typeof window !== 'undefined' && window.performance && window.performance.no
         var m;
 
         if (T && (m = obj["System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(T) + "$compare"])) {
-            return m;
+            return m.bind(obj);
         }
 
         if (m = obj["System$Collections$Generic$IComparer$1$compare"]) {
-            return m;
+            return m.bind(obj);
         }
 
-        return obj.compare;
+        return obj.compare.bind(obj);
     };
 
     // @source Dictionary.js
@@ -20732,6 +20739,42 @@ if (typeof window !== 'undefined' && window.performance && window.performance.no
                 }
 
                 var r = o.at || [];
+
+                if (o.ov === true) {
+                    var baseType = Bridge.Reflection.getBaseType(o.td),
+                        baseAttrs = [],
+                        baseMember = null;
+
+                    while (baseType != null && baseMember == null) {
+                        baseMember = Bridge.Reflection.getMembers(baseType, 31, 28, o.n);
+
+                        if (baseMember.length == 0) {
+                            var newBaseType = Bridge.Reflection.getBaseType(baseType);
+
+                            if (newBaseType != baseType) {
+                                baseType = newBaseType;
+                            }
+
+                            baseMember = null;
+                        } else {
+                            baseMember = baseMember[0];
+                        }
+                    }
+
+                    if (baseMember != null) {
+                        baseAttrs = System.Attribute.getCustomAttributes(baseMember, t);
+                    }
+
+                    for (var i = 0; i < baseAttrs.length; i++) {
+                        var baseAttr = baseAttrs[i],
+                            attrType = Bridge.getType(baseAttr),
+                            meta = Bridge.getMetadata(attrType);
+
+                        if (meta && meta.am || !r.some(function (a) { return Bridge.is(a, t); })) {
+                            r.push(baseAttr);
+                        }
+                    }
+                }
 
                 if (!t) {
                     return r;

@@ -5,7 +5,7 @@ function JsJSONRead(ev) {
     }
     var reader = new FileReader();
     reader.onloadend = function (evt) {
-        Theme_Editor.App.UploadJSON(new Uint8Array(evt.target.result), ev[0].name);
+        SwitchLayoutEditor.App.UploadJSON(new Uint8Array(evt.target.result), ev[0].name);
     }
     if (typeof ev[0] != 'undefined')
         reader.readAsArrayBuffer(ev[0]);
@@ -18,7 +18,7 @@ function JsSZSRead(ev) {
     }
     var reader = new FileReader();
     reader.onloadend = function (evt) {
-        Theme_Editor.App.UploadSZS(new Uint8Array(evt.target.result), ev[0].name);
+        SwitchLayoutEditor.App.UploadSZS(new Uint8Array(evt.target.result), ev[0].name);
     }
     if (typeof ev[0] != 'undefined')
         reader.readAsArrayBuffer(ev[0]);

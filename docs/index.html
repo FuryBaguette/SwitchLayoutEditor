@@ -9,11 +9,13 @@
     <script src="bridge.console.js"></script>
     <script src="bridge.meta.js"></script>
     <script src="newtonsoft.json.js"></script>
-    <script src="Theme%20Editor.js"></script>
-    <script src="Theme%20Editor.meta.js"></script>
+    <script src="SwitchLayoutEditor.js"></script>
+    <script src="SwitchLayoutEditor.meta.js"></script>
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/jscanvas.min.js"></script>
 	<script src="js/jsFunctions.js"></script>
+	<script src="js/openPanel.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/jsontree.css">
 </head>
@@ -93,6 +95,7 @@
                         </ul>
                     </li>
                 </ul>
+                <button id="openPanel" class="openLeftPanel panelClosed fa fa-folder"></button>
             </div>
             <div id="valuesView">
 				<ul>
@@ -145,6 +148,7 @@
 						</ul>
 					</li>
 				</ul>
+                <button id="openPanel" class="openRightPanel panelClosed fa fa-cogs"></button>
 			</div>
         </div>
 	</div>
