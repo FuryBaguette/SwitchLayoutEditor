@@ -35,6 +35,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,7 +62,9 @@
     <Reference Include="Newtonsoft.Json, Version=1.13.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Bridge.Newtonsoft.Json.1.13.0\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="System.Drawing" />
   </ItemGroup>
+  <Import Project="..\SwitchThemesCommon\SwitchThemesCommon.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Bridge.Min.17.6.0\build\Bridge.Min.targets" Condition="Exists('..\packages\Bridge.Min.17.6.0\build\Bridge.Min.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -18,15 +18,24 @@ namespace BflytPreview
 	{
 		BFLYT layout;
 
-		public Form1()
+        double zoomFactor = 1.5;
+        int prevZoom;
+        int _bWidth;
+        int _bHeight;
+
+        public Form1()
 		{
 			TypeDescriptor.AddAttributes(typeof(Vector3),new TypeConverterAttribute(typeof(Vector3Converter)));
 			TypeDescriptor.AddAttributes(typeof(Vector2), new TypeConverterAttribute(typeof(Vector2Converter)));
 
 			InitializeComponent();
-		}
 
-		private void openBFLYTToolStripMenuItem_Click(object sender, EventArgs e)
+            _bWidth = pictureBox1.Width;
+            _bHeight = pictureBox1.Height;
+            prevZoom = zoomSlider.Value;
+        }
+
+        private void openBFLYTToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog opn = new OpenFileDialog() { Filter = "Binary layout file (*.bflyt)|*.bflyt"};
 			if (opn.ShowDialog() != DialogResult.OK) return;
@@ -39,57 +48,41 @@ namespace BflytPreview
 			treeView1.Nodes.Clear();
 			RecursiveAddNode(layout.RootPane, treeView1.Nodes);
 			RenderImg();
-		}
+        }
 
 		Bitmap b = new Bitmap(2000, 1000);
 
-		void RenderImg()
+        void RenderImg()
 		{
-			Console.WriteLine("StartRender");
-			//first rendering test, misplaced objects
-			//using (Graphics gfx = Graphics.FromImage(b))
-			//{
-			//	gfx.Clear(Color.LightGray);
-
-			//	var pen = new Pen(Brushes.Black, 2);
-
-			//	gfx.DrawRectangle(new Pen(Brushes.Red, 2), new Rectangle(0, 0, 1280, 720));
-
-			//	foreach (var p in layout.Panes.Where(x => x is BFLYT.EditablePane))
-			//	{
-			//		var pane = (BFLYT.EditablePane)p;
-
-			//		if (!pane.ViewInEditor || !pane.ParentVisibility)
-			//			continue;
-			//		var box = (pane).BoundingBox;
-			//		box.Y = 720 - box.Y;
-			//		gfx.DrawRectangle(pen, box);
-			//		Console.WriteLine(p.ToString() + "  " + box.ToString());
-			//	}
-			//}
-
 			using (Graphics gfx = Graphics.FromImage(b))
 			{
 				gfx.Clear(Color.LightGray);
 
-				var pen = new Pen(Brushes.Black, 2);
+                gfx.DrawRectangle(new Pen(Brushes.Red, 2), new Rectangle(0, 0, 1280, 720));
 
-				gfx.DrawRectangle(new Pen(Brushes.Red, 2), new Rectangle(0, 0, 1280, 720));
-
-				Stack<Matrix> CurMatrix = new Stack<Matrix>();
-				void RecursiveRenderPane(BFLYT.EditablePane p)
+                Stack<Matrix> CurMatrix = new Stack<Matrix>();
+                Random r = new Random();
+                void RecursiveRenderPane(BFLYT.EditablePane p)
 				{
 					if (!p.ParentVisibility)
 						return;
 
 					CurMatrix.Push(gfx.Transform.Clone());
-
 					gfx.TranslateTransform(p.Position.X, p.Position.Y);
 					gfx.RotateTransform(p.Rotation.Z);
 					gfx.ScaleTransform(p.Scale.X, p.Scale.Y);
 
-					if (p.ViewInEditor)
-						gfx.DrawRectangle(pen, p.transformedRect);
+                    Rectangle transformedRect = new Rectangle(p.transformedRect.x, p.transformedRect.y, p.transformedRect.width, p.transformedRect.height);
+
+                    var pen = new Pen(Brushes.Black, 2);
+                    var HighlightedPen = new Pen(Brushes.Red, 4);
+
+                    if (p.ViewInEditor)
+                    {
+                        if (treeView1.SelectedNode != null && p == treeView1.SelectedNode.Tag as BFLYT.EditablePane)
+                            pen = HighlightedPen;
+                        gfx.DrawRectangle(pen, transformedRect);
+                    }
 
 					foreach (var c in p.Children.Where(x => x is BFLYT.EditablePane))
 						RecursiveRenderPane((BFLYT.EditablePane)c);
@@ -98,23 +91,18 @@ namespace BflytPreview
 
 				gfx.ScaleTransform(1, -1);
 				gfx.TranslateTransform(640, -360);
-				RecursiveRenderPane((BFLYT.EditablePane)layout.RootPane);
+                RecursiveRenderPane((BFLYT.EditablePane)layout.RootPane);
 
 			}
-			pictureBox1.Image = b;
+            pictureBox1.Image = b;
 		}
 
-		void RecursiveAddNode(BFLYT.BasePane p, TreeNodeCollection node)
+        void RecursiveAddNode(BFLYT.BasePane p, TreeNodeCollection node)
 		{
-			var TargetNode = node.Add(p.ToString());
+			var TargetNode = node.Add(p.ToString().Split(' ').Last());
 			TargetNode.Tag = p;
 			foreach (var c in p.Children)
 				RecursiveAddNode(c, TargetNode.Nodes);
-		}
-
-		private void Form1_Load(object sender, EventArgs e)
-		{
-
 		}
 
 		private void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
@@ -125,7 +113,8 @@ namespace BflytPreview
 		private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
 		{
 			propertyGrid1.SelectedObject = treeView1.SelectedNode.Tag as BFLYT.EditablePane;
-		}
+            RenderImg();
+        }
 
 		private void treeView1_KeyDown(object sender, KeyEventArgs e)
 		{
@@ -138,7 +127,7 @@ namespace BflytPreview
 			}
 		}
 
-		private void saveBFLYTToolStripMenuItem_Click(object sender, EventArgs e)
+        private void saveBFLYTToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveFileDialog sav = new SaveFileDialog() { Filter = "Binary cafe layout (*.bflyt)|*.bflyt" };
 			if (sav.ShowDialog() != DialogResult.OK) return;
@@ -148,9 +137,37 @@ namespace BflytPreview
 
 			File.WriteAllBytes(sav.FileName ,layout.SaveFile());
 		}
-	}
 
-	public class Vector3Converter : System.ComponentModel.TypeConverter
+        private void Form1_Load(object sender, System.EventArgs e)
+        {
+        }
+
+        private void Form1_Resize(object sender, System.EventArgs e)
+        {
+            pictureBox1.Size = panel1.Size;
+            zoomSlider.Value = 5;
+        }
+
+        private void zoomSlider_Scroll(object sender, EventArgs e)
+        {
+            _bWidth = pictureBox1.Width;
+            _bHeight = pictureBox1.Height;
+            if (zoomSlider.Value > prevZoom)
+            {
+                _bWidth = (int)(_bWidth * zoomFactor);
+                _bHeight = (int)(_bHeight * zoomFactor);
+            } else if (zoomSlider.Value < prevZoom)
+            {
+                _bWidth = (int)(_bWidth / zoomFactor);
+                _bHeight = (int)(_bHeight / zoomFactor);
+            }
+            pictureBox1.Width = _bWidth;
+            pictureBox1.Height = _bHeight;
+            prevZoom = zoomSlider.Value;
+        }
+    }
+
+    public class Vector3Converter : System.ComponentModel.TypeConverter
 	{
 		public override bool GetPropertiesSupported(ITypeDescriptorContext context) => true;
 

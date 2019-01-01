@@ -58,48 +58,58 @@ namespace SwitchThemes.Common.Custom
 			}
 		}
 
+        public class CusRectangle
+        {
+            public int x, y, width, height, scaleX, scaleY;
+
+            public CusRectangle (int _x, int _y, int _width, int _height)
+            {
+                x = _x;
+                y = _y;
+                width = _width;
+                height = _height;
+            }
+        }
+
 		public class EditablePane : BasePane
 		{
-			public Rectangle transformedRect
+			public CusRectangle transformedRect
 			{
 				get
 				{
-					if (Alpha == 0 || !ParentVisibility)
-						return new Rectangle(0, 0, 0, 0);
+                    if (Alpha == 0 || !ParentVisibility)
+                        return new CusRectangle(0,0,0,0);
 
 					Vector2 ParentSize;
+
 					if (Parent != null && Parent is EditablePane)
-					{
-						ParentSize = ((EditablePane)Parent).Size;
-					}
+                        ParentSize = ((EditablePane)Parent).Size;
 					else
-					{
-						ParentSize = new Vector2(0,0);
-					}
+                        ParentSize = new Vector2(0,0);
 
-					float RelativeX;
-					if (ParentOriginX == OriginX.Left) RelativeX = 0;
-					else if (ParentOriginX == OriginX.Right) RelativeX = ParentSize.X;
-					else RelativeX = ParentSize.X / 2;
+                    float RelativeX;
+                    if (ParentOriginX == OriginX.Center) RelativeX = 0;
+                    else if (ParentOriginX == OriginX.Right) RelativeX = ParentSize.X;
+                    else RelativeX = ParentSize.X / 2;
 
-					float RelativeY;
-					if (ParentOriginY == OriginY.Top) RelativeY = 0;
-					else if (ParentOriginY == OriginY.Bottom) RelativeY = ParentSize.Y;
-					else RelativeY = ParentSize.Y / 2;
+                    float RelativeY;
+                    if (ParentOriginY == OriginY.Center) RelativeY = 0;
+                    else if (ParentOriginY == OriginY.Bottom) RelativeY = ParentSize.Y;
+                    else RelativeY = ParentSize.Y / 2;
 
-					if (originX == OriginX.Center) RelativeX -= Size.X / 2;
-					else if (originX == OriginX.Right) RelativeX -= Size.X;
+                    if (originX == OriginX.Center) RelativeX -= Size.X / 2;
+                    else if (originX == OriginX.Right) RelativeX -= Size.X;
 
-					if (originY == OriginY.Center) RelativeY -= Size.Y / 2;
-					else if (originY == OriginY.Bottom) RelativeY -= Size.Y;
+                    if (originY == OriginY.Center) RelativeY -= Size.Y / 2;
+                    else if (originY == OriginY.Bottom) RelativeY -= Size.Y;
 
-					return new Rectangle(
-						(int)((RelativeX)),
-						(int)((RelativeY)),
-						(int)(Size.X),
-						(int)(Size.Y));
-				}
-			}
+                    return new CusRectangle(
+                        (int)((RelativeX)),
+                        (int)((RelativeY)),
+                        (int)(Size.X),
+                        (int)(Size.Y));
+                }
+            }
 			////My attempt to calculate the box position manually, doesn't work.
 			//public Rectangle BoundingBox
 			//{

@@ -3,37 +3,44 @@ using Bridge.Html5;
 using Bridge.jQuery2;
 using Newtonsoft.Json;
 using System;
+using SARCExt;
 using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using SwitchThemes.Common;
+using SwitchThemes.Common.Custom;
 
 namespace SwitchLayoutEditor
 {
     public class App
     {
+        static SarcData CommonSzs = null;
+        static PatchTemplate targetPatch = null;
+        static BFLYT bflytLayout = null;
+
         public static void Main()
-        {
-            var jsonBtn = new HTMLButtonElement
+        {   
+            /*var jsonBtn = new HTMLButtonElement
             {
                 InnerHTML = "Upload JSON",
                 OnClick = (ev) =>
                 {
                     UploadLayoutBtn();
                 }
+            };*/
+
+            var cszBtn = new HTMLButtonElement
+            {
+                InnerHTML = "Upload CSZ",
+                OnClick = (ev) =>
+                {
+                    UploadSZSBtn();
+                }
             };
 
-            /* var button = new HTMLButtonElement
-             {
-                 InnerHTML = "Upload CSZ",
-                 OnClick = (ev) =>
-                 {
-                     UploadSZSBtn();
-                 }
-             };*/
-
-            Document.GetElementById<HTMLDivElement>("uploadFile").AppendChild(jsonBtn);
+            Document.GetElementById<HTMLDivElement>("uploadFile").AppendChild(cszBtn);
             //Document.Body.AppendChild(button);
         }
 
@@ -63,6 +70,34 @@ namespace SwitchLayoutEditor
 
         public static void UploadSZS(Uint8Array arr, string fileName)
         {
+            byte[] sarc = ManagedYaz0.Decompress(arr.ToArray());
+            CommonSzs = SARCExt.SARC.UnpackRamN(sarc);
+            sarc = null;
+            targetPatch = SwitchThemesCommon.DetectSarc(CommonSzs, DefaultTemplates.templates);
+            if (targetPatch == null)
+            {
+                Console.WriteLine("This is not a valid theme file, if it's from a newer firmware it's not compatible with this tool yet");
+                CommonSzs = null;
+                targetPatch = null;
+                return;
+            }
+            Console.WriteLine("Detected " + targetPatch.TemplateName + " " + targetPatch.FirmName);
+
+            foreach (var file in CommonSzs.Files)
+            {
+                if (file.Key == "blyt/RdtBase.bflyt")
+                {
+                    bflytLayout = new BFLYT(file.Value);
+                    var json = JsonConvert.SerializeObject(bflytLayout);
+                    //Console.WriteLine(json);
+                    /*foreach (var p in bflytLayout.Panes.Where(x => x is BFLYT.EditablePane))
+                    {
+                        Console.WriteLine(p.ToString());
+                    }*/
+                }
+            }
+            /*bflytLayout = new BFLYT(sarc);
+            Console.WriteLine(bflytLayout.RootPane.name);*/
             return;
         }
 
