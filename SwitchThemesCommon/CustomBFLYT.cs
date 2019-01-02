@@ -13,6 +13,7 @@ namespace SwitchThemes.Common.Custom
 {
 	class BFLYT
 	{
+		public ByteOrder FileByteOrder;
 		public class BasePane
 		{
 			public BasePane Parent;
@@ -156,6 +157,8 @@ namespace SwitchThemes.Common.Custom
 			{
 				get
 				{
+					if (Scale.X == 0 || Scale.Y == 0 || Size.X == 0 || Size.Y == 0)
+						return false;
 					if (!Visible)
 						return false;
 					if (Parent != null && Parent is EditablePane)
@@ -287,10 +290,10 @@ namespace SwitchThemes.Common.Custom
 
 			//public uint[] ColorData = null; //only for pic1 panes
 
-			public EditablePane(BasePane p) : base(p)
+			public EditablePane(BasePane p, ByteOrder order) : base(p)
 			{
 				BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
-				dataReader.ByteOrder = ByteOrder.LittleEndian;
+				dataReader.ByteOrder = order;
 
 				string ReadBinaryString(int max)
 				{
@@ -321,12 +324,12 @@ namespace SwitchThemes.Common.Custom
 				//}
 			}
 
-			public void ApplyChanges()
+			public void ApplyChanges(ByteOrder order)
 			{
 				using (var mem = new MemoryStream())
 				{
 					BinaryDataWriter bin = new BinaryDataWriter(mem);
-					bin.ByteOrder = ByteOrder.LittleEndian;
+					bin.ByteOrder = order;
 					bin.Write(data);
 					bin.BaseStream.Position = 0;
 					bin.Write(_flag1);
@@ -349,7 +352,7 @@ namespace SwitchThemes.Common.Custom
 
 			public override void WritePane(BinaryDataWriter bin)
 			{
-				ApplyChanges();
+				ApplyChanges(bin.ByteOrder);
 				base.WritePane(bin);
 			}
 		}
@@ -361,7 +364,8 @@ namespace SwitchThemes.Common.Custom
 			{
 				BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
 				dataReader.ByteOrder = bin.ByteOrder;
-				int texCount = dataReader.ReadInt32();
+				int texCount = dataReader.ReadInt16();
+				dataReader.ReadInt16(); //padding
 				uint BaseOff = (uint)dataReader.Position;
 				var Offsets = dataReader.ReadInt32s(texCount);
 				foreach (var off in Offsets)
@@ -403,7 +407,8 @@ namespace SwitchThemes.Common.Custom
 			{
 				BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
 				dataReader.ByteOrder = bin.ByteOrder;
-				int matCount = dataReader.ReadInt32();
+				int matCount = dataReader.ReadInt16();
+				dataReader.ReadInt16(); //padding
 				var Offsets = dataReader.ReadInt32s(matCount).Select(x => x - 8).ToArray(); // offsets relative to the stream
 				for (int i = 0; i < matCount; i++)
 				{
@@ -443,10 +448,9 @@ namespace SwitchThemes.Common.Custom
 		{
 			var res = new MemoryStream();
 			BinaryDataWriter bin = new BinaryDataWriter(res);
-			bin.ByteOrder = ByteOrder.LittleEndian;
+			bin.ByteOrder = FileByteOrder;
 			bin.Write("FLYT", BinaryStringFormat.NoPrefixOrTermination);
-			bin.Write((byte)0xFF);
-			bin.Write((byte)0xFE); //Little endian
+			bin.Write((ushort)0xFEFF); //should match 0xFF 0xFE
 			bin.Write((UInt16)0x14); //Header size
 			bin.Write(version);
 			bin.Write((Int32)0);
@@ -495,9 +499,15 @@ namespace SwitchThemes.Common.Custom
 		public BFLYT(Stream file)
 		{
 			BinaryDataReader bin = new BinaryDataReader(file);
-			bin.ByteOrder = ByteOrder.LittleEndian;
+			FileByteOrder = ByteOrder.LittleEndian;
+			bin.ByteOrder = FileByteOrder;
 			if (bin.ReadString(4) != "FLYT") throw new Exception("Wrong signature");
-			bin.ReadUInt16(); //BOM
+			var bOrder = bin.ReadUInt16(); //BOM
+			if (bOrder == 0xFFFE)
+			{
+				FileByteOrder = ByteOrder.BigEndian;
+				bin.ByteOrder = FileByteOrder;
+			}
 			bin.ReadUInt16(); //HeaderSize
 			version = bin.ReadUInt32();
 			bin.ReadUInt32(); //File size
@@ -527,7 +537,7 @@ namespace SwitchThemes.Common.Custom
 						break;
 					default:
 						var pane = new BasePane(name, bin);
-						Panes.Add(pane.data.Length >= 0x4C && name != "usd1" && name != "grp1" ? new EditablePane(pane) : pane);
+						Panes.Add(pane.data.Length >= 0x4C && name != "usd1" && name != "grp1" ? new EditablePane(pane, FileByteOrder) : pane);
 						if (CurrentParent != null)
 						{
 							CurrentParent.Children.Add(Panes.Last());

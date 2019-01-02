@@ -133,7 +133,7 @@ namespace BflytPreview
 			if (sav.ShowDialog() != DialogResult.OK) return;
 
 			foreach (var p in layout.Panes.Where(x => x is BFLYT.EditablePane))
-				((BFLYT.EditablePane)p).ApplyChanges();
+				((BFLYT.EditablePane)p).ApplyChanges(layout.FileByteOrder);
 
 			File.WriteAllBytes(sav.FileName ,layout.SaveFile());
 		}
