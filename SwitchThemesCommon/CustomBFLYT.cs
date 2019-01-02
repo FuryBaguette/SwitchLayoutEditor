@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SwitchThemes.Common.Custom
 {
-	class BFLYT
+	public class BFLYT
 	{
 		public ByteOrder FileByteOrder;
 		public class BasePane
