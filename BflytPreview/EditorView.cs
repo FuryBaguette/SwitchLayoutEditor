@@ -90,7 +90,6 @@ namespace BflytPreview
 
                 gfx.ScaleTransform(1, -1);
                 gfx.TranslateTransform(640, -360);
-                Console.WriteLine(layout.GetMat.Materials[0].ToString());
                 RecursiveRenderPane((BFLYT.EditablePane)layout.RootPane);
 
             }
@@ -142,10 +141,23 @@ namespace BflytPreview
         {
         }
 
+        private void bringToFront()
+        {
+            this.Activate();
+            this.BringToFront();
+            this.Focus();
+        }
+
+        private void EditorView_Click(object sender, System.EventArgs e)
+        {
+            bringToFront();
+        }
+
         private void EditorView_Resize(object sender, System.EventArgs e)
         {
             pictureBox1.Size = panel1.Size;
             zoomSlider.Value = 5;
+            bringToFront();
         }
 
         private void zoomSlider_Scroll(object sender, EventArgs e)
