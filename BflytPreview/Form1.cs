@@ -35,7 +35,7 @@ namespace BflytPreview
             editorView.layout = new BFLYT(File.ReadAllBytes(opn.FileName));
             editorView.Text = opn.FileName;
             editorView.Show();
-            editorView.UpdateView();
+            //editorView.UpdateView();
 		}
 
         private void Form1_Load(object sender, System.EventArgs e)
