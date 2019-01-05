@@ -27,7 +27,6 @@ namespace BflytPreview
         int _bHeight;
 
         OpenTK.GLControl glControl;
-        static float angle = 0.0f;
 
         public EditorView()
         {
@@ -151,9 +150,10 @@ namespace BflytPreview
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
 
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            
-            RenderPanes();
+			GL.Clear(ClearBufferMask.ColorBufferBit);
+			GL.ClearColor(160/255f, 160 / 255f, 160 / 255f, 1); //Control dark color
+
+			RenderPanes();
             
             glControl.SwapBuffers();
         }
@@ -166,44 +166,45 @@ namespace BflytPreview
             {
                 if (!p.ParentVisibility)
                     return;
+				
+                var color = Color.Black;
 
-                Rectangle transformedRect = new Rectangle(p.transformedRect.x, p.transformedRect.y, p.transformedRect.width, p.transformedRect.height);
-                
-                var color = Color.Green;
-
-                /*GL.Translate(p.Position.X, p.Position.Y, 0);
+				GL.PushMatrix();
+                GL.Translate(p.Position.X, p.Position.Y, 0);
                 GL.Rotate(p.Rotation.Z, p.Rotation.X, p.Rotation.Y, p.Rotation.Z);
-                GL.Scale(p.Scale.X, p.Scale.Y, 1);*/
+                GL.Scale(p.Scale.X, p.Scale.Y, 1);
 
                 if (p.ViewInEditor)
                 {
-                    if (treeView1.SelectedNode != null && p == treeView1.SelectedNode.Tag as BFLYT.EditablePane)
-                        color = Color.Red;
-                    //Console.WriteLine(p.ToString() + ": " + p.transformedRect.x + ", " + p.transformedRect.y);
-                    DrawPane(transformedRect, color);
+                    Console.WriteLine(p.ToString() + ": " + p.transformedRect.x + ", " + p.transformedRect.y);
+                    DrawPane(p.transformedRect, color);
                 }
 
                 foreach (var c in p.Children.Where(x => x is BFLYT.EditablePane))
                     RecursiveRenderPane((BFLYT.EditablePane)c);
+				GL.PopMatrix();
             }
 
-            GL.Scale(1, -1, 1);
+            GL.Scale(1 * (zoomSlider.Value / 10f), -1 * (zoomSlider.Value / 10f), 1);
             GL.Translate(640, -360, 0);
             RecursiveRenderPane((BFLYT.EditablePane)layout.RootPane);
+
+			if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is BFLYT.EditablePane)
+				DrawPane(((BFLYT.EditablePane)treeView1.SelectedNode.Tag).transformedRect, Color.Red);
         }
 
-        void DrawPane(Rectangle rect, Color color)
+        void DrawPane(BFLYT.CusRectangle rect, Color color)
         {
             GL.Color3(color);
             GL.Begin(PrimitiveType.Lines);
-            GL.Vertex2(rect.X, rect.Y);
-            GL.Vertex2(rect.X, rect.Y + rect.Height);
-            GL.Vertex2(rect.X, rect.Y + rect.Height);
-            GL.Vertex2(rect.X + rect.Width, rect.Y + rect.Height);
-            GL.Vertex2(rect.X + rect.Width, rect.Y + rect.Height);
-            GL.Vertex2(rect.X + rect.Width, rect.Y);
-            GL.Vertex2(rect.X + rect.Width, rect.Y);
-            GL.Vertex2(rect.X, rect.Y);
+            GL.Vertex2(rect.x, rect.y);
+            GL.Vertex2(rect.x, rect.y + rect.height);
+            GL.Vertex2(rect.x, rect.y + rect.height);
+            GL.Vertex2(rect.x + rect.width, rect.y + rect.height);
+            GL.Vertex2(rect.x + rect.width, rect.y + rect.height);
+            GL.Vertex2(rect.x + rect.width, rect.y);
+            GL.Vertex2(rect.x + rect.width, rect.y);
+            GL.Vertex2(rect.x, rect.y);
             GL.End();
         }
 

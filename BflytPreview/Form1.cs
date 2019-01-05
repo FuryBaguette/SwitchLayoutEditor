@@ -40,7 +40,18 @@ namespace BflytPreview
 
         private void Form1_Load(object sender, System.EventArgs e)
         {
-        }
+#if DEBUG
+			string AutoLaunch = @"RdtBase.bflyt";
+			if (!File.Exists(AutoLaunch)) return;
+			EditorView editorView = new EditorView();
+			this.IsMdiContainer = true;
+			editorView.TopLevel = false;
+			editorView.Parent = pnlSubSystem;
+			editorView.layout = new BFLYT(File.ReadAllBytes(AutoLaunch));
+			editorView.Text = AutoLaunch;
+			editorView.Show();
+#endif
+		}
     }
 
     public class Vector3Converter : System.ComponentModel.TypeConverter

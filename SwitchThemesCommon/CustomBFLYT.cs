@@ -77,56 +77,8 @@ namespace SwitchThemes.Common.Custom
 			public CusRectangle transformedRect
 			{
 				get
-				{
+				{ 
                     if (Alpha == 0 || !ParentVisibility)
-                        return new CusRectangle(0, 0, 0, 0);
-
-                    Vector2 ParentSize;
-                    Vector3 ParentPosition;
-                    Vector2 ParentWH;
-                    Vector2 ParentScale;
-
-                    if (Parent != null && Parent is EditablePane)
-                    {
-                        ParentSize = ((EditablePane)Parent).Size;
-                        ParentPosition = ((EditablePane)Parent).Position;
-                        ParentScale = ((EditablePane)Parent).Scale;
-                        ParentWH.X = ParentPosition.X + (ParentSize.X * ParentScale.X);
-                        ParentWH.Y = ParentPosition.Y + (ParentSize.Y * ParentScale.Y);
-                    }
-                    else
-                    {
-                        ParentSize = new Vector2(0, 0);
-                        ParentPosition = new Vector3(0, 0, 0);
-                        ParentWH = new Vector2(0, 0);
-                        ParentScale = new Vector2(0, 0);
-                    }
-
-                    float ActualW = (Size.X * Scale.X) * ParentScale.X;
-                    float ActualH = (Size.Y * Scale.Y) * ParentScale.Y;
-
-                    float RelativeX;
-                    if (ParentOriginX == OriginX.Center) RelativeX = Position.X;
-                    else if (ParentOriginX == OriginX.Right) RelativeX = ParentWH.X + Position.X;
-                    else RelativeX = (ParentWH.X / 2) + Position.X;
-
-                    float RelativeY;
-                    if (ParentOriginY == OriginY.Center) RelativeY = Position.Y;
-                    else if (ParentOriginY == OriginY.Bottom) RelativeY = ParentWH.Y + Position.Y;
-                    else RelativeY = (ParentWH.Y / 2) + Position.Y;
-
-                    if (originX == OriginX.Center) RelativeX -= Size.X / 2;
-                    else if (originX == OriginX.Right) RelativeX -= Size.X;
-
-                    if (originY == OriginY.Center) RelativeY -= Size.Y / 2;
-                    else if (originY == OriginY.Bottom) RelativeY -= Size.Y;
-
-                    return new CusRectangle(
-                    (int)(RelativeX),
-                    (int)(RelativeY),
-                    (int)(ActualW),
-                    (int)(ActualH));
-                    /*if (Alpha == 0 || !ParentVisibility)
                         return new CusRectangle(0,0,0,0);
 
 					Vector2 ParentSize;
@@ -156,7 +108,7 @@ namespace SwitchThemes.Common.Custom
                         (int)((RelativeX)),
                         (int)((RelativeY)),
                         (int)(Size.X),
-                        (int)(Size.Y));*/
+                        (int)(Size.Y));
                 }
             }
 			////My attempt to calculate the box position manually, doesn't work.
