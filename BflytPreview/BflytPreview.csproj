@@ -95,6 +95,12 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditorForms\SzsEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditorForms\SzsEditor.Designer.cs">
+      <DependentUpon>SzsEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="EditorView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -109,6 +115,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="EditorForms\SzsEditor.resx">
+      <DependentUpon>SzsEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EditorView.resx">
       <DependentUpon>EditorView.cs</DependentUpon>
     </EmbeddedResource>

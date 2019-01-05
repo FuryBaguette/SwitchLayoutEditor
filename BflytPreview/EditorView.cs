@@ -19,81 +19,51 @@ namespace BflytPreview
 {
     public partial class EditorView : Form
     {
-        public BFLYT layout;
+		BFLYT layout;
 
-        double zoomFactor = 1.5;
-        int prevZoom;
-        int _bWidth;
-        int _bHeight;
+		double zoomFactor => zoomSlider.Value / 10f;
 
         OpenTK.GLControl glControl;
 
-        public EditorView()
+        public EditorView(BFLYT _layout)
         {
             TypeDescriptor.AddAttributes(typeof(SwitchThemes.Common.Vector3), new TypeConverterAttribute(typeof(Vector3Converter)));
             TypeDescriptor.AddAttributes(typeof(SwitchThemes.Common.Vector2), new TypeConverterAttribute(typeof(Vector2Converter)));
 
             InitializeComponent();
+			layout = _layout;
 
-            glControl = new OpenTK.GLControl();
-            panel1.Controls.Add(glControl);
+			glControl = new OpenTK.GLControl();
             glControl.Dock = DockStyle.Fill;
+			panel1.Controls.Add(glControl);
+			glControl.KeyDown += new KeyEventHandler(glControl_KeyDown);
+			glControl.KeyUp += new KeyEventHandler(glControl_KeyUp);
+			glControl.Resize += new EventHandler(glControl_Resize);
+			glControl.Paint += GlControl_Paint;
+		}
 
-            _bWidth = pictureBox1.Width;
-            _bHeight = pictureBox1.Height;
-            prevZoom = zoomSlider.Value;
-        }
+		#region OnLoad
 
-        #region OnLoad
+		private void EditorView_Load(object sender, System.EventArgs e)
+		{
+			BringToFront();
+			glControl_Resize(glControl, EventArgs.Empty);
 
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
-            UpdateView();
-            glControl.KeyDown += new KeyEventHandler(glControl_KeyDown);
-            glControl.KeyUp += new KeyEventHandler(glControl_KeyUp);
-            glControl.Resize += new EventHandler(glControl_Resize);
-            //glControl.Paint += new PaintEventHandler(glControl_Paint);
+			UpdateView();
+			Render();
 
-            Text =
-                GL.GetString(StringName.Vendor) + " " +
-                GL.GetString(StringName.Renderer) + " " +
-                GL.GetString(StringName.Version);
+			Text =
+				GL.GetString(StringName.Vendor) + " " +
+				GL.GetString(StringName.Renderer) + " " +
+				GL.GetString(StringName.Version);
+		}
 
-            Application.Idle += Application_Idle;
-            
-            glControl_Resize(glControl, EventArgs.Empty);
-        }
-
-        void glControl_KeyUp(object sender, KeyEventArgs e)
+		void glControl_KeyUp(object sender, KeyEventArgs e)
         {
             /*if (e.KeyCode == Keys.F12)
             {
                 
             }*/
-        }
-
-        #endregion
-
-        #region OnClosing
-
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            Application.Idle -= Application_Idle;
-
-            base.OnClosing(e);
-        }
-
-        #endregion
-
-        #region Application_Idle event
-
-        void Application_Idle(object sender, EventArgs e)
-        {
-            while (glControl.IsIdle)
-            {
-                Render();
-            }
         }
 
         #endregion
@@ -108,12 +78,12 @@ namespace BflytPreview
                 c.ClientSize = new System.Drawing.Size(c.ClientSize.Width, 1);
 
             GL.Viewport(0, 0, c.ClientSize.Width, c.ClientSize.Height);
-            RenderImg();
-            /*float aspect_ratio = panel1.Width / (float)panel1.Height;
+			glControl.Invalidate();
+			/*float aspect_ratio = panel1.Width / (float)panel1.Height;
             Matrix4 perpective = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver4, aspect_ratio, 1, 64);
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadMatrix(ref perpective);*/
-        }
+		}
 
         #endregion
 
@@ -129,20 +99,20 @@ namespace BflytPreview
             }
         }
 
-        #endregion
+		#endregion
 
-        #region GLControl.Paint event handler
+		#region GLControl.Paint event handler
 
-        void glControl_Paint(object sender, PaintEventHandler e)
-        {
-            Render();
-        }
+		private void GlControl_Paint(object sender, PaintEventArgs e)
+		{
+			Render();
+		}
 
-        #endregion
+		#endregion
 
-        #region private void Render()
+		#region private void Render()
 
-        private void Render()
+		private void Render()
         {
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadIdentity();
@@ -162,6 +132,9 @@ namespace BflytPreview
 
         void RenderPanes()
         {
+			float[] DrawOnTopTransform = new float[16];
+			BFLYT.EditablePane DrawOnTop = null;
+
             void RecursiveRenderPane(BFLYT.EditablePane p)
             {
                 if (!p.ParentVisibility)
@@ -176,22 +149,30 @@ namespace BflytPreview
 
                 if (p.ViewInEditor)
                 {
-                    Console.WriteLine(p.ToString() + ": " + p.transformedRect.x + ", " + p.transformedRect.y);
-                    DrawPane(p.transformedRect, color);
-                }
+					if (treeView1.SelectedNode != null && (p == treeView1.SelectedNode.Tag as BFLYT.EditablePane))
+					{
+						DrawOnTop = p;
+						GL.GetFloat(GetPName.ModelviewMatrix, DrawOnTopTransform);
+					}
+					else
+						DrawPane(p.transformedRect, color);
+				}
 
                 foreach (var c in p.Children.Where(x => x is BFLYT.EditablePane))
                     RecursiveRenderPane((BFLYT.EditablePane)c);
 				GL.PopMatrix();
             }
 
-            GL.Scale(1 * (zoomSlider.Value / 10f), -1 * (zoomSlider.Value / 10f), 1);
+            GL.Scale(1 * zoomFactor, -1 * zoomFactor, 1);
             GL.Translate(640, -360, 0);
             RecursiveRenderPane((BFLYT.EditablePane)layout.RootPane);
 
-			if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is BFLYT.EditablePane)
-				DrawPane(((BFLYT.EditablePane)treeView1.SelectedNode.Tag).transformedRect, Color.Red);
-        }
+			if (DrawOnTop != null)
+			{
+				GL.LoadMatrix(DrawOnTopTransform);
+				DrawPane(DrawOnTop.transformedRect, Color.Red);
+			}
+		}
 
         void DrawPane(BFLYT.CusRectangle rect, Color color)
         {
@@ -208,27 +189,16 @@ namespace BflytPreview
             GL.End();
         }
 
-        /*private void openBFLYTToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog opn = new OpenFileDialog() { Filter = "Binary layout file (*.bflyt)|*.bflyt" };
-            if (opn.ShowDialog() != DialogResult.OK) return;
-            layout = new BFLYT(File.ReadAllBytes(opn.FileName));
-            UpdateView();
-        }*/
-
         public void UpdateView()
         {
             treeView1.Nodes.Clear();
             RecursiveAddNode(layout.RootPane, treeView1.Nodes);
-            RenderImg();
+			glControl.Invalidate();
         }
-
-        Bitmap b = new Bitmap(2000, 1000);
-
-        void RenderImg()
+		
+        /*void RenderImg()
         {
-            Render();
-            /*using (Graphics gfx = Graphics.FromImage(b))
+            using (Graphics gfx = Graphics.FromImage(b)) Do not remove this as it can be used to render the layout as an image
             {
                 gfx.Clear(Color.LightGray);
 
@@ -267,8 +237,8 @@ namespace BflytPreview
                 RecursiveRenderPane((BFLYT.EditablePane)layout.RootPane);
 
             }
-            pictureBox1.Image = b;*/
-        }
+            pictureBox1.Image = b;
+        }*/
 
         void RecursiveAddNode(BFLYT.BasePane p, TreeNodeCollection node)
         {
@@ -280,14 +250,14 @@ namespace BflytPreview
 
         private void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-            RenderImg();
+			glControl.Invalidate();
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             propertyGrid1.SelectedObject = treeView1.SelectedNode.Tag as BFLYT.EditablePane;
-            RenderImg();
-        }
+			glControl.Invalidate();
+		}
 
         private void treeView1_KeyDown(object sender, KeyEventArgs e)
         {
@@ -296,8 +266,8 @@ namespace BflytPreview
                 var target = treeView1.SelectedNode.Tag as BFLYT.EditablePane;
                 if (target == null) return;
                 target.ViewInEditor = !target.ViewInEditor;
-                RenderImg();
-            }
+				glControl.Invalidate();
+			}
         }
 
         private void saveBFLYTToolStripMenuItem_Click(object sender, EventArgs e)
@@ -309,11 +279,6 @@ namespace BflytPreview
                 ((BFLYT.EditablePane)p).ApplyChanges(layout.FileByteOrder);
 
             File.WriteAllBytes(sav.FileName, layout.SaveFile());
-        }
-
-        private void EditorView_Load(object sender, System.EventArgs e)
-        {
-            
         }
 
         private void bringToFront()
@@ -330,28 +295,12 @@ namespace BflytPreview
 
         private void EditorView_Resize(object sender, System.EventArgs e)
         {
-            pictureBox1.Size = panel1.Size;
-            zoomSlider.Value = 5;
             bringToFront();
         }
 
-        private void zoomSlider_Scroll(object sender, EventArgs e)
-        {
-            _bWidth = pictureBox1.Width;
-            _bHeight = pictureBox1.Height;
-            if (zoomSlider.Value > prevZoom)
-            {
-                _bWidth = (int)(_bWidth * zoomFactor);
-                _bHeight = (int)(_bHeight * zoomFactor);
-            }
-            else if (zoomSlider.Value < prevZoom)
-            {
-                _bWidth = (int)(_bWidth / zoomFactor);
-                _bHeight = (int)(_bHeight / zoomFactor);
-            }
-            pictureBox1.Width = _bWidth;
-            pictureBox1.Height = _bHeight;
-            prevZoom = zoomSlider.Value;
-        }
-    }
+		private void zoomSlider_Scroll(object sender, EventArgs e)
+		{
+			glControl.Invalidate();
+		}
+	}
 }

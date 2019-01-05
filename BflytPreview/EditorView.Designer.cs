@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditorView));
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveBFLYTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -39,7 +38,6 @@
 			this.zoomSlider = new System.Windows.Forms.TrackBar();
 			this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
 			this.panel1 = new System.Windows.Forms.Panel();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -50,20 +48,7 @@
 			this.splitContainer2.Panel2.SuspendLayout();
 			this.splitContainer2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.zoomSlider)).BeginInit();
-			this.panel1.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// pictureBox1
-			// 
-			this.pictureBox1.BackColor = System.Drawing.SystemColors.ControlDark;
-			this.pictureBox1.Enabled = false;
-			this.pictureBox1.Location = new System.Drawing.Point(-1, -1);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(527, 421);
-			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-			this.pictureBox1.TabIndex = 0;
-			this.pictureBox1.TabStop = false;
-			this.pictureBox1.Visible = false;
 			// 
 			// menuStrip1
 			// 
@@ -142,12 +127,14 @@
 			// 
 			// zoomSlider
 			// 
-			this.zoomSlider.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.zoomSlider.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.zoomSlider.LargeChange = 1;
-			this.zoomSlider.Location = new System.Drawing.Point(12, 167);
+			this.zoomSlider.Location = new System.Drawing.Point(3, 167);
 			this.zoomSlider.Maximum = 20;
+			this.zoomSlider.Minimum = 1;
 			this.zoomSlider.Name = "zoomSlider";
-			this.zoomSlider.Size = new System.Drawing.Size(251, 45);
+			this.zoomSlider.Size = new System.Drawing.Size(260, 45);
 			this.zoomSlider.TabIndex = 1;
 			this.zoomSlider.Value = 10;
 			this.zoomSlider.Scroll += new System.EventHandler(this.zoomSlider_Scroll);
@@ -169,7 +156,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.AutoScroll = true;
-			this.panel1.Controls.Add(this.pictureBox1);
 			this.panel1.Location = new System.Drawing.Point(0, 27);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(527, 420);
@@ -187,7 +173,6 @@
 			this.Text = "EditorView";
 			this.Load += new System.EventHandler(this.EditorView_Load);
 			this.Resize += new System.EventHandler(this.EditorView_Resize);
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.splitContainer1.Panel1.ResumeLayout(false);
@@ -200,15 +185,12 @@
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
 			this.splitContainer2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.zoomSlider)).EndInit();
-			this.panel1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveBFLYTToolStripMenuItem;

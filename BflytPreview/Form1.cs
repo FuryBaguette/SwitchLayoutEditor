@@ -28,14 +28,8 @@ namespace BflytPreview
 		{
 			OpenFileDialog opn = new OpenFileDialog() { Filter = "Binary layout file (*.bflyt)|*.bflyt"};
 			if (opn.ShowDialog() != DialogResult.OK) return;
-            EditorView editorView = new EditorView();
-            this.IsMdiContainer = true;
-            editorView.TopLevel = false;
-            editorView.Parent = pnlSubSystem;
-            editorView.layout = new BFLYT(File.ReadAllBytes(opn.FileName));
-            editorView.Text = opn.FileName;
-            editorView.Show();
-            //editorView.UpdateView();
+            EditorView editorView = new EditorView(new BFLYT(File.ReadAllBytes(opn.FileName)));
+			OpenForm(editorView);
 		}
 
         private void Form1_Load(object sender, System.EventArgs e)
@@ -43,14 +37,17 @@ namespace BflytPreview
 #if DEBUG
 			string AutoLaunch = @"RdtBase.bflyt";
 			if (!File.Exists(AutoLaunch)) return;
-			EditorView editorView = new EditorView();
-			this.IsMdiContainer = true;
-			editorView.TopLevel = false;
-			editorView.Parent = pnlSubSystem;
-			editorView.layout = new BFLYT(File.ReadAllBytes(AutoLaunch));
-			editorView.Text = AutoLaunch;
-			editorView.Show();
+			EditorView editorView = new EditorView(new BFLYT(File.ReadAllBytes(AutoLaunch)));
+			OpenForm(editorView);
 #endif
+		}
+
+		public void OpenForm(Form f)
+		{
+			this.IsMdiContainer = true;
+			f.TopLevel = false;
+			f.Parent = pnlSubSystem;
+			f.Show();
 		}
     }
 
