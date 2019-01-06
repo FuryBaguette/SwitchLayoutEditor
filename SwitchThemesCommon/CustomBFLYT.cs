@@ -157,7 +157,7 @@ namespace SwitchThemes.Common.Custom
 			{
 				get
 				{
-					if (Scale.X == 0 || Scale.Y == 0 || Size.X == 0 || Size.Y == 0)
+					if (Scale.X == 0 || Scale.Y == 0)
 						return false;
 					if (!Visible)
 						return false;
