@@ -193,6 +193,7 @@
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.EditorView_FormClosed);
 			this.Load += new System.EventHandler(this.EditorView_Load);
 			this.Resize += new System.EventHandler(this.EditorView_Resize);
+			this.LocationChanged += new System.EventHandler(this.EditorView_LocationChanged);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.splitContainer1.Panel1.ResumeLayout(false);

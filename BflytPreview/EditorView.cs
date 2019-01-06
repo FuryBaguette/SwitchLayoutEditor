@@ -12,6 +12,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Platform;
 using BflytPreview.EditorForms;
+using System.Threading.Tasks;
 
 namespace BflytPreview
 {
@@ -25,6 +26,8 @@ namespace BflytPreview
 
         float x = 640, y = -360;
         private Point firstPoint = new Point();
+
+        bool canMoveView;
 
         OpenTK.GLControl glControl;
 
@@ -51,17 +54,25 @@ namespace BflytPreview
 
 		private void EditorView_Load(object sender, System.EventArgs e)
 		{
-			BringToFront();
+			bringToFront();
 			glControl_Resize(glControl, EventArgs.Empty);
 
 			UpdateView();
 			Render();
 
-			/*Text =
+            Task ignRes = setMoveView();
+
+            /*Text =
 				GL.GetString(StringName.Vendor) + " " +
 				GL.GetString(StringName.Renderer) + " " +
 				GL.GetString(StringName.Version);*/
-		}
+        }
+
+        private async Task setMoveView()
+        {
+            await Task.Delay(500);
+            canMoveView = true;
+        }
 
         #endregion
 
@@ -298,7 +309,12 @@ namespace BflytPreview
             bringToFront();
         }
 
-		private void zoomSlider_Scroll(object sender, EventArgs e)
+        private void EditorView_LocationChanged(object sender, System.EventArgs e)
+        {
+            bringToFront();
+        }
+
+        private void zoomSlider_Scroll(object sender, EventArgs e)
 		{
 			glControl.Invalidate();
 		}
@@ -349,9 +365,8 @@ namespace BflytPreview
 		bool DraggedObject = false;
 		private void glControl_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.Left)
+            if (e.Button != MouseButtons.Left || !canMoveView)
                 return;
-
             BFLYT.EditablePane target = null;
             if (treeView1.SelectedNode != null)
                 target = treeView1.SelectedNode.Tag as BFLYT.EditablePane;
