@@ -207,6 +207,7 @@
 			this.Text = "Szs editor";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SzsEditor_FormClosing);
 			this.Load += new System.EventHandler(this.SzsEditor_Load);
+			this.Click += new System.EventHandler(this.SzsEditor_Click);
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();

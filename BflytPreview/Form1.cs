@@ -2,13 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using SwitchThemes.Common.Custom;
 using Syroot.BinaryData;
@@ -37,8 +31,7 @@ namespace BflytPreview
 #if DEBUG
 			string AutoLaunch = @"RdtBase.bflyt";
 			if (!File.Exists(AutoLaunch)) return;
-			EditorView editorView = new EditorView(new BFLYT(File.ReadAllBytes(AutoLaunch)));
-			OpenForm(editorView);
+			OpenFile(File.ReadAllBytes(AutoLaunch), AutoLaunch);
 #endif
 		}
 
@@ -54,7 +47,7 @@ namespace BflytPreview
 		{
 			BinaryDataReader bin = new BinaryDataReader(new MemoryStream(File));
 			string Magic = bin.ReadString(4);
-			if (Magic == "YAZ0")
+			if (Magic == "Yaz0")
 			{
 				return OpenFile(ManagedYaz0.Decompress(File),name);
 			}

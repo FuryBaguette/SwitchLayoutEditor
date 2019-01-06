@@ -212,5 +212,12 @@ namespace BflytPreview.EditorForms
 		{
 			_parentArch.SaveToArchive(PackArchive(), this);
 		}
+
+		private void SzsEditor_Click(object sender, EventArgs e)
+		{
+			this.Activate();
+			this.BringToFront();
+			this.Focus();
+		}
 	}
 }
