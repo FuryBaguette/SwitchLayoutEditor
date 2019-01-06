@@ -23,6 +23,9 @@ namespace BflytPreview
 
 		double zoomFactor => zoomSlider.Value / 10f;
 
+        float x = 640, y = -360;
+        private Point firstPoint = new Point();
+
         OpenTK.GLControl glControl;
 
         public EditorView(BFLYT _layout)
@@ -39,8 +42,10 @@ namespace BflytPreview
 			glControl.KeyDown += new KeyEventHandler(glControl_KeyDown);
 			glControl.KeyUp += new KeyEventHandler(glControl_KeyUp);
 			glControl.Resize += new EventHandler(glControl_Resize);
-			glControl.Paint += GlControl_Paint;
-		}
+            glControl.Paint += GlControl_Paint;
+            glControl.MouseDown += glControl_MouseDown;
+            glControl.MouseMove += glControl_MouseMove;
+        }
 
 		#region OnLoad
 
@@ -106,7 +111,7 @@ namespace BflytPreview
 		private void GlControl_Paint(object sender, PaintEventArgs e)
 		{
 			Render();
-		}
+        }
 
 		#endregion
 
@@ -164,7 +169,7 @@ namespace BflytPreview
             }
 
             GL.Scale(1 * zoomFactor, -1 * zoomFactor, 1);
-            GL.Translate(640, -360, 0);
+            GL.Translate(x, y, 0);
             RecursiveRenderPane((BFLYT.EditablePane)layout.RootPane);
 
 			if (DrawOnTop != null)
@@ -302,5 +307,56 @@ namespace BflytPreview
 		{
 			glControl.Invalidate();
 		}
-	}
+
+        private void SetupCursorXYZ(Point res)
+        {
+            x -= res.X;
+            y += res.Y;
+        }
+
+        private void SetupObjectXYZ(BFLYT.EditablePane p, Point res)
+        {
+            p.Position = new SwitchThemes.Common.Vector3(p.Position.X - res.X, p.Position.Y + res.Y, 0);
+        }
+
+        private void glControl_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left)
+                return;
+
+            firstPoint = Control.MousePosition;
+        }
+
+        private void glControl_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left)
+                return;
+
+            BFLYT.EditablePane target = null;
+            if (treeView1.SelectedNode != null)
+                target = treeView1.SelectedNode.Tag as BFLYT.EditablePane;
+
+            if (!ModifierKeys.HasFlag(Keys.Control) && target != null)
+            {
+                Point temp = Control.MousePosition;
+                Point res = new Point(firstPoint.X - temp.X, firstPoint.Y - temp.Y);
+
+                SetupObjectXYZ(target, res);
+
+                firstPoint = temp;
+                glControl.Invalidate();
+            }
+            else if (ModifierKeys.HasFlag(Keys.Control))
+            {
+                Point temp = Control.MousePosition;
+                Point res = new Point(firstPoint.X - temp.X, firstPoint.Y - temp.Y);
+                Console.WriteLine("moving view");
+
+                SetupCursorXYZ(res);
+
+                firstPoint = temp;
+                glControl.Invalidate();
+            }
+        }
+    }
 }
