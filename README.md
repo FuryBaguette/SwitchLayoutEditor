@@ -9,6 +9,8 @@ Bflyt files are commonly found in szs archives, when opening an SZS file you can
 - Layout loading and saving
 - Rendering the bounding boxes of the components
 - SZS editing
+- Drag and drop
+- Simultaneous file editing
 
 ## Screenshot
 ![](https://github.com/FuryBaguette/SwitchLayoutEditor/blob/master/Screenshot.png)
