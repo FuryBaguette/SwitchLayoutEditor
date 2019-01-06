@@ -38,6 +38,7 @@ namespace BflytPreview.EditorForms
 			else
 			{
 				listBox1.Items.AddRange(loadedSarc.Files.Keys.ToArray());
+				FormBringToFront();
 			}
 		}
 
@@ -58,17 +59,29 @@ namespace BflytPreview.EditorForms
 			loadedSarc.Files[SaveToArchiveList[form]] = Data;
 		}
 
+		public void EditorClosed(IFormSaveToArchive ChildForm)
+		{
+			var form = ChildForm as Form;
+			if (SaveToArchiveList.ContainsKey(form))
+				SaveToArchiveList.Remove(form);
+		}
+
 		private void SzsEditor_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			if (SaveToArchiveList.Count != 0)
 			{
-				if (MessageBox.Show("There are some editors opened from files of this SZS, this will close all of them and all the unsaved edits will be lost, do you want to continue ?", "", MessageBoxButtons.YesNo) == DialogResult.No)
+				if (MessageBox.Show("There are some files of this SZS opened, this will close all of them and all the unsaved edits will be lost, do you want to continue ?", this.Text, MessageBoxButtons.YesNo) == DialogResult.No)
 					e.Cancel = true;
 				else
 				{
-					foreach (var k in SaveToArchiveList.Keys)
+					var toClose = SaveToArchiveList.Keys.ToArray();
+					foreach (var k in toClose)
 						k.Close();
-					SaveToArchiveList.Clear();
+					if (SaveToArchiveList.Count != 0)
+					{
+						MessageBox.Show("Some child forms have not been closed");
+						e.Cancel = true;
+					}
 				}
 			}
 		}
@@ -167,6 +180,11 @@ namespace BflytPreview.EditorForms
 			if (listBox1.SelectedItem == null)
 				return;
 			var Fname = listBox1.SelectedItem.ToString();
+			if (SaveToArchiveList.Values.Contains(Fname))
+			{
+				MessageBox.Show("This file is already opened in another editor");
+				return;
+			}
 			var form = MainForm.OpenFile(loadedSarc.Files[Fname], Fname);
 			if (form is IFormSaveToArchive)
 			{
@@ -213,11 +231,20 @@ namespace BflytPreview.EditorForms
 			_parentArch.SaveToArchive(PackArchive(), this);
 		}
 
-		private void SzsEditor_Click(object sender, EventArgs e)
+		void FormBringToFront()
 		{
 			this.Activate();
 			this.BringToFront();
 			this.Focus();
+		}
+
+		private void SzsEditor_Click(object sender, EventArgs e) => FormBringToFront();
+		private void SzsEditor_LocationChanged(object sender, EventArgs e) => FormBringToFront();
+
+		private void SzsEditor_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			if (ParentArchive != null)
+				ParentArchive.EditorClosed(this);
 		}
 	}
 }

@@ -75,14 +75,14 @@
 			// saveBFLYTToolStripMenuItem
 			// 
 			this.saveBFLYTToolStripMenuItem.Name = "saveBFLYTToolStripMenuItem";
-			this.saveBFLYTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.saveBFLYTToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
 			this.saveBFLYTToolStripMenuItem.Text = "Save as...";
 			this.saveBFLYTToolStripMenuItem.Click += new System.EventHandler(this.saveBFLYTToolStripMenuItem_Click);
 			// 
 			// saveToSZSToolStripMenuItem
 			// 
 			this.saveToSZSToolStripMenuItem.Name = "saveToSZSToolStripMenuItem";
-			this.saveToSZSToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.saveToSZSToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
 			this.saveToSZSToolStripMenuItem.Text = "Save to SZS";
 			this.saveToSZSToolStripMenuItem.Visible = false;
 			this.saveToSZSToolStripMenuItem.Click += new System.EventHandler(this.saveToSZSToolStripMenuItem_Click);
@@ -190,6 +190,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "EditorView";
 			this.Text = "EditorView";
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.EditorView_FormClosed);
 			this.Load += new System.EventHandler(this.EditorView_Load);
 			this.Resize += new System.EventHandler(this.EditorView_Resize);
 			this.menuStrip1.ResumeLayout(false);

@@ -9,6 +9,7 @@ namespace BflytPreview.EditorForms
 	public interface IFileProvider
 	{
 		void SaveToArchive(byte[] Data, IFormSaveToArchive ChildForm);
+		void EditorClosed(IFormSaveToArchive ChildForm);
 	}
 
 	public interface IFormSaveToArchive

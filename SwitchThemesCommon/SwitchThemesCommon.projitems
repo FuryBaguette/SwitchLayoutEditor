@@ -9,7 +9,6 @@
     <Import_RootNamespace>SwitchThemesCommon</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Bflyt.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\Bntx.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\BntxxFormats.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\DDSEncoder.cs" />
@@ -17,10 +16,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)CustomBFLYT.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exten.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LayoutPatches.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)PatchTemplate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Sarc\SARC.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Sarc\Yaz0.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SwitchThemesCommon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\BinaryDataFormats.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\BinaryDataReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\BinaryDataWriter.cs" />

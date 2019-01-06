@@ -175,6 +175,7 @@
 			// 
 			// pnlSubSystem
 			// 
+			this.pnlSubSystem.AllowDrop = true;
 			this.pnlSubSystem.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -182,6 +183,8 @@
 			this.pnlSubSystem.Name = "pnlSubSystem";
 			this.pnlSubSystem.Size = new System.Drawing.Size(672, 424);
 			this.pnlSubSystem.TabIndex = 5;
+			this.pnlSubSystem.DragDrop += new System.Windows.Forms.DragEventHandler(this.pnlSubSystem_DragDrop);
+			this.pnlSubSystem.DragEnter += new System.Windows.Forms.DragEventHandler(this.pnlSubSystem_DragEnter);
 			// 
 			// Form1
 			// 

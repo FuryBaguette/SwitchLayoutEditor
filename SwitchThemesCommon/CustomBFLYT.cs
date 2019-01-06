@@ -21,7 +21,7 @@ namespace SwitchThemes.Common.Custom
 
 			public override string ToString()
 			{
-				return $"Pane {name} len: 0x{length.ToString("X")}";
+				return $"[Unknown pane type: {name}]";
 			}
 
 			public readonly string name;
@@ -210,7 +210,7 @@ namespace SwitchThemes.Common.Custom
 
 			public override string ToString()
 			{
-				return $"Pane {name} {PaneName}";
+				return $"{PaneName} [{name}]";
 			}
 
 			byte _flag1;

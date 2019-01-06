@@ -44,11 +44,12 @@ namespace BflytPreview
             glControl.Paint += GlControl_Paint;
             glControl.MouseDown += glControl_MouseDown;
             glControl.MouseMove += glControl_MouseMove;
+			glControl.MouseUp += GlControl_MouseUp;
         }
 
-        #region OnLoad
+		#region OnLoad
 
-        private void EditorView_Load(object sender, System.EventArgs e)
+		private void EditorView_Load(object sender, System.EventArgs e)
 		{
 			BringToFront();
 			glControl_Resize(glControl, EventArgs.Empty);
@@ -162,9 +163,9 @@ namespace BflytPreview
 			
 			GL.Scale(1 * zoomFactor, -1 * zoomFactor, 1);
             GL.Translate(x, y, 0);
-			DrawPane(new BFLYT.CusRectangle(-1280/2, -720/2, 1280, 720), Color.LightGreen);
 
 			RecursiveRenderPane((BFLYT.EditablePane)layout.RootPane);
+			DrawPane(new BFLYT.CusRectangle(-1280 / 2, -720 / 2, 1280, 720), Color.LightGreen);
 
 			if (DrawOnTop != null)
 			{
@@ -241,7 +242,7 @@ namespace BflytPreview
 
         void RecursiveAddNode(BFLYT.BasePane p, TreeNodeCollection node)
         {
-            var TargetNode = node.Add(p.ToString().Split(' ').Last());
+            var TargetNode = node.Add(p.ToString());
             TargetNode.Tag = p;
             foreach (var c in p.Children)
                 RecursiveAddNode(c, TargetNode.Nodes);
@@ -328,7 +329,7 @@ namespace BflytPreview
 				"-Moving the view: to move the view just click anywhere in the canvas and drag the canvas\n" +
 				"-Zoom: To increase or reduce the zoom level use the trackbar on the bottom left\n" +
 				"-Dragging objects: First select an object in the tree view, it will be se highlighted in red, then keeping CTRL pressed drag it with the cursor in the canvas\n" +
-				"-The green box: The green box represents the screen bounds, it's always at (0,0) and has the screen size. It may be hidden by other objects");
+				"-The green box: The green box represents the screen bounds, it's always at (0,0) and has the screen size.");
 		}
 
 		private void saveToSZSToolStripMenuItem_Click(object sender, EventArgs e)
@@ -339,6 +340,13 @@ namespace BflytPreview
 			_parentArch.SaveToArchive(layout.SaveFile(), this);
 		}
 
+		private void EditorView_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			if (ParentArchive != null)
+				ParentArchive.EditorClosed(this);
+		}
+
+		bool DraggedObject = false;
 		private void glControl_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left)
@@ -356,7 +364,8 @@ namespace BflytPreview
                 SetupObjectXYZ(target, res);
 
                 firstPoint = temp;
-                glControl.Invalidate();
+				DraggedObject = true;
+				glControl.Invalidate();
             }
             else if (!ModifierKeys.HasFlag(Keys.Control))
             {
@@ -369,5 +378,14 @@ namespace BflytPreview
                 glControl.Invalidate();
             }
         }
-    }
+		
+		private void GlControl_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (DraggedObject)
+			{
+				DraggedObject = false;
+				propertyGrid1.Refresh();
+			}
+		}
+	}
 }

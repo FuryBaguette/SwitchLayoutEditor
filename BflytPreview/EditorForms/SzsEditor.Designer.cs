@@ -206,7 +206,9 @@
 			this.Name = "SzsEditor";
 			this.Text = "Szs editor";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SzsEditor_FormClosing);
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SzsEditor_FormClosed);
 			this.Load += new System.EventHandler(this.SzsEditor_Load);
+			this.LocationChanged += new System.EventHandler(this.SzsEditor_LocationChanged);
 			this.Click += new System.EventHandler(this.SzsEditor_Click);
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);

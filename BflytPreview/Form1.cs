@@ -11,23 +11,23 @@ namespace BflytPreview
 {
 	public partial class Form1 : Form
 	{
-        public Form1()
+		public Form1()
 		{
-			TypeDescriptor.AddAttributes(typeof(Vector3),new TypeConverterAttribute(typeof(Vector3Converter)));
+			TypeDescriptor.AddAttributes(typeof(Vector3), new TypeConverterAttribute(typeof(Vector3Converter)));
 			TypeDescriptor.AddAttributes(typeof(Vector2), new TypeConverterAttribute(typeof(Vector2Converter)));
 
 			InitializeComponent();
-        }
+		}
 
-        private void openBFLYTToolStripMenuItem_Click(object sender, EventArgs e)
+		private void openBFLYTToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog opn = new OpenFileDialog() { Filter = "Supported files (bflyt,szs)|*.bflyt;*.szs|All files|*.*"};
+			OpenFileDialog opn = new OpenFileDialog() { Filter = "Supported files (bflyt,szs)|*.bflyt;*.szs|All files|*.*" };
 			if (opn.ShowDialog() != DialogResult.OK) return;
 			OpenFile(File.ReadAllBytes(opn.FileName), opn.FileName);
 		}
 
-        private void Form1_Load(object sender, System.EventArgs e)
-        {
+		private void Form1_Load(object sender, System.EventArgs e)
+		{
 #if DEBUG
 			string AutoLaunch = @"RdtBase.bflyt";
 			if (!File.Exists(AutoLaunch)) return;
@@ -49,25 +49,39 @@ namespace BflytPreview
 			string Magic = bin.ReadString(4);
 			if (Magic == "Yaz0")
 			{
-				return OpenFile(ManagedYaz0.Decompress(File),name);
+				return OpenFile(ManagedYaz0.Decompress(File), name);
 			}
 			else if (Magic == "SARC")
 			{
-				var f = new EditorForms.SzsEditor(SARCExt.SARC.UnpackRamN(File),this);
+				var f = new EditorForms.SzsEditor(SARCExt.SARC.UnpackRamN(File), this);
+				f.Text = name;
 				OpenForm(f);
 				return f;
 			}
 			else if (Magic == "FLYT")
 			{
 				EditorView editorView = new EditorView(new BFLYT(File));
+				editorView.Text = name;
 				OpenForm(editorView);
 				return editorView;
 			}
 			return null;
 		}
-    }
 
-    public class Vector3Converter : System.ComponentModel.TypeConverter
+		private void pnlSubSystem_DragEnter(object sender, DragEventArgs e) 
+		{if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;}	
+
+		private void pnlSubSystem_DragDrop(object sender, DragEventArgs e)
+		{
+			string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+			foreach (string file in files)
+			{
+				OpenFile(File.ReadAllBytes(file), file);
+			}
+		}
+	}
+
+	public class Vector3Converter : System.ComponentModel.TypeConverter
 	{
 		public override bool GetPropertiesSupported(ITypeDescriptorContext context) => true;
 
