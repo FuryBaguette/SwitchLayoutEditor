@@ -3,11 +3,12 @@ This program can edit and render bflyt files commonly used for layout in switch 
 
 ## Usage
 Just launch the exe and open a bflyt file. \
-Bflyt files are commonly found in szs archives, you can unpack them with tools such as sarc_tool.
+Bflyt files are commonly found in szs archives, when opening an SZS file you can double click on the files in the list to edit them (if they're supported). 
 
 ## Features
 - Layout loading and saving
 - Rendering the bounding boxes of the components
+- SZS editing
 
 ## Screenshot
 ![](https://github.com/FuryBaguette/SwitchLayoutEditor/blob/master/Screenshot.png)
