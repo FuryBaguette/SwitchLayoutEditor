@@ -97,6 +97,7 @@ namespace BflytPreview
 
 		private void GlControl_Paint(object sender, PaintEventArgs e)
 		{
+            this.glControl.Context.MakeCurrent(this.glControl.WindowInfo);
 			Render();
         }
 
