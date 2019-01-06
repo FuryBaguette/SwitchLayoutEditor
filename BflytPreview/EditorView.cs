@@ -2,18 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using SwitchThemes.Common.Custom;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Platform;
 
 namespace BflytPreview
 {
@@ -40,16 +36,15 @@ namespace BflytPreview
             glControl.Dock = DockStyle.Fill;
 			panel1.Controls.Add(glControl);
 			glControl.KeyDown += new KeyEventHandler(glControl_KeyDown);
-			glControl.KeyUp += new KeyEventHandler(glControl_KeyUp);
 			glControl.Resize += new EventHandler(glControl_Resize);
             glControl.Paint += GlControl_Paint;
             glControl.MouseDown += glControl_MouseDown;
             glControl.MouseMove += glControl_MouseMove;
         }
 
-		#region OnLoad
+        #region OnLoad
 
-		private void EditorView_Load(object sender, System.EventArgs e)
+        private void EditorView_Load(object sender, System.EventArgs e)
 		{
 			BringToFront();
 			glControl_Resize(glControl, EventArgs.Empty);
@@ -57,19 +52,11 @@ namespace BflytPreview
 			UpdateView();
 			Render();
 
-			Text =
+			/*Text =
 				GL.GetString(StringName.Vendor) + " " +
 				GL.GetString(StringName.Renderer) + " " +
-				GL.GetString(StringName.Version);
+				GL.GetString(StringName.Version);*/
 		}
-
-		void glControl_KeyUp(object sender, KeyEventArgs e)
-        {
-            /*if (e.KeyCode == Keys.F12)
-            {
-                
-            }*/
-        }
 
         #endregion
 
@@ -96,12 +83,12 @@ namespace BflytPreview
 
         void glControl_KeyDown(object sender, KeyEventArgs e)
         {
-            switch (e.KeyData)
+            /*switch (e.KeyData)
             {
                 case Keys.Escape:
                     this.Close();
                     break;
-            }
+            }*/
         }
 
 		#endregion
@@ -350,7 +337,6 @@ namespace BflytPreview
             {
                 Point temp = Control.MousePosition;
                 Point res = new Point(firstPoint.X - temp.X, firstPoint.Y - temp.Y);
-                Console.WriteLine("moving view");
 
                 SetupCursorXYZ(res);
 

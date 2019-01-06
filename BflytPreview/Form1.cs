@@ -2,13 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using SwitchThemes.Common.Custom;
 
@@ -29,7 +23,7 @@ namespace BflytPreview
 			OpenFileDialog opn = new OpenFileDialog() { Filter = "Binary layout file (*.bflyt)|*.bflyt"};
 			if (opn.ShowDialog() != DialogResult.OK) return;
             EditorView editorView = new EditorView(new BFLYT(File.ReadAllBytes(opn.FileName)));
-			OpenForm(editorView);
+			OpenForm(editorView, opn.FileName);
 		}
 
         private void Form1_Load(object sender, System.EventArgs e)
@@ -38,15 +32,16 @@ namespace BflytPreview
 			string AutoLaunch = @"RdtBase.bflyt";
 			if (!File.Exists(AutoLaunch)) return;
 			EditorView editorView = new EditorView(new BFLYT(File.ReadAllBytes(AutoLaunch)));
-			OpenForm(editorView);
+			OpenForm(editorView, "RdtBase.bflyt");
 #endif
 		}
 
-		public void OpenForm(Form f)
+		public void OpenForm(Form f, string name)
 		{
 			this.IsMdiContainer = true;
 			f.TopLevel = false;
 			f.Parent = pnlSubSystem;
+            f.Text = name;
 			f.Show();
 		}
     }
