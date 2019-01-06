@@ -32,6 +32,8 @@
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveBFLYTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveToSZSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
 			this.treeView1 = new System.Windows.Forms.TreeView();
@@ -53,7 +55,8 @@
 			// menuStrip1
 			// 
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.helpToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(800, 24);
@@ -63,7 +66,8 @@
 			// fileToolStripMenuItem
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveBFLYTToolStripMenuItem});
+            this.saveBFLYTToolStripMenuItem,
+            this.saveToSZSToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "File";
@@ -71,9 +75,24 @@
 			// saveBFLYTToolStripMenuItem
 			// 
 			this.saveBFLYTToolStripMenuItem.Name = "saveBFLYTToolStripMenuItem";
-			this.saveBFLYTToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
-			this.saveBFLYTToolStripMenuItem.Text = "Save BFLYT";
+			this.saveBFLYTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.saveBFLYTToolStripMenuItem.Text = "Save as...";
 			this.saveBFLYTToolStripMenuItem.Click += new System.EventHandler(this.saveBFLYTToolStripMenuItem_Click);
+			// 
+			// saveToSZSToolStripMenuItem
+			// 
+			this.saveToSZSToolStripMenuItem.Name = "saveToSZSToolStripMenuItem";
+			this.saveToSZSToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.saveToSZSToolStripMenuItem.Text = "Save to SZS";
+			this.saveToSZSToolStripMenuItem.Visible = false;
+			this.saveToSZSToolStripMenuItem.Click += new System.EventHandler(this.saveToSZSToolStripMenuItem_Click);
+			// 
+			// helpToolStripMenuItem
+			// 
+			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+			this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+			this.helpToolStripMenuItem.Text = "Help";
+			this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
 			// 
 			// splitContainer1
 			// 
@@ -200,5 +219,7 @@
         private System.Windows.Forms.TrackBar zoomSlider;
         private System.Windows.Forms.PropertyGrid propertyGrid1;
         private System.Windows.Forms.Panel panel1;
-    }
+		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveToSZSToolStripMenuItem;
+	}
 }

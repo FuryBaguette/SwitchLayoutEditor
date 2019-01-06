@@ -14,12 +14,15 @@ using SwitchThemes.Common.Custom;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Platform;
+using BflytPreview.EditorForms;
 
 namespace BflytPreview
 {
-    public partial class EditorView : Form
+    public partial class EditorView : Form, IFormSaveToArchive
     {
 		BFLYT layout;
+		IFileProvider _parentArch;
+		public IFileProvider ParentArchive { get => _parentArch; set { _parentArch = value; saveToSZSToolStripMenuItem.Visible = _parentArch != null; } }
 
 		double zoomFactor => zoomSlider.Value / 10f;
 
@@ -32,8 +35,8 @@ namespace BflytPreview
         {
             TypeDescriptor.AddAttributes(typeof(SwitchThemes.Common.Vector3), new TypeConverterAttribute(typeof(Vector3Converter)));
             TypeDescriptor.AddAttributes(typeof(SwitchThemes.Common.Vector2), new TypeConverterAttribute(typeof(Vector2Converter)));
-
-            InitializeComponent();
+			
+			InitializeComponent();
 			layout = _layout;
 
 			glControl = new OpenTK.GLControl();
@@ -127,7 +130,7 @@ namespace BflytPreview
 
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 			GL.ClearColor(160/255f, 160 / 255f, 160 / 255f, 1); //Control dark color
-
+						
 			RenderPanes();
             
             glControl.SwapBuffers();
@@ -167,10 +170,12 @@ namespace BflytPreview
                     RecursiveRenderPane((BFLYT.EditablePane)c);
 				GL.PopMatrix();
             }
-
-            GL.Scale(1 * zoomFactor, -1 * zoomFactor, 1);
+			
+			GL.Scale(1 * zoomFactor, -1 * zoomFactor, 1);
             GL.Translate(x, y, 0);
-            RecursiveRenderPane((BFLYT.EditablePane)layout.RootPane);
+			DrawPane(new BFLYT.CusRectangle(-1280/2, -720/2, 1280, 720), Color.LightGreen);
+
+			RecursiveRenderPane((BFLYT.EditablePane)layout.RootPane);
 
 			if (DrawOnTop != null)
 			{
@@ -327,7 +332,25 @@ namespace BflytPreview
             firstPoint = Control.MousePosition;
         }
 
-        private void glControl_MouseMove(object sender, MouseEventArgs e)
+		private void helpToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			MessageBox.Show(
+				"Quick gude:\n" +
+				"-Moving the view: to move the view just click anywhere in the canvas and drag the canvas\n" +
+				"-Zoom: To increase or reduce the zoom level use the trackbar on the bottom left\n" +
+				"-Dragging objects: First select an object in the tree view, it will be se highlighted in red, then keeping CTRL pressed drag it with the cursor in the canvas\n" +
+				"-The green box: The green box represents the screen bounds, it's always at (0,0) and has the screen size. It may be hidden by other objects");
+		}
+
+		private void saveToSZSToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			foreach (var p in layout.Panes.Where(x => x is BFLYT.EditablePane))
+				((BFLYT.EditablePane)p).ApplyChanges(layout.FileByteOrder);
+
+			_parentArch.SaveToArchive(layout.SaveFile(), this);
+		}
+
+		private void glControl_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left)
                 return;
@@ -336,7 +359,7 @@ namespace BflytPreview
             if (treeView1.SelectedNode != null)
                 target = treeView1.SelectedNode.Tag as BFLYT.EditablePane;
 
-            if (!ModifierKeys.HasFlag(Keys.Control) && target != null)
+            if (ModifierKeys.HasFlag(Keys.Control) && target != null)
             {
                 Point temp = Control.MousePosition;
                 Point res = new Point(firstPoint.X - temp.X, firstPoint.Y - temp.Y);
@@ -346,11 +369,11 @@ namespace BflytPreview
                 firstPoint = temp;
                 glControl.Invalidate();
             }
-            else if (ModifierKeys.HasFlag(Keys.Control))
+            else if (!ModifierKeys.HasFlag(Keys.Control))
             {
                 Point temp = Control.MousePosition;
                 Point res = new Point(firstPoint.X - temp.X, firstPoint.Y - temp.Y);
-                Console.WriteLine("moving view");
+               // Console.WriteLine("moving view");
 
                 SetupCursorXYZ(res);
 

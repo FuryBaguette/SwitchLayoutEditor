@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SwitchThemes.Common.Custom;
+using Syroot.BinaryData;
 
 namespace BflytPreview
 {
@@ -26,10 +27,9 @@ namespace BflytPreview
 
         private void openBFLYTToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog opn = new OpenFileDialog() { Filter = "Binary layout file (*.bflyt)|*.bflyt"};
+			OpenFileDialog opn = new OpenFileDialog() { Filter = "Supported files (bflyt,szs)|*.bflyt;*.szs|All files|*.*"};
 			if (opn.ShowDialog() != DialogResult.OK) return;
-            EditorView editorView = new EditorView(new BFLYT(File.ReadAllBytes(opn.FileName)));
-			OpenForm(editorView);
+			OpenFile(File.ReadAllBytes(opn.FileName), opn.FileName);
 		}
 
         private void Form1_Load(object sender, System.EventArgs e)
@@ -48,6 +48,29 @@ namespace BflytPreview
 			f.TopLevel = false;
 			f.Parent = pnlSubSystem;
 			f.Show();
+		}
+
+		public Form OpenFile(byte[] File, string name)
+		{
+			BinaryDataReader bin = new BinaryDataReader(new MemoryStream(File));
+			string Magic = bin.ReadString(4);
+			if (Magic == "YAZ0")
+			{
+				return OpenFile(ManagedYaz0.Decompress(File),name);
+			}
+			else if (Magic == "SARC")
+			{
+				var f = new EditorForms.SzsEditor(SARCExt.SARC.UnpackRamN(File),this);
+				OpenForm(f);
+				return f;
+			}
+			else if (Magic == "FLYT")
+			{
+				EditorView editorView = new EditorView(new BFLYT(File));
+				OpenForm(editorView);
+				return editorView;
+			}
+			return null;
 		}
     }
 

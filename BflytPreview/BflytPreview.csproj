@@ -95,6 +95,8 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditorForms\IFileProvider.cs" />
+    <Compile Include="EditorForms\InputDialog.cs" />
     <Compile Include="EditorForms\SzsEditor.cs">
       <SubType>Form</SubType>
     </Compile>

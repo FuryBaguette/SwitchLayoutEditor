@@ -39,8 +39,8 @@
 			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.saveSzsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.replaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveToSzsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.extractAllFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
@@ -63,6 +63,7 @@
 			this.listBox1.Size = new System.Drawing.Size(293, 212);
 			this.listBox1.Sorted = true;
 			this.listBox1.TabIndex = 4;
+			this.listBox1.DoubleClick += new System.EventHandler(this.listBox1_DoubleClick);
 			// 
 			// contextMenuStrip1
 			// 
@@ -81,24 +82,28 @@
 			this.copyNameToolStripMenuItem.Name = "copyNameToolStripMenuItem";
 			this.copyNameToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.copyNameToolStripMenuItem.Text = "Copy name";
+			this.copyNameToolStripMenuItem.Click += new System.EventHandler(this.copyNameToolStripMenuItem_Click);
 			// 
 			// renameToolStripMenuItem
 			// 
 			this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
 			this.renameToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.renameToolStripMenuItem.Text = "Rename";
+			this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
 			// 
 			// extractToolStripMenuItem
 			// 
 			this.extractToolStripMenuItem.Name = "extractToolStripMenuItem";
 			this.extractToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.extractToolStripMenuItem.Text = "Extract";
+			this.extractToolStripMenuItem.Click += new System.EventHandler(this.extractToolStripMenuItem_Click);
 			// 
 			// replaceToolStripMenuItem1
 			// 
 			this.replaceToolStripMenuItem1.Name = "replaceToolStripMenuItem1";
 			this.replaceToolStripMenuItem1.Size = new System.Drawing.Size(135, 22);
 			this.replaceToolStripMenuItem1.Text = "Replace";
+			this.replaceToolStripMenuItem1.Click += new System.EventHandler(this.replaceToolStripMenuItem1_Click);
 			// 
 			// toolStripSeparator1
 			// 
@@ -110,6 +115,7 @@
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
 			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.deleteToolStripMenuItem.Text = "Delete";
+			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
 			// 
 			// menuStrip1
 			// 
@@ -126,35 +132,39 @@
 			// saveSzsToolStripMenuItem
 			// 
 			this.saveSzsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.replaceToolStripMenuItem,
-            this.saveAsToolStripMenuItem});
+            this.saveAsToolStripMenuItem,
+            this.saveToSzsToolStripMenuItem});
 			this.saveSzsToolStripMenuItem.Name = "saveSzsToolStripMenuItem";
 			this.saveSzsToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
 			this.saveSzsToolStripMenuItem.Text = "Save";
 			// 
-			// replaceToolStripMenuItem
-			// 
-			this.replaceToolStripMenuItem.Name = "replaceToolStripMenuItem";
-			this.replaceToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
-			this.replaceToolStripMenuItem.Text = "Replace";
-			// 
 			// saveAsToolStripMenuItem
 			// 
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.saveAsToolStripMenuItem.Text = "Save as..";
+			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
+			// 
+			// saveToSzsToolStripMenuItem
+			// 
+			this.saveToSzsToolStripMenuItem.Name = "saveToSzsToolStripMenuItem";
+			this.saveToSzsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.saveToSzsToolStripMenuItem.Text = "Save to Szs";
+			this.saveToSzsToolStripMenuItem.Click += new System.EventHandler(this.saveToSzsToolStripMenuItem_Click);
 			// 
 			// addFilesToolStripMenuItem
 			// 
 			this.addFilesToolStripMenuItem.Name = "addFilesToolStripMenuItem";
 			this.addFilesToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
 			this.addFilesToolStripMenuItem.Text = "Add files";
+			this.addFilesToolStripMenuItem.Click += new System.EventHandler(this.addFilesToolStripMenuItem_Click);
 			// 
 			// extractAllFilesToolStripMenuItem
 			// 
 			this.extractAllFilesToolStripMenuItem.Name = "extractAllFilesToolStripMenuItem";
 			this.extractAllFilesToolStripMenuItem.Size = new System.Drawing.Size(93, 20);
 			this.extractAllFilesToolStripMenuItem.Text = "Extract all files";
+			this.extractAllFilesToolStripMenuItem.Click += new System.EventHandler(this.extractAllFilesToolStripMenuItem_Click);
 			// 
 			// numericUpDown1
 			// 
@@ -194,7 +204,9 @@
 			this.Controls.Add(this.numericUpDown1);
 			this.Controls.Add(this.label1);
 			this.Name = "SzsEditor";
-			this.Text = "SzsEditor";
+			this.Text = "Szs editor";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SzsEditor_FormClosing);
+			this.Load += new System.EventHandler(this.SzsEditor_Load);
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
@@ -216,11 +228,11 @@
 		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem saveSzsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem replaceToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem addFilesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem extractAllFilesToolStripMenuItem;
 		private System.Windows.Forms.NumericUpDown numericUpDown1;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.ToolStripMenuItem saveToSzsToolStripMenuItem;
 	}
 }
