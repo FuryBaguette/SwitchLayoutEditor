@@ -321,7 +321,7 @@ namespace SwitchThemes.Common.Custom
 				//{
 				//	dataReader.BaseStream.Position = 0x54 - 8;
 				//	ColorData = dataReader.ReadUInt32s(4);
-				//}
+                //}
 			}
 
 			public void ApplyChanges(ByteOrder order)
@@ -357,7 +357,7 @@ namespace SwitchThemes.Common.Custom
 			}
 		}
 
-		public class TextureSection : BasePane
+        public class TextureSection : BasePane
 		{
 			public List<string> Textures = new List<string>();
 			public TextureSection(BinaryDataReader bin) : base("txl1", bin)

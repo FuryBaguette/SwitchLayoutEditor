@@ -19,9 +19,9 @@ namespace BflytPreview.EditorForms
 		public IFileProvider ParentArchive { get => _parentArch; set { _parentArch = value; saveToSzsToolStripMenuItem.Visible = _parentArch != null; } }
 
 		SARCExt.SarcData loadedSarc;
-		Form1 MainForm;
+        Form1 MainForm;
 
-		public SzsEditor(SARCExt.SarcData _sarc, Form1 _parentForm)
+        public SzsEditor(SARCExt.SarcData _sarc, Form1 _parentForm)
 		{
 			InitializeComponent();
 			loadedSarc = _sarc;
@@ -246,5 +246,5 @@ namespace BflytPreview.EditorForms
 			if (ParentArchive != null)
 				ParentArchive.EditorClosed(this);
 		}
-	}
+    }
 }
