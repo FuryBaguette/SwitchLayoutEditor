@@ -66,6 +66,7 @@
       <HintPath>..\packages\System.ComponentModel.Primitives.4.1.0\lib\net45\System.ComponentModel.Primitives.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
     <Reference Include="System.IO.FileSystem, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.FileSystem.4.0.1\lib\net46\System.IO.FileSystem.dll</HintPath>
     </Reference>
@@ -99,6 +100,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditorForms\HexEditorForm.cs" />
     <Compile Include="EditorForms\IFileProvider.cs" />
     <Compile Include="EditorForms\InputDialog.cs" />
     <Compile Include="EditorForms\SzsEditor.cs">

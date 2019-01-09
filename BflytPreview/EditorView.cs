@@ -272,12 +272,18 @@ namespace BflytPreview
 
         private void treeView1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.H)
-            {
-                var target = treeView1.SelectedNode.Tag as BFLYT.EditablePane;
-                if (target == null) return;
-                target.ViewInEditor = !target.ViewInEditor;
+			if (e.KeyCode == Keys.H)
+			{
+				var target = treeView1.SelectedNode.Tag as BFLYT.EditablePane;
+				if (target == null) return;
+				target.ViewInEditor = !target.ViewInEditor;
 				glControl.Invalidate();
+			}
+			else if (e.KeyCode == Keys.Q)
+			{
+				var target = treeView1.SelectedNode.Tag as BFLYT.BasePane;
+				if (target == null) return;
+				HexEditorForm.Show(target.data);
 			}
         }
 
