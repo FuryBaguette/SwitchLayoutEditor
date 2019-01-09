@@ -35,10 +35,8 @@ namespace SwitchThemes.Common
 			{
 				DefaultValueHandling = DefaultValueHandling.Ignore,
 				NullValueHandling = NullValueHandling.Ignore,
-#if WIN
 				Formatting = Formatting.Indented,
 				ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-#endif
 			};
 			return JsonConvert.SerializeObject(this, settings);
 		}

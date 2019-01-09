@@ -13,6 +13,12 @@ namespace SwitchThemes.Common.Custom
 {
 	public class BFLYT
 	{
+		public BasePane this[int index]
+		{
+			get => Panes[index];
+			set => Panes[index] = value;
+		}
+
 		public ByteOrder FileByteOrder;
 		public class BasePane
 		{

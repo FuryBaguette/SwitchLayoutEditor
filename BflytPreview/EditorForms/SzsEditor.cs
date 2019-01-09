@@ -246,5 +246,11 @@ namespace BflytPreview.EditorForms
 			if (ParentArchive != null)
 				ParentArchive.EditorClosed(this);
 		}
-    }
+
+		private void thisFileIsTheOriginalSzsToolStripMenuItem_Click(object sender, EventArgs e)
+			=> new LayoutDiffForm(loadedSarc, null).ShowDialog();
+
+		private void thisFileIsTheEditedSzsToolStripMenuItem_Click(object sender, EventArgs e)
+			=> new LayoutDiffForm(null, loadedSarc).ShowDialog();
+	}
 }

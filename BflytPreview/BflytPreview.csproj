@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -103,6 +103,12 @@
     <Compile Include="EditorForms\HexEditorForm.cs" />
     <Compile Include="EditorForms\IFileProvider.cs" />
     <Compile Include="EditorForms\InputDialog.cs" />
+    <Compile Include="EditorForms\LayoutDiffForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditorForms\LayoutDiffForm.Designer.cs">
+      <DependentUpon>LayoutDiffForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="EditorForms\SzsEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -121,8 +127,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="EditorForms\LayoutDiff.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="EditorForms\LayoutDiffForm.resx">
+      <DependentUpon>LayoutDiffForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EditorForms\SzsEditor.resx">
       <DependentUpon>SzsEditor.cs</DependentUpon>
     </EmbeddedResource>

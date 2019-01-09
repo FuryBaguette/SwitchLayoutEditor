@@ -79,6 +79,9 @@ namespace BflytPreview
 				OpenFile(File.ReadAllBytes(file), file);
 			}
 		}
+
+		private void layoutDiffToolStripMenuItem_Click(object sender, EventArgs e)
+			=> new EditorForms.LayoutDiffForm().Show();
 	}
 
 	public class Vector3Converter : System.ComponentModel.TypeConverter
