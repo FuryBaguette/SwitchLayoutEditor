@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ExtensionMethods;
 using SARCExt;
 using SwitchThemes.Common;
 using SwitchThemes.Common.Custom;
@@ -53,17 +54,19 @@ namespace SwitchThemes
 						curPatch.Size = ToNullVec(edPan.Size);
 					if (edPan.Visible != orPan.Visible)
 						curPatch.Visible = edPan.Visible;
-					//if (edPan.name == "pic1")
-					//{
-					//	if (edPan.ColorData[0] != orPan.ColorData[0])
-					//		curPatch.ColorTL = edPan.ColorData[0].ToString("X");
-					//	if (edPan.ColorData[1] != orPan.ColorData[1])
-					//		curPatch.ColorTR = edPan.ColorData[1].ToString("X");
-					//	if (edPan.ColorData[2] != orPan.ColorData[2])
-					//		curPatch.ColorBL = edPan.ColorData[2].ToString("X");
-					//	if (edPan.ColorData[3] != orPan.ColorData[3])
-					//		curPatch.ColorBR = edPan.ColorData[3].ToString("X");
-					//}
+					if (edPan is Pic1Pane && orPan is Pic1Pane)
+					{
+						var edPic = (Pic1Pane)edPan;
+						var orPic = (Pic1Pane)orPan;
+						if (edPic.ColorTopLeft != orPic.ColorTopLeft)
+							curPatch.ColorTL = edPic.ColorTopLeft.ToHexRGBA();
+						if (edPic.ColorTopRight != orPic.ColorTopRight)
+							curPatch.ColorTR = edPic.ColorTopRight.ToHexRGBA();
+						if (edPic.ColorBottomLeft != orPic.ColorBottomLeft)
+							curPatch.ColorBL = edPic.ColorBottomLeft.ToHexRGBA();
+						if (edPic.ColorBottomRight != orPic.ColorBottomRight)
+							curPatch.ColorBR = edPic.ColorBottomRight.ToHexRGBA();
+					}
 					curFile.Add(curPatch);
 				}
 				if (curFile.Count > 0)

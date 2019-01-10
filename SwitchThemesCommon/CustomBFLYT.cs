@@ -117,45 +117,7 @@ namespace SwitchThemes.Common.Custom
                         (int)(Size.Y));
                 }
             }
-			////My attempt to calculate the box position manually, doesn't work.
-			//public Rectangle BoundingBox
-			//{
-			//	get 
-			//	{
-			//		if (Alpha == 0 || !ParentVisibility)
-			//			return new Rectangle(0, 0, 0, 0);
-
-			//		RectangleF ParentBox;
-			//		if (Parent != null && Parent is EditablePane)
-			//		{
-			//			ParentBox = ((EditablePane)Parent).BoundingBox;
-			//		}
-			//		else
-			//		{
-			//			ParentBox = new RectangleF(0, 0, 0, 0);
-			//		}
-
-			//		float ActualW = Size.X * Scale.X;
-			//		float ActualH = Size.Y * Scale.Y;
-
-			//		float RelativeX;
-			//		if (ParentOriginX == OriginX.Left) RelativeX = Position.X;
-			//		else if (ParentOriginX == OriginX.Right) RelativeX = ParentBox.Width + Position.X;
-			//		else RelativeX = ParentBox.Width / 2 + Position.X;
-
-			//		float RelativeY;
-			//		if (ParentOriginY == OriginY.Top) RelativeY = Position.Y;
-			//		else if (ParentOriginY == OriginY.Bottom) RelativeY = ParentBox.Height - Position.Y;
-			//		else RelativeY = ParentBox.Height / 2 + Position.Y;
-
-			//		return new Rectangle(
-			//			(int)((RelativeX + ParentBox.X) * ParentScale.X),
-			//			(int)((RelativeY + ParentBox.Y) * ParentScale.Y),
-			//			(int)(Size.X * ActualScale.X),
-			//			(int)(Size.Y * ActualScale.Y));
-			//	}
-			//}
-
+			
 			//This is not an actual property, it's just to hide it from the view
 			public bool ViewInEditor { get; set; } = true;
 
@@ -323,42 +285,32 @@ namespace SwitchThemes.Common.Custom
 				Rotation = dataReader.ReadVector3();
 				Scale = dataReader.ReadVector2();
 				Size = dataReader.ReadVector2();
-				//if (name == "pic1")
-				//{
-				//	dataReader.BaseStream.Position = 0x54 - 8;
-				//	ColorData = dataReader.ReadUInt32s(4);
-                //}
 			}
 
-			public void ApplyChanges(ByteOrder order)
+			protected virtual void ApplyChanges(BinaryDataWriter bin)
 			{
-				using (var mem = new MemoryStream())
-				{
-					BinaryDataWriter bin = new BinaryDataWriter(mem);
-					bin.ByteOrder = order;
-					bin.Write(data);
-					bin.BaseStream.Position = 0;
-					bin.Write(_flag1);
-					bin.Write(_flag2);
-					bin.Write(Alpha);
-					bin.Write(Unknown1);
-					bin.BaseStream.Position = 0x2C - 8;
-					bin.Write(Position);
-					bin.Write(Rotation);
-					bin.Write(Scale);
-					bin.Write(Size);
-					//if (name == "pic1")
-					//{
-					//	bin.BaseStream.Position = 0x54 - 8;
-					//	bin.Write(ColorData);
-					//}
-					data = mem.ToArray();
-				}
+				bin.Write(data);
+				bin.BaseStream.Position = 0;
+				bin.Write(_flag1);
+				bin.Write(_flag2);
+				bin.Write(Alpha);
+				bin.Write(Unknown1);
+				bin.BaseStream.Position = 0x2C - 8;
+				bin.Write(Position);
+				bin.Write(Rotation);
+				bin.Write(Scale);
+				bin.Write(Size);
 			}
 
 			public override void WritePane(BinaryDataWriter bin)
 			{
-				ApplyChanges(bin.ByteOrder);
+				using (var mem = new MemoryStream())
+				{
+					BinaryDataWriter dataWriter = new BinaryDataWriter(mem);
+					dataWriter.ByteOrder = bin.ByteOrder;
+					ApplyChanges(dataWriter);
+					data = mem.ToArray();
+				}
 				base.WritePane(bin);
 			}
 		}
@@ -543,7 +495,7 @@ namespace SwitchThemes.Common.Custom
 						break;
 					default:
 						var pane = new BasePane(name, bin);
-						Panes.Add(pane.data.Length >= 0x4C && name != "usd1" && name != "grp1" ? new EditablePane(pane, FileByteOrder) : pane);
+						Panes.Add(DetectProperPaneClass(pane));
 						if (CurrentParent != null)
 						{
 							CurrentParent.Children.Add(Panes.Last());
@@ -553,6 +505,19 @@ namespace SwitchThemes.Common.Custom
 							RootPane = CurrentParent = Panes.Last();
 						break;
 				}
+			}
+		}
+
+		BasePane DetectProperPaneClass(BasePane pane)
+		{
+			if (pane.data.Length < 0x4C || pane.name == "usd1" || pane.name == "grp1")
+				return pane;
+			switch (pane.name)
+			{
+				case "pic1":
+					return new Pic1Pane(pane, FileByteOrder);
+				default:
+					return new EditablePane(pane, FileByteOrder);
 			}
 		}
 	}

@@ -291,10 +291,7 @@ namespace BflytPreview
         {
             SaveFileDialog sav = new SaveFileDialog() { Filter = "Binary cafe layout (*.bflyt)|*.bflyt" };
             if (sav.ShowDialog() != DialogResult.OK) return;
-
-            foreach (var p in layout.Panes.Where(x => x is BFLYT.EditablePane))
-                ((BFLYT.EditablePane)p).ApplyChanges(layout.FileByteOrder);
-
+			
             File.WriteAllBytes(sav.FileName, layout.SaveFile());
         }
 
@@ -356,9 +353,6 @@ namespace BflytPreview
 
 		private void saveToSZSToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (var p in layout.Panes.Where(x => x is BFLYT.EditablePane))
-				((BFLYT.EditablePane)p).ApplyChanges(layout.FileByteOrder);
-
 			_parentArch.SaveToArchive(layout.SaveFile(), this);
 		}
 
