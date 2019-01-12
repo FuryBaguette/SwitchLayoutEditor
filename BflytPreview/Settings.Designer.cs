@@ -58,5 +58,29 @@ namespace BflytPreview {
                 this["OutlineColor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string BgFileName {
+            get {
+                return ((string)(this["BgFileName"]));
+            }
+            set {
+                this["BgFileName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowImage {
+            get {
+                return ((bool)(this["ShowImage"]));
+            }
+            set {
+                this["ShowImage"] = value;
+            }
+        }
     }
 }

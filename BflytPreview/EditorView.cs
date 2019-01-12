@@ -38,8 +38,10 @@ namespace BflytPreview
         {
             TypeDescriptor.AddAttributes(typeof(SwitchThemes.Common.Vector3), new TypeConverterAttribute(typeof(Vector3Converter)));
             TypeDescriptor.AddAttributes(typeof(SwitchThemes.Common.Vector2), new TypeConverterAttribute(typeof(Vector2Converter)));
-			
-			InitializeComponent();
+
+            KeyPreview = true;
+
+            InitializeComponent();
 			layout = _layout;
 
 			glControl = new OpenTK.GLControl();
@@ -135,7 +137,7 @@ namespace BflytPreview
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 			GL.ClearColor(160/255f, 160 / 255f, 160 / 255f, 1); //Control dark color
 
-            if (texture != 0)
+            if (texture != 0 && Settings.Default.ShowImage)
                 DrawBgImage();
 
             RenderPanes();
@@ -326,12 +328,17 @@ namespace BflytPreview
 			}
         }
 
-        private void saveBFLYTToolStripMenuItem_Click(object sender, EventArgs e)
+        void SaveBflyt()
         {
             SaveFileDialog sav = new SaveFileDialog() { Filter = "Binary cafe layout (*.bflyt)|*.bflyt" };
             if (sav.ShowDialog() != DialogResult.OK) return;
-			
+
             File.WriteAllBytes(sav.FileName, layout.SaveFile());
+        }
+
+        private void saveBFLYTToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveBflyt();
         }
 
         private void bringToFront()
@@ -399,6 +406,7 @@ namespace BflytPreview
 		{
 			if (ParentArchive != null)
 				ParentArchive.EditorClosed(this);
+            Settings.Default.ShowImage = false;
 		}
 
 		bool DraggedObject = false;
@@ -474,6 +482,16 @@ namespace BflytPreview
             set.Dispose();
         }
 
+        private void expandAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            treeView1.ExpandAll();
+        }
+
+        private void collapseAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            treeView1.CollapseAll();
+        }
+
         private void GlControl_MouseUp(object sender, MouseEventArgs e)
 		{
 			if (DraggedObject)
@@ -482,5 +500,13 @@ namespace BflytPreview
 				propertyGrid1.Refresh();
 			}
 		}
-	}
+
+        private void EditorView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.Shift && e.KeyCode == Keys.S) SaveBflyt();
+            else if (e.Control && e.KeyCode == Keys.S) _parentArch.SaveToArchive(layout.SaveFile(), this);
+            else if (e.Control && e.KeyCode == Keys.L) treeView1.ExpandAll();
+            else if (e.Control && e.KeyCode == Keys.K) treeView1.CollapseAll();
+        }
+    }
 }

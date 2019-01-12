@@ -22,6 +22,14 @@ namespace BflytPreview
             pickColor.BackColor = Settings.Default.PaneColor;
             selectedColor.BackColor = Settings.Default.SelectedColor;
             outlineColor.BackColor = Settings.Default.OutlineColor;
+            Console.WriteLine(Settings.Default.BgFileName);
+            if (!string.IsNullOrEmpty(Settings.Default.BgFileName))
+            {
+                pictureBox1.BackgroundImage = Image.FromFile(Settings.Default.BgFileName);
+                EditorView.texture = EditorView.LoadBgImage(Settings.Default.BgFileName, false, true);
+            }
+            if (Settings.Default.ShowImage)
+                showImg.Text = "Hide Image";
         }
 
         private void SettingsWindow_FormClosing(object sender, FormClosingEventArgs e)
@@ -29,6 +37,7 @@ namespace BflytPreview
 
             Settings.Default.PaneColor = pickColor.BackColor;
             Settings.Default.SelectedColor = selectedColor.BackColor;
+            Settings.Default.OutlineColor = outlineColor.BackColor;
             Settings.Default.OutlineColor = outlineColor.BackColor;
             Settings.Default.Save();
         }
@@ -67,9 +76,24 @@ namespace BflytPreview
         {
             OpenFileDialog opn = new OpenFileDialog() { Filter = "Supported files (jpg,jpeg,png)|*.jpg;*.jpeg;*.png|All files|*.*" };
             if (opn.ShowDialog() != DialogResult.OK) return;
-
+            
             pictureBox1.BackgroundImage = Image.FromFile(opn.FileName);
+            Settings.Default.BgFileName = opn.FileName;
             EditorView.texture = EditorView.LoadBgImage(opn.FileName, false, true);
+        }
+
+        private void showImg_Click(object sender, EventArgs e)
+        {
+            if (!Settings.Default.ShowImage)
+            {
+                Settings.Default.ShowImage = true;
+                showImg.Text = "Hide Image";
+            }
+            else
+            {
+                Settings.Default.ShowImage = false;
+                showImg.Text = "Show Image";
+            }
         }
     }
 }

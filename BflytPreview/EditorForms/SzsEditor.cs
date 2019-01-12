@@ -167,13 +167,19 @@ namespace BflytPreview.EditorForms
 			}
 		}
 
+        void SaveSzsAs()
+        {
+            var sav = new SaveFileDialog() { Filter = "szs file|*.szs|sarc file|*.sarc" };
+            if (sav.ShowDialog() != DialogResult.OK)
+                return;
+            File.WriteAllBytes(sav.FileName, PackArchive());
+        }
+
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var sav = new SaveFileDialog() { Filter = "szs file|*.szs|sarc file|*.sarc" };
-			if (sav.ShowDialog() != DialogResult.OK)
-				return;
-			File.WriteAllBytes(sav.FileName, PackArchive());
-		}
+            SaveSzsAs();
+
+        }
 
 		private void listBox1_DoubleClick(object sender, EventArgs e)
 		{
@@ -252,5 +258,11 @@ namespace BflytPreview.EditorForms
 
 		private void thisFileIsTheEditedSzsToolStripMenuItem_Click(object sender, EventArgs e)
 			=> new LayoutDiffForm(null, loadedSarc).ShowDialog();
-	}
+
+        private void SzsEditor_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.Shift && e.KeyCode == Keys.S) SaveSzsAs();
+            else if (e.Control && e.KeyCode == Keys.S) _parentArch.SaveToArchive(PackArchive(), this);
+        }
+    }
 }

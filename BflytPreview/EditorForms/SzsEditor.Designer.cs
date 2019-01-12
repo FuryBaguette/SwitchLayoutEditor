@@ -162,14 +162,17 @@
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.saveAsToolStripMenuItem.Text = "Save as..";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // saveToSzsToolStripMenuItem
             // 
             this.saveToSzsToolStripMenuItem.Name = "saveToSzsToolStripMenuItem";
-            this.saveToSzsToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.saveToSzsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.saveToSzsToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.saveToSzsToolStripMenuItem.Text = "Save to Szs";
             this.saveToSzsToolStripMenuItem.Click += new System.EventHandler(this.saveToSzsToolStripMenuItem_Click);
             // 
@@ -248,6 +251,7 @@
             this.Load += new System.EventHandler(this.SzsEditor_Load);
             this.LocationChanged += new System.EventHandler(this.SzsEditor_LocationChanged);
             this.Click += new System.EventHandler(this.SzsEditor_Click);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SzsEditor_KeyDown);
             this.contextMenuStrip1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.menuStrip1.ResumeLayout(false);

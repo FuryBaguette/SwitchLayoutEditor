@@ -11,5 +11,11 @@
     <Setting Name="OutlineColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">LightGreen</Value>
     </Setting>
+    <Setting Name="BgFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ShowImage" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
