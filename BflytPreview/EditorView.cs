@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
@@ -30,6 +31,8 @@ namespace BflytPreview
         bool canMoveView;
 
         OpenTK.GLControl glControl;
+
+        public static int texture;
 
         public EditorView(BFLYT _layout)
         {
@@ -131,12 +134,48 @@ namespace BflytPreview
 
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 			GL.ClearColor(160/255f, 160 / 255f, 160 / 255f, 1); //Control dark color
-						
-			RenderPanes();
+
+            if (texture != 0)
+                DrawBgImage();
+
+            RenderPanes();
             
             glControl.SwapBuffers();
         }
 
+        #endregion
+
+        #region Draw Background Image
+        void DrawBgImage()
+        {
+            GL.Enable(EnableCap.Texture2D);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.MatrixMode(MatrixMode.Modelview);
+            GL.LoadIdentity();
+            GL.PushMatrix();
+            GL.Scale(1 * zoomFactor, -1 * zoomFactor, 1);
+            GL.Translate(x, y, 0);
+
+            GL.Color4(Color.White);
+
+            GL.BindTexture(TextureTarget.Texture2D, texture);
+            GL.Begin(PrimitiveType.Quads);
+
+            GL.TexCoord2(-1, -1);
+            GL.Vertex3(-640, -360, 0);
+
+            GL.TexCoord2(0, -1);
+            GL.Vertex3(640, -360, 0);
+
+            GL.TexCoord2(0, 0);
+            GL.Vertex3(640, 360, 0);
+
+            GL.TexCoord2(-1, 0);
+            GL.Vertex3(-640, 360, 0);
+            GL.End();
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+            GL.PopMatrix();
+        }
         #endregion
 
         void RenderPanes()
@@ -149,7 +188,7 @@ namespace BflytPreview
                 if (!p.ParentVisibility)
                     return;
 				
-                var color = Color.Black;
+                var color = Settings.Default.PaneColor;
 
 				GL.PushMatrix();
                 GL.Translate(p.Position.X, p.Position.Y, 0);
@@ -175,13 +214,13 @@ namespace BflytPreview
 			GL.Scale(1 * zoomFactor, -1 * zoomFactor, 1);
             GL.Translate(x, y, 0);
 
-			RecursiveRenderPane((BFLYT.EditablePane)layout.RootPane);
-			DrawPane(new BFLYT.CusRectangle(-1280 / 2, -720 / 2, 1280, 720), Color.LightGreen);
+            RecursiveRenderPane((BFLYT.EditablePane)layout.RootPane);
+			DrawPane(new BFLYT.CusRectangle(-1280 / 2, -720 / 2, 1280, 720), Settings.Default.OutlineColor);
 
-			if (DrawOnTop != null)
+            if (DrawOnTop != null)
 			{
 				GL.LoadMatrix(DrawOnTopTransform);
-				DrawPane(DrawOnTop.transformedRect, Color.Red);
+                DrawPane(DrawOnTop.transformedRect, Settings.Default.SelectedColor);
 			}
 		}
 
@@ -393,8 +432,49 @@ namespace BflytPreview
                 glControl.Invalidate();
             }
         }
-		
-		private void GlControl_MouseUp(object sender, MouseEventArgs e)
+        
+        public static int LoadBgImage(string path, bool flip_x = false, bool flip_y = false)
+        {
+            if (!File.Exists(path))
+                throw new FileNotFoundException("File not found at '" + path + "'");
+
+            Bitmap bitmap = new Bitmap(path);
+
+            if (flip_y)
+                bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
+            if (flip_x)
+                bitmap.RotateFlip(RotateFlipType.RotateNoneFlipX);
+
+            int tex;
+            GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
+
+            GL.GenTextures(1, out tex);
+            GL.BindTexture(TextureTarget.Texture2D, tex);
+
+            BitmapData data = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0,
+                OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+            bitmap.UnlockBits(data);
+
+
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+
+            return tex;
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SettingsWindow set = new SettingsWindow();
+            set.ShowDialog(this);
+            set.Dispose();
+        }
+
+        private void GlControl_MouseUp(object sender, MouseEventArgs e)
 		{
 			if (DraggedObject)
 			{
