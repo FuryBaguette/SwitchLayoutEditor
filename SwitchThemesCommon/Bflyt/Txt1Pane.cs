@@ -81,11 +81,18 @@ namespace SwitchThemes.Common.Custom
         }
 
         public float ItalicTilt { get; set; }
+        public UInt32 TextOffset { get; set; }
         public Color FontTopColor { get; set; }
         public Color FontBottomColor { get; set; }
         public Vector2 FontXYSize { get; set; }
         public float CharacterSpace { get; set; }
         public float LineSpace { get; set; }
+        public UInt32 TextboxNameOffset { get; set; }
+        public float[] ShawdowXY { get; set; }
+        public float[] ShawdowXYSize { get; set; }
+        public Color ShawdowTopColor { get; set; }
+        public Color ShawdowBottomColor { get; set; }
+        public float ShadowItalic { get; set; }
 
         public Txt1Pane(BasePane p, ByteOrder b) : base(p, b)
         {
@@ -98,11 +105,17 @@ namespace SwitchThemes.Common.Custom
             FontIndex = dataReader.ReadUInt16();
             dataReader.ReadBytes(4);
             ItalicTilt = dataReader.ReadSingle();
+            TextOffset = dataReader.ReadUInt32();
             FontTopColor = dataReader.ReadColorRGBA();
             FontBottomColor = dataReader.ReadColorRGBA();
             FontXYSize = dataReader.ReadVector2();
             CharacterSpace = dataReader.ReadSingle();
             LineSpace = dataReader.ReadSingle();
+            ShawdowXY = dataReader.ReadSingles(2);
+            ShawdowXYSize = dataReader.ReadSingles(2);
+            ShawdowTopColor = dataReader.ReadColorRGBA();
+            ShawdowBottomColor = dataReader.ReadColorRGBA();
+            ShadowItalic = dataReader.ReadSingle();
         }
 
         protected override void ApplyChanges(BinaryDataWriter bin)
@@ -114,11 +127,17 @@ namespace SwitchThemes.Common.Custom
             bin.Write(FontIndex);
             bin.Write((byte)3);
             bin.Write(ItalicTilt);
+            bin.Write(TextOffset);
             bin.Write(FontTopColor);
             bin.Write(FontBottomColor);
             bin.Write(FontXYSize);
             bin.Write(CharacterSpace);
             bin.Write(LineSpace);
+            bin.Write(ShawdowXY);
+            bin.Write(ShawdowXYSize);
+            bin.Write(ShawdowTopColor);
+            bin.Write(ShawdowBottomColor);
+            bin.Write(ShadowItalic);
         }
     }
 }

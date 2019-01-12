@@ -516,7 +516,9 @@ namespace SwitchThemes.Common.Custom
 			{
 				case "pic1":
 					return new Pic1Pane(pane, FileByteOrder);
-				default:
+                case "txt1":
+                    return new Txt1Pane(pane, FileByteOrder);
+                default:
 					return new EditablePane(pane, FileByteOrder);
 			}
 		}
