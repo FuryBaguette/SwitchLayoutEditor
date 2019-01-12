@@ -174,6 +174,7 @@
             this.saveToSzsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.saveToSzsToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.saveToSzsToolStripMenuItem.Text = "Save to Szs";
+            this.saveToSzsToolStripMenuItem.Visible = false;
             this.saveToSzsToolStripMenuItem.Click += new System.EventHandler(this.saveToSzsToolStripMenuItem_Click);
             // 
             // addFilesToolStripMenuItem

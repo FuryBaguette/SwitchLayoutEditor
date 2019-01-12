@@ -262,7 +262,7 @@ namespace BflytPreview.EditorForms
         private void SzsEditor_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Control && e.Shift && e.KeyCode == Keys.S) SaveSzsAs();
-            else if (e.Control && e.KeyCode == Keys.S) _parentArch.SaveToArchive(PackArchive(), this);
+            else if (e.Control && e.KeyCode == Keys.S && _parentArch != null) _parentArch.SaveToArchive(PackArchive(), this);
         }
     }
 }
