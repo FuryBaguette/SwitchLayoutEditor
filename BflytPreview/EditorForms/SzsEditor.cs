@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SwitchThemes.Common;
+using SwitchThemes.Common.Custom;
 
 namespace BflytPreview.EditorForms
 {
@@ -263,6 +264,37 @@ namespace BflytPreview.EditorForms
         {
             if (e.Control && e.Shift && e.KeyCode == Keys.S) SaveSzsAs();
             else if (e.Control && e.KeyCode == Keys.S && _parentArch != null) _parentArch.SaveToArchive(PackArchive(), this);
+        }
+
+        private void loadJSONPatchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var opn = new OpenFileDialog();
+            if (opn.ShowDialog() != DialogResult.OK) return;
+            LayoutPatch JSONLayout = LayoutPatch.LoadTemplate(File.ReadAllText(opn.FileName));
+            if (JSONLayout.IsCompatible(loadedSarc))
+            {
+                var layoutRes = PatchLayouts(loadedSarc, JSONLayout.Files);
+                if (layoutRes)
+                    MessageBox.Show("Loaded JSON patch");
+                else
+                    MessageBox.Show("Something is wrong with your layout patch.");
+            }
+
+        }
+
+        public static bool PatchLayouts(SARCExt.SarcData sarc, LayoutFilePatch[] Files)
+        {
+            foreach (var p in Files)
+            {
+                if (!sarc.Files.ContainsKey(p.FileName))
+                    return false;
+                var target = new BFLYT(sarc.Files[p.FileName]);
+                var res = target.ApplyLayoutPatch(p.Patches);
+                if (res != true)
+                    return res;
+                sarc.Files[p.FileName] = target.SaveFile();
+            }
+            return true;
         }
     }
 }

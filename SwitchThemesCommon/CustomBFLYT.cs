@@ -522,5 +522,87 @@ namespace SwitchThemes.Common.Custom
 					return new EditablePane(pane, FileByteOrder);
 			}
 		}
-	}
+
+        public static string TryGetPaneName(BasePane p)
+        {
+            if (p.data.Length < 0x18 + 4) return null;
+            BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(p.data), Encoding.ASCII, false);
+            dataReader.ByteOrder = ByteOrder.LittleEndian;
+            dataReader.ReadInt32();
+            string PaneName = "";
+            for (int i = 0; i < 0x18; i++)
+            {
+                var c = dataReader.ReadChar();
+                if (c == 0) break;
+                PaneName += c;
+            }
+            return PaneName;
+        }
+
+        public string[] GetPaneNames()
+        {
+            string[] paneNames = new string[Panes.Count];
+            for (int i = 0; i < Panes.Count; i++)
+                paneNames[i] = TryGetPaneName(Panes[i]);
+            return paneNames;
+        }
+
+        public bool ApplyLayoutPatch(PanePatch[] Patches)
+        {
+            string[] paneNames = GetPaneNames();
+            for (int i = 0; i < Patches.Length; i++)
+            {
+                int index = Array.IndexOf(paneNames, Patches[i].PaneName);
+                if (index == -1)
+                    return false;
+                var p = Patches[i];
+                var e = new EditablePane(Panes[index], FileByteOrder);
+                Panes[index] = e;
+                if (p.Visible != null)
+                    e.Visible = p.Visible.Value;
+                #region ChangeTransform
+                if (p.Position != null)
+                {
+                    e.Position = new Vector3(
+                        p.Position.Value.X ?? e.Position.X,
+                        p.Position.Value.Y ?? e.Position.Y,
+                        p.Position.Value.Z ?? e.Position.Z);
+                }
+                if (p.Rotation != null)
+                {
+                    e.Rotation = new Vector3(
+                        p.Rotation.Value.X ?? e.Rotation.X,
+                        p.Rotation.Value.Y ?? e.Rotation.Y,
+                        p.Rotation.Value.Z ?? e.Rotation.Z);
+                }
+                if (p.Scale != null)
+                {
+                    e.Scale = new Vector2(
+                        p.Scale.Value.X ?? e.Scale.X,
+                        p.Scale.Value.Y ?? e.Scale.Y);
+                }
+                if (p.Size != null)
+                {
+                    e.Size = new Vector2(
+                        p.Size.Value.X ?? e.Size.X,
+                        p.Size.Value.Y ?? e.Size.Y);
+                }
+                #endregion
+                /*#region ColorDataForPic1
+                if (e.name == "pic1")
+                {
+                    if (p.ColorTL != null)
+                        e.ColorData[0] = Convert.ToUInt32(p.ColorTL, 16);
+                    if (p.ColorTR != null)
+                        e.ColorData[1] = Convert.ToUInt32(p.ColorTR, 16);
+                    if (p.ColorBL != null)
+                        e.ColorData[2] = Convert.ToUInt32(p.ColorBL, 16);
+                    if (p.ColorBR != null)
+                        e.ColorData[3] = Convert.ToUInt32(p.ColorBR, 16);
+                }
+                #endregion*/
+            }
+            return true;
+        }
+    }
 }

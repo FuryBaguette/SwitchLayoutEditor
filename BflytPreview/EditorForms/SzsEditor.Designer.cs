@@ -50,6 +50,7 @@
             this.layoutDiffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.thisFileIsTheOriginalSzsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.thisFileIsTheEditedSzsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadJSONPatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -207,7 +208,8 @@
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.layoutDiffToolStripMenuItem});
+            this.layoutDiffToolStripMenuItem,
+            this.loadJSONPatchToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -218,7 +220,7 @@
             this.thisFileIsTheOriginalSzsToolStripMenuItem,
             this.thisFileIsTheEditedSzsToolStripMenuItem});
             this.layoutDiffToolStripMenuItem.Name = "layoutDiffToolStripMenuItem";
-            this.layoutDiffToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.layoutDiffToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.layoutDiffToolStripMenuItem.Text = "Layout diff";
             // 
             // thisFileIsTheOriginalSzsToolStripMenuItem
@@ -234,6 +236,13 @@
             this.thisFileIsTheEditedSzsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
             this.thisFileIsTheEditedSzsToolStripMenuItem.Text = "This file is the edited szs";
             this.thisFileIsTheEditedSzsToolStripMenuItem.Click += new System.EventHandler(this.thisFileIsTheEditedSzsToolStripMenuItem_Click);
+            // 
+            // loadJSONPatchToolStripMenuItem
+            // 
+            this.loadJSONPatchToolStripMenuItem.Name = "loadJSONPatchToolStripMenuItem";
+            this.loadJSONPatchToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadJSONPatchToolStripMenuItem.Text = "Load JSON patch";
+            this.loadJSONPatchToolStripMenuItem.Click += new System.EventHandler(this.loadJSONPatchToolStripMenuItem_Click);
             // 
             // SzsEditor
             // 
@@ -284,5 +293,6 @@
 		private System.Windows.Forms.ToolStripMenuItem layoutDiffToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem thisFileIsTheOriginalSzsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem thisFileIsTheEditedSzsToolStripMenuItem;
-	}
+        private System.Windows.Forms.ToolStripMenuItem loadJSONPatchToolStripMenuItem;
+    }
 }
