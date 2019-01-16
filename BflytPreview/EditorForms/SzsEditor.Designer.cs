@@ -220,7 +220,7 @@
             this.thisFileIsTheOriginalSzsToolStripMenuItem,
             this.thisFileIsTheEditedSzsToolStripMenuItem});
             this.layoutDiffToolStripMenuItem.Name = "layoutDiffToolStripMenuItem";
-            this.layoutDiffToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.layoutDiffToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.layoutDiffToolStripMenuItem.Text = "Layout diff";
             // 
             // thisFileIsTheOriginalSzsToolStripMenuItem
@@ -240,7 +240,7 @@
             // loadJSONPatchToolStripMenuItem
             // 
             this.loadJSONPatchToolStripMenuItem.Name = "loadJSONPatchToolStripMenuItem";
-            this.loadJSONPatchToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadJSONPatchToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.loadJSONPatchToolStripMenuItem.Text = "Load JSON patch";
             this.loadJSONPatchToolStripMenuItem.Click += new System.EventHandler(this.loadJSONPatchToolStripMenuItem_Click);
             // 

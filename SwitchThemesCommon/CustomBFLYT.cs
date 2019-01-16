@@ -185,7 +185,7 @@ namespace SwitchThemes.Common.Custom
 			byte _flag2;
 			public byte Alpha { get; set; }
             public byte Unknown1;
-			public readonly string PaneName;
+			public string PaneName;
 			public readonly string UserInfo;
 			public Vector3 Position { get; set; }
 			public Vector3 Rotation { get; set; }

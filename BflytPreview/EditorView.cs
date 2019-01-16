@@ -44,7 +44,9 @@ namespace BflytPreview
             InitializeComponent();
 			layout = _layout;
 
-			glControl = new OpenTK.GLControl();
+            treeView1.NodeMouseClick += (sender, args) => treeView1.SelectedNode = args.Node;
+
+            glControl = new OpenTK.GLControl();
             glControl.Dock = DockStyle.Fill;
 			panel1.Controls.Add(glControl);
 			glControl.KeyDown += new KeyEventHandler(glControl_KeyDown);
@@ -500,6 +502,27 @@ namespace BflytPreview
 				propertyGrid1.Refresh();
 			}
 		}
+
+        private void removeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (treeView1.SelectedNode != null)
+            {
+                BFLYT.EditablePane RemovePane = treeView1.SelectedNode.Tag as BFLYT.EditablePane;
+                layout.Panes.Remove((BFLYT.BasePane)RemovePane);
+                treeView1.Nodes.Remove(treeView1.SelectedNode);
+            }
+        }
+
+        private void nullPaneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BFLYT.EditablePane pane = new BFLYT.EditablePane(layout.RootPane, Syroot.BinaryData.ByteOrder.LittleEndian);
+            pane.PaneName = "NewPane";
+            TreeNode t = new TreeNode("NewPane");
+            t.Tag = pane;
+            BFLYT.EditablePane SelectedPane = treeView1.SelectedNode.Tag as BFLYT.EditablePane;
+            SelectedPane.Children.Add(pane);
+            treeView1.SelectedNode.Nodes.Add(t);
+        }
 
         private void EditorView_KeyDown(object sender, KeyEventArgs e)
         {
