@@ -90,10 +90,10 @@ namespace SwitchThemes.Common.Custom
         public float CharacterSpace { get; set; }
         public float LineSpace { get; set; }
 
-		public float[] ShawdowXY { get; set; } = new float[0];
-        public float[] ShawdowXYSize { get; set; } = new float[0];
-		public Color ShawdowTopColor { get; set; }
-        public Color ShawdowBottomColor { get; set; }
+		public float[] ShadowXY { get; set; } = new float[0];
+        public float[] ShadowXYSize { get; set; } = new float[0];
+		public Color ShadowTopColor { get; set; }
+        public Color ShadowBottomColor { get; set; }
         public float ShadowItalic { get; set; }
 		
 		public Txt1Pane(ByteOrder b) : base("txt1", b) { }
@@ -119,10 +119,10 @@ namespace SwitchThemes.Common.Custom
             CharacterSpace = dataReader.ReadSingle();
             LineSpace = dataReader.ReadSingle();
 			uint TbNameOffset = dataReader.ReadUInt32();
-            ShawdowXY = dataReader.ReadSingles(2);
-            ShawdowXYSize = dataReader.ReadSingles(2);
-            ShawdowTopColor = dataReader.ReadColorRGBA();
-            ShawdowBottomColor = dataReader.ReadColorRGBA();
+            ShadowXY = dataReader.ReadSingles(2);
+            ShadowXYSize = dataReader.ReadSingles(2);
+            ShadowTopColor = dataReader.ReadColorRGBA();
+            ShadowBottomColor = dataReader.ReadColorRGBA();
             ShadowItalic = dataReader.ReadSingle();
         }
 
@@ -145,10 +145,10 @@ namespace SwitchThemes.Common.Custom
             bin.Write(CharacterSpace);
             bin.Write(LineSpace);
 			bin.BaseStream.Position += 4; //Skip name offset
-            bin.Write(ShawdowXY);
-            bin.Write(ShawdowXYSize);
-            bin.Write(ShawdowTopColor);
-            bin.Write(ShawdowBottomColor);
+            bin.Write(ShadowXY);
+            bin.Write(ShadowXYSize);
+            bin.Write(ShadowTopColor);
+            bin.Write(ShadowBottomColor);
             bin.Write(ShadowItalic);
         }
 
