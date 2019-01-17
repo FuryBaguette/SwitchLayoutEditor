@@ -16,3 +16,9 @@ For a more in depth guide, [click here](https://github.com/FuryBaguette/SwitchLa
 ## Screenshot
 ![](https://github.com/FuryBaguette/SwitchLayoutEditor/blob/master/Screenshot.png)
 This is using a layout from switch's home menu
+
+## Credits
+- [FuryBaguette](https://github.com/FuryBaguette) - Development
+- [exelix](https://github.com/exelix11) - Base of the editor & Continuous development
+- [Aboud](https://github.com/aboood40091) - [Sarc Tool](https://github.com/aboood40091/SARC-Tool)
+- [Syroot](https://gitlab.com/Syroot) - [Binary Data](https://gitlab.com/Syroot/BinaryData)
