@@ -78,7 +78,7 @@ namespace SwitchThemes.Common.Custom
             set
             {
                 flags &= unchecked((byte)(~0xC));
-                flags |= (byte)value;
+                flags |= (byte)((byte)value << 2);
             }
         }
 
