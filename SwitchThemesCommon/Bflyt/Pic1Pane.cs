@@ -1,4 +1,5 @@
 ﻿using ExtensionMethods;
+using SwitchThemesCommon.Bflyt;
 using Syroot.BinaryData;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,15 @@ namespace SwitchThemes.Common.Custom
 {
 	public class Pic1Pane : EditablePane
 	{
-		public Color ColorTopRight { get; set; }
-		public Color ColorTopLeft { get; set; }
-		public Color ColorBottomRight { get; set; }
-		public Color ColorBottomLeft { get; set; }
+		public Color ColorTopRight { get; set; } = Color.White;
+		public Color ColorTopLeft { get; set; } = Color.White;
+		public Color ColorBottomRight { get; set; } = Color.White;
+		public Color ColorBottomLeft { get; set; } = Color.White;
 
-		public UInt16 MaterialIndex { get; set; }
-		public Vector2[] UVCoords { get; set; }
+		public UInt16 MaterialIndex { get; set; } = 0;
+		public Vector2[] UVCoords { get; set; } = new Vector2[0];
+
+		public Pic1Pane(ByteOrder b) : base("pic1",b)	{	}
 
 		public Pic1Pane(BasePane p, ByteOrder b) : base(p, b)
 		{
@@ -48,6 +51,11 @@ namespace SwitchThemes.Common.Custom
 			bin.Write((byte)0);
 			for (int i = 0; i < UVCoords.Length; i++)
 				bin.Write(UVCoords[i]);
+		}
+
+		public override BasePane Clone()
+		{
+			return new Pic1Pane(base.Clone(),order);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using ExtensionMethods;
 using SwitchThemes.Common;
+using SwitchThemesCommon.Bflyt;
 using Syroot.BinaryData;
 using System;
 using System.Collections.Generic;
@@ -56,12 +57,27 @@ namespace SwitchThemes.Common.Custom
 				data = bin.ReadBytes(length - 8);
 			}
 
+			public BasePane(string _name, byte[] _data)
+			{
+				name = _name;
+				data = _data;
+				length = data.Length + 8;
+			}
+
 			public virtual void WritePane(BinaryDataWriter bin)
 			{
 				bin.Write(name, BinaryStringFormat.NoPrefixOrTermination);
 				length = data.Length + 8;
 				bin.Write(length);
 				bin.Write(data);
+			}
+
+			public virtual BasePane Clone()
+			{
+				MemoryStream mem = new MemoryStream();
+				BinaryDataWriter bin = new BinaryDataWriter(mem);
+				WritePane(bin);
+				return new BasePane(name, (byte[])data.Clone());
 			}
 		}
 
@@ -78,242 +94,7 @@ namespace SwitchThemes.Common.Custom
             }
         }
 
-		public class EditablePane : BasePane
-		{
-			public CusRectangle transformedRect
-			{
-				get
-				{ 
-                    if (Alpha == 0 || !ParentVisibility)
-                        return new CusRectangle(0,0,0,0);
-
-					Vector2 ParentSize;
-
-					if (Parent != null && Parent is EditablePane)
-                        ParentSize = ((EditablePane)Parent).Size;
-					else
-                        ParentSize = new Vector2(0,0);
-
-                    float RelativeX;
-                    if (ParentOriginX == OriginX.Center) RelativeX = 0;
-                    else if (ParentOriginX == OriginX.Right) RelativeX = ParentSize.X;
-                    else RelativeX = ParentSize.X / 2;
-
-                    float RelativeY;
-                    if (ParentOriginY == OriginY.Center) RelativeY = 0;
-                    else if (ParentOriginY == OriginY.Bottom) RelativeY = ParentSize.Y;
-                    else RelativeY = ParentSize.Y / 2;
-
-                    if (originX == OriginX.Center) RelativeX -= Size.X / 2;
-                    else if (originX == OriginX.Right) RelativeX -= Size.X;
-
-                    if (originY == OriginY.Center) RelativeY -= Size.Y / 2;
-                    else if (originY == OriginY.Bottom) RelativeY -= Size.Y;
-
-                    return new CusRectangle(
-                        (int)((RelativeX)),
-                        (int)((RelativeY)),
-                        (int)(Size.X),
-                        (int)(Size.Y));
-                }
-            }
-			
-			//This is not an actual property, it's just to hide it from the view
-			public bool ViewInEditor { get; set; } = true;
-
-			public bool ParentVisibility
-			{
-				get
-				{
-					if (Scale.X == 0 || Scale.Y == 0)
-						return false;
-					if (!Visible)
-						return false;
-					if (Parent != null && Parent is EditablePane)
-					{
-						return ((EditablePane)Parent).ParentVisibility && Visible;
-					}
-					return true;
-				}
-			}
-
-			public Vector2 ParentScale
-			{
-				get
-				{
-					if (Parent != null && Parent is EditablePane)
-					{
-						return ((EditablePane)Parent).ActualScale;
-					}
-					return new Vector2(1, 1);
-				}
-			}
-
-			public Vector2 ActualScale
-			{
-				get
-				{
-					if (Parent != null && Parent is EditablePane)
-					{
-						var pScale = ((EditablePane)Parent).ActualScale;
-						return new Vector2(pScale.X * Scale.X, pScale.Y * Scale.Y);
-					}
-					return Scale;
-				}
-			}
-
-			public enum OriginX : byte
-			{
-				Center = 0,
-				Left = 1,
-				Right = 2
-			};
-
-			public enum OriginY : byte
-			{
-				Center = 0,
-				Top = 1,
-				Bottom = 2
-			};
-
-			public override string ToString()
-			{
-				return $"{PaneName} [{name}]";
-			}
-
-			byte _flag1;
-			byte _flag2;
-			public byte Alpha { get; set; }
-            public byte Unknown1;
-			public string PaneName;
-			public readonly string UserInfo;
-			public Vector3 Position { get; set; }
-			public Vector3 Rotation { get; set; }
-			public Vector2 Scale { get; set; }
-			public Vector2 Size { get; set; }
-
-			public bool Visible
-			{
-				get => (_flag1 & 0x1) == 0x1;
-				set
-				{
-					if (value)
-						_flag1 |= 0x1;
-					else
-						_flag1 &= 0xFE;
-				}
-			}
-
-			public bool InfluenceAlpha
-			{
-				get => (_flag1 & 0x2) == 0x2;
-				set
-				{
-					if (value)
-						_flag1 |= 0x2;
-					else
-						_flag1 &= 0xFD;
-				}
-			}
-
-			public OriginX originX
-			{
-				get => (OriginX)((_flag2 & 0xC0) >> 6);
-				set
-				{
-					_flag2 &= unchecked((byte)(~0xC0));
-					_flag2 |= (byte)((byte)value << 6);
-				}
-			}
-
-			public OriginY originY
-			{
-				get => (OriginY)((_flag2 & 0x30) >> 4);
-				set
-				{
-					_flag2 &= unchecked((byte)(~0x30));
-					_flag2 |= (byte)((byte)value << 4);
-				}
-			}
-
-			public OriginX ParentOriginX
-			{
-				get => (OriginX)((_flag2 & 0xC) >> 2);
-				set
-				{
-					_flag2 &= unchecked((byte)(~0xC));
-					_flag2 |= (byte)((byte)value << 2);
-				}
-			}
-
-			public OriginY ParentOriginY
-			{
-				get => (OriginY)((_flag2 & 0x3));
-				set
-				{
-					_flag2 &= unchecked((byte)(~0x3));
-					_flag2 |= (byte)value;
-				}
-			}
-
-			//public uint[] ColorData = null; //only for pic1 panes
-
-			public EditablePane(BasePane p, ByteOrder order) : base(p)
-			{
-				BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
-				dataReader.ByteOrder = order;
-
-				string ReadBinaryString(int max)
-				{
-					string res = "";
-					for (int i = 0; i < max; i++)
-					{
-						var c = (char)dataReader.ReadByte();
-						if (c == 0) continue;
-						res += c;
-					}
-					return res;
-				}
-
-				_flag1 = dataReader.ReadByte();
-				_flag2 = dataReader.ReadByte();
-				Alpha = dataReader.ReadByte();
-				Unknown1 = dataReader.ReadByte();
-				PaneName = ReadBinaryString(0x18);
-				UserInfo = ReadBinaryString(0x8);
-				Position = dataReader.ReadVector3();
-				Rotation = dataReader.ReadVector3();
-				Scale = dataReader.ReadVector2();
-				Size = dataReader.ReadVector2();
-			}
-
-			protected virtual void ApplyChanges(BinaryDataWriter bin)
-			{
-				bin.Write(data);
-				bin.BaseStream.Position = 0;
-				bin.Write(_flag1);
-				bin.Write(_flag2);
-				bin.Write(Alpha);
-				bin.Write(Unknown1);
-				bin.BaseStream.Position = 0x2C - 8;
-				bin.Write(Position);
-				bin.Write(Rotation);
-				bin.Write(Scale);
-				bin.Write(Size);
-			}
-
-			public override void WritePane(BinaryDataWriter bin)
-			{
-				using (var mem = new MemoryStream())
-				{
-					BinaryDataWriter dataWriter = new BinaryDataWriter(mem);
-					dataWriter.ByteOrder = bin.ByteOrder;
-					ApplyChanges(dataWriter);
-					data = mem.ToArray();
-				}
-				base.WritePane(bin);
-			}
-		}
+		
 
         public class TextureSection : BasePane
 		{
@@ -472,8 +253,6 @@ namespace SwitchThemes.Common.Custom
 			var sectionCount = bin.ReadUInt16();
 			bin.ReadUInt16(); //padding
 
-			BasePane CurrentParent = null;
-
 			for (int i = 0; i < sectionCount; i++)
 			{
 				string name = bin.ReadString(4);
@@ -485,27 +264,98 @@ namespace SwitchThemes.Common.Custom
 					case "mat1":
 						Panes.Add(new MaterialsSection(bin));
 						break;
-					case "pas1":
-						CurrentParent = Panes.Last();
-						Panes.Add(new BasePane(name, bin));
-						break;
-					case "pae1":
-						CurrentParent = CurrentParent.Parent;
-						Panes.Add(new BasePane(name, bin));
-						break;
 					default:
 						var pane = new BasePane(name, bin);
 						Panes.Add(DetectProperPaneClass(pane));
-						if (CurrentParent != null)
-						{
-							CurrentParent.Children.Add(Panes.Last());
-							Panes.Last().Parent = CurrentParent;
-						}
-						if (Panes.Last() is EditablePane && ((EditablePane)Panes.Last()).PaneName == "RootPane")
-							RootPane = CurrentParent = Panes.Last();
 						break;
 				}
 			}
+
+			RebuildParentingData();
+		}
+
+		public void RemovePane(BasePane pane)
+		{
+			int paneIndex = Panes.IndexOf(pane);
+			if (Panes[paneIndex + 1].name == "pas1")
+			{
+				int ChildLevel = 0;
+				int TargetDelete = -1;
+				for (int i = paneIndex + 2; i < Panes.Count; i++)
+				{
+					if (Panes[i].name == "pae1")
+					{
+						if (ChildLevel == 0)
+						{
+							TargetDelete = i;
+							break;
+						}
+						ChildLevel--;
+					}
+					if (Panes[i].name == "pas1")
+						ChildLevel++;
+				}
+				if (TargetDelete == -1)
+					throw new Exception("Couldn't find the children data");
+				Panes.RemoveRange(paneIndex, TargetDelete - paneIndex);
+			}
+			else Panes.Remove(pane);
+			if (pane.Parent != null)
+				pane.Parent.Children.Remove(pane);
+			RebuildParentingData();
+		}
+
+		public void AddPane(BasePane pane, BasePane Parent)
+		{
+			if (Parent == null) Parent = RootPane;
+			int parentIndex = Panes.IndexOf(Parent);
+			if (Panes[parentIndex + 1].name != "pas1")
+			{
+				if (Parent.Children.Count != 0) throw new Exception("Inconsistend data !");
+				Panes.Insert(parentIndex + 1, new BasePane("Pas1", 8));
+				Panes.Insert(parentIndex + 2, new BasePane("Pae1", 8));
+			}
+			Parent.Children.Add(pane);
+			pane.Parent = Parent;
+			Panes.Insert(parentIndex + 2, pane);
+			RebuildParentingData();
+		}
+
+		void RebuildParentingData()
+		{
+			BasePane CurrentRoot = null;
+			int RootIndex = -1;
+			for (int i = 0; i < Panes.Count; i++)
+			{
+				if (Panes[i] is EditablePane && ((EditablePane)Panes[i]).PaneName == "RootPane")
+				{
+					CurrentRoot = Panes[i];
+					RootIndex = i;
+					break;
+				}
+			}
+			this.RootPane = CurrentRoot ?? throw new Exception("Couldn't find the root pane");
+			RootPane.Children.Clear();
+			RootPane.Parent = null;
+			for (int i = RootIndex + 1; i < Panes.Count; i++)
+			{
+				if (Panes[i].name == "pas1")
+				{
+					CurrentRoot = Panes[i - 1];
+					CurrentRoot.Children.Clear();
+					continue;
+				}
+				else if (Panes[i].name == "pae1")
+				{
+					CurrentRoot = CurrentRoot.Parent;
+					if (CurrentRoot == null) return;
+					continue;
+				}
+				Panes[i].Parent = CurrentRoot;
+				CurrentRoot.Children.Add(Panes[i]);
+			}
+			if (CurrentRoot != null)
+				throw new Exception("Unexpected pane data ending: one or more children sections are not closed by the end of the file");
 		}
 
 		BasePane DetectProperPaneClass(BasePane pane)

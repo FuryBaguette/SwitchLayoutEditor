@@ -9,6 +9,7 @@ using ExtensionMethods;
 using SARCExt;
 using SwitchThemes.Common;
 using SwitchThemes.Common.Custom;
+using SwitchThemesCommon.Bflyt;
 using Syroot.BinaryData;
 using static SwitchThemes.Common.Custom.BFLYT;
 

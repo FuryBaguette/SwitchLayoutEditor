@@ -1,6 +1,7 @@
 ﻿//TODO: not complete, before release this has to be implemented in the differ and in SwitchThemes injector and installer
 
 using ExtensionMethods;
+using SwitchThemesCommon.Bflyt;
 using Syroot.BinaryData;
 using System;
 using System.Collections.Generic;
@@ -89,13 +90,15 @@ namespace SwitchThemes.Common.Custom
         public float CharacterSpace { get; set; }
         public float LineSpace { get; set; }
 
-        public float[] ShawdowXY { get; set; }
-        public float[] ShawdowXYSize { get; set; }
-        public Color ShawdowTopColor { get; set; }
+		public float[] ShawdowXY { get; set; } = new float[0];
+        public float[] ShawdowXYSize { get; set; } = new float[0];
+		public Color ShawdowTopColor { get; set; }
         public Color ShawdowBottomColor { get; set; }
         public float ShadowItalic { get; set; }
+		
+		public Txt1Pane(ByteOrder b) : base("txt1", b) { }
 
-        public Txt1Pane(BasePane p, ByteOrder b) : base(p, b)
+		public Txt1Pane(BasePane p, ByteOrder b) : base(p, b)
         {
             BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
             dataReader.ByteOrder = b;
@@ -148,5 +151,10 @@ namespace SwitchThemes.Common.Custom
             bin.Write(ShawdowBottomColor);
             bin.Write(ShadowItalic);
         }
-    }
+
+		public override BasePane Clone()
+		{
+			return new Txt1Pane(base.Clone(), order);
+		}
+	}
 }
