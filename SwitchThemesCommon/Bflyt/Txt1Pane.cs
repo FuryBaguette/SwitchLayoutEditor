@@ -28,6 +28,7 @@ namespace SwitchThemes.Common.Custom
                 TextAlign |= (byte)((byte)(value) << 2);
             }
         }
+
         public OriginX VerticalAlignment
         {
             get => (OriginX)((TextAlign) & 0x3);
@@ -81,13 +82,13 @@ namespace SwitchThemes.Common.Custom
         }
 
         public float ItalicTilt { get; set; }
-        public UInt32 TextOffset { get; set; }
+
         public Color FontTopColor { get; set; }
         public Color FontBottomColor { get; set; }
         public Vector2 FontXYSize { get; set; }
         public float CharacterSpace { get; set; }
         public float LineSpace { get; set; }
-        public UInt32 TextboxNameOffset { get; set; }
+
         public float[] ShawdowXY { get; set; }
         public float[] ShawdowXYSize { get; set; }
         public Color ShawdowTopColor { get; set; }
@@ -103,14 +104,18 @@ namespace SwitchThemes.Common.Custom
             RestrictedTextLength = dataReader.ReadUInt16();
             MaterialIndex = dataReader.ReadUInt16();
             FontIndex = dataReader.ReadUInt16();
-            dataReader.ReadBytes(4);
-            ItalicTilt = dataReader.ReadSingle();
-            TextOffset = dataReader.ReadUInt32();
+			TextAlign = dataReader.ReadByte();
+			LineAlignment = (LineAlign)dataReader.ReadByte();
+			flags = dataReader.ReadByte();
+			dataReader.ReadByte(); //padding
+			ItalicTilt = dataReader.ReadSingle();
+            uint TextOffset = dataReader.ReadUInt32();
             FontTopColor = dataReader.ReadColorRGBA();
             FontBottomColor = dataReader.ReadColorRGBA();
             FontXYSize = dataReader.ReadVector2();
             CharacterSpace = dataReader.ReadSingle();
             LineSpace = dataReader.ReadSingle();
+			uint TbNameOffset = dataReader.ReadUInt32();
             ShawdowXY = dataReader.ReadSingles(2);
             ShawdowXYSize = dataReader.ReadSingles(2);
             ShawdowTopColor = dataReader.ReadColorRGBA();
@@ -125,14 +130,18 @@ namespace SwitchThemes.Common.Custom
             bin.Write(RestrictedTextLength);
             bin.Write(MaterialIndex);
             bin.Write(FontIndex);
-            bin.Write((byte)3);
-            bin.Write(ItalicTilt);
-            bin.Write(TextOffset);
-            bin.Write(FontTopColor);
+			bin.Write((byte)TextAlign);
+			bin.Write((byte)LineAlignment);
+			bin.Write((byte)flags);
+			bin.Write((byte)0);
+			bin.Write(ItalicTilt);
+			bin.BaseStream.Position += 4; //Skip text offset
+			bin.Write(FontTopColor);
             bin.Write(FontBottomColor);
             bin.Write(FontXYSize);
             bin.Write(CharacterSpace);
             bin.Write(LineSpace);
+			bin.BaseStream.Position += 4; //Skip name offset
             bin.Write(ShawdowXY);
             bin.Write(ShawdowXYSize);
             bin.Write(ShawdowTopColor);
