@@ -14,7 +14,7 @@ For a more in depth guide, [click here](https://github.com/FuryBaguette/SwitchLa
 - Simultaneous file editing
 
 ## Screenshot
-![](https://github.com/FuryBaguette/SwitchLayoutEditor/blob/master/MainMenu.png)
+![](https://github.com/FuryBaguette/SwitchLayoutEditor/blob/master/Screenshots/MainMenu.png)
 This is using a layout from the Switch's home menu
 
 ## Credits
