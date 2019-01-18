@@ -396,11 +396,11 @@ namespace BflytPreview
 		private void helpToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			MessageBox.Show(
-				"Quick gude:\n" +
-				"-Moving the view: to move the view just click anywhere in the canvas and drag the canvas\n" +
-				"-Zoom: To increase or reduce the zoom level use the trackbar on the bottom left\n" +
-				"-Dragging objects: First select an object in the tree view, it will be se highlighted in red, then keeping CTRL pressed drag it with the cursor in the canvas\n" +
-				"-The green box: The green box represents the screen bounds, it's always at (0,0) and has the screen size.");
+                "Quick guide:\n\n" +
+				"- Moving the view: to move the view just click anywhere in the canvas and drag the canvas\n\n" +
+                "- Zoom: To increase or reduce the zoom level use the trackbar on the bottom left\n\n" +
+                "- Dragging objects: First select an object in the tree view, it will be highlighted in the preview, then keeping CTRL pressed drag it with the cursor in the canvas\n\n" +
+				"- The green box: The green box represents the screen bounds, it's always at (0,0) and has the screen size.");
 		}
 
 		private void saveToSZSToolStripMenuItem_Click(object sender, EventArgs e)
