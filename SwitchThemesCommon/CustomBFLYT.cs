@@ -360,7 +360,7 @@ namespace SwitchThemes.Common.Custom
 
 		BasePane DetectProperPaneClass(BasePane pane)
 		{
-			if (pane.data.Length < 0x4C || pane.name == "usd1" || pane.name == "grp1")
+			if (pane.data.Length < 0x4C || pane.name == "usd1" || pane.name == "grp1" || pane.name == "cnt1")
 				return pane;
 			switch (pane.name)
 			{
