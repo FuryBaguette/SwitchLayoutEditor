@@ -12,6 +12,7 @@ For a more in depth guide, [click here](https://github.com/FuryBaguette/SwitchLa
 - SZS editing
 - Drag and drop
 - Simultaneous file editing
+- Import/Export JSON patch (Compatible with Switch themes)
 
 ## Screenshot
 ![](https://github.com/FuryBaguette/SwitchLayoutEditor/blob/master/Screenshots/MainMenu.png)
