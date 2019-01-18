@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsWindow));
             this.label1 = new System.Windows.Forms.Label();
             this.pickColor = new System.Windows.Forms.Button();
             this.selectedColor = new System.Windows.Forms.Button();
@@ -137,6 +138,7 @@
             this.Controls.Add(this.selectedColor);
             this.Controls.Add(this.pickColor);
             this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SettingsWindow";
             this.Text = "Settings";
             this.Load += new System.EventHandler(this.SettingsWindow_Load);
