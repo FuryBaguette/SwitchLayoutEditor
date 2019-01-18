@@ -192,7 +192,7 @@ namespace SwitchThemesCommon.Bflyt
 
 		//public uint[] ColorData = null; //only for pic1 panes
 
-		public EditablePane(string paneName, ByteOrder b) : base(paneName, 8)
+		public EditablePane(string paneName, ByteOrder b, int size = 0x54) : base(paneName, size)
 		{
 			order = b;
 			PaneName = "new pane";

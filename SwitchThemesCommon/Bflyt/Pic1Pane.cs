@@ -20,7 +20,7 @@ namespace SwitchThemes.Common.Custom
 		public UInt16 MaterialIndex { get; set; } = 0;
 		public Vector2[] UVCoords { get; set; } = new Vector2[0];
 
-		public Pic1Pane(ByteOrder b) : base("pic1",b)	{	}
+		public Pic1Pane(ByteOrder b) : base("pic1",b, 0x68) {	}
 
 		public Pic1Pane(BasePane p, ByteOrder b) : base(p, b)
 		{

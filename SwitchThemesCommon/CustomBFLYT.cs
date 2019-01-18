@@ -312,8 +312,8 @@ namespace SwitchThemes.Common.Custom
 			if (Panes[parentIndex + 1].name != "pas1")
 			{
 				if (Parent.Children.Count != 0) throw new Exception("Inconsistend data !");
-				Panes.Insert(parentIndex + 1, new BasePane("Pas1", 8));
-				Panes.Insert(parentIndex + 2, new BasePane("Pae1", 8));
+				Panes.Insert(parentIndex + 1, new BasePane("pas1", 8));
+				Panes.Insert(parentIndex + 2, new BasePane("pae1", 8));
 			}
 			Parent.Children.Add(pane);
 			pane.Parent = Parent;

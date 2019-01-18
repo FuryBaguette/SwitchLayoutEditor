@@ -72,6 +72,7 @@ namespace SwitchThemes.Common.Custom
             DeleteBorder = 1,
             RenderTwoCycles = 2,
         };
+
         public BorderType BorderFormat
         {
             get => (BorderType)((flags >> 2) & 0x3);
@@ -96,7 +97,7 @@ namespace SwitchThemes.Common.Custom
         public Color ShadowBottomColor { get; set; }
         public float ShadowItalic { get; set; }
 		
-		public Txt1Pane(ByteOrder b) : base("txt1", b) { }
+		public Txt1Pane(ByteOrder b) : base("txt1", b, 0xA4) { }
 
 		public Txt1Pane(BasePane p, ByteOrder b) : base(p, b)
         {

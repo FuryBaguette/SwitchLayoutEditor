@@ -535,6 +535,7 @@ namespace BflytPreview
 
 		void AddPane(BasePane p)
 		{
+			if (treeView1.SelectedNode.Tag as EditablePane == null) return;
 			layout.AddPane(p, treeView1.SelectedNode.Tag as EditablePane);
 			UpdateView();
 		}
