@@ -15,8 +15,11 @@ For a more in depth guide, [click here](https://github.com/FuryBaguette/SwitchLa
 - Import/Export JSON patch (Compatible with Switch themes)
 
 ## Screenshot
+This is using the original from the Switch's home menu:
 ![](https://github.com/FuryBaguette/SwitchLayoutEditor/blob/master/Screenshots/MainMenu.png)
-This is using a layout from the Switch's home menu
+
+Example of a custom layout:
+![](https://github.com/FuryBaguette/SwitchLayoutEditor/blob/master/Screenshots/Example.png)
 
 ## Credits
 - [FuryBaguette](https://github.com/FuryBaguette) - Development
