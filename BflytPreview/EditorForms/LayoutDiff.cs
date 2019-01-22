@@ -60,13 +60,13 @@ namespace SwitchThemes
 						var edPic = (Pic1Pane)edPan;
 						var orPic = (Pic1Pane)orPan;
 						if (edPic.ColorTopLeft != orPic.ColorTopLeft)
-							curPatch.ColorTL = edPic.ColorTopLeft.ToHexRGBA();
+							curPatch.ColorTL = ColorToLEByte(edPic.ColorTopLeft);
 						if (edPic.ColorTopRight != orPic.ColorTopRight)
-							curPatch.ColorTR = edPic.ColorTopRight.ToHexRGBA();
+							curPatch.ColorTR = ColorToLEByte(edPic.ColorTopRight);
 						if (edPic.ColorBottomLeft != orPic.ColorBottomLeft)
-							curPatch.ColorBL = edPic.ColorBottomLeft.ToHexRGBA();
+							curPatch.ColorBL = ColorToLEByte(edPic.ColorBottomLeft);
 						if (edPic.ColorBottomRight != orPic.ColorBottomRight)
-							curPatch.ColorBR = edPic.ColorBottomRight.ToHexRGBA();
+							curPatch.ColorBR = ColorToLEByte(edPic.ColorBottomRight);
 					}
 					curFile.Add(curPatch);
 				}
@@ -90,6 +90,8 @@ namespace SwitchThemes
 		static NullableVector3 ToNullVec(Vector3 v) => new NullableVector3() { X = v.X, Y = v.Y, Z = v.Z };
 		static bool VecEqual(Vector2 v, Vector2 v1) => v.X == v1.X && v.Y == v1.Y;
 		static NullableVector2 ToNullVec(Vector2 v) => new NullableVector2() { X = v.X, Y = v.Y };
+
+		static string ColorToLEByte(System.Drawing.Color col) => ((uint)(col.R | col.G << 8 | col.B << 16 | col.A << 24)).ToString("X");
 
 		static string[] GetPaneNames(BFLYT layout)
 		{
