@@ -27,7 +27,7 @@ namespace BflytPreview
         private void checkVersionBtn_Click(object sender, EventArgs e)
         {
             System.Xml.XmlDocument UpdateInfo = new System.Xml.XmlDocument();
-            UpdateInfo.LoadXml(GetWebPage("http://switchwiki.tk/EditorAutoUpdate.xml"));
+            UpdateInfo.LoadXml(GetWebPage("https://furybaguette.github.io/SwitchLayoutEditor/EditorAutoUpdate.xml"));
             string Url = UpdateInfo.SelectSingleNode("//url").InnerText;
             NewVersion = UpdateInfo.SelectSingleNode("//version").InnerText;
 
