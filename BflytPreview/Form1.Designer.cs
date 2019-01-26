@@ -42,6 +42,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pnlSubSystem = new System.Windows.Forms.Panel();
+            this.checkUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -60,7 +61,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.toolsToolStripMenuItem});
+            this.toolsToolStripMenuItem,
+            this.checkUpdateToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(672, 24);
@@ -204,6 +206,13 @@
             this.pnlSubSystem.DragDrop += new System.Windows.Forms.DragEventHandler(this.pnlSubSystem_DragDrop);
             this.pnlSubSystem.DragEnter += new System.Windows.Forms.DragEventHandler(this.pnlSubSystem_DragEnter);
             // 
+            // checkUpdateToolStripMenuItem
+            // 
+            this.checkUpdateToolStripMenuItem.Name = "checkUpdateToolStripMenuItem";
+            this.checkUpdateToolStripMenuItem.Size = new System.Drawing.Size(93, 20);
+            this.checkUpdateToolStripMenuItem.Text = "Check Update";
+            this.checkUpdateToolStripMenuItem.Click += new System.EventHandler(this.checkUpdateToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -251,6 +260,7 @@
         private System.Windows.Forms.Panel pnlSubSystem;
 		private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem layoutDiffToolStripMenuItem;
-	}
+        private System.Windows.Forms.ToolStripMenuItem checkUpdateToolStripMenuItem;
+    }
 }
 
