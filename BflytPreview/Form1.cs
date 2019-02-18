@@ -11,15 +11,18 @@ namespace BflytPreview
 {
 	public partial class Form1 : Form
 	{
-		public Form1()
+
+        public const string AppVersion = "1.0.0.31";
+
+        public Form1()
 		{
 			TypeDescriptor.AddAttributes(typeof(Vector3), new TypeConverterAttribute(typeof(Vector3Converter)));
 			TypeDescriptor.AddAttributes(typeof(Vector2), new TypeConverterAttribute(typeof(Vector2Converter)));
 
 			InitializeComponent();
-		}
+        }
 
-		private void openBFLYTToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openBFLYTToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog opn = new OpenFileDialog() { Filter = "Supported files (bflyt,szs)|*.bflyt;*.szs|All files|*.*" };
 			if (opn.ShowDialog() != DialogResult.OK) return;
@@ -82,9 +85,15 @@ namespace BflytPreview
 
 		private void layoutDiffToolStripMenuItem_Click(object sender, EventArgs e)
 			=> new EditorForms.LayoutDiffForm().Show();
-	}
 
-	public class Vector3Converter : System.ComponentModel.TypeConverter
+        private void checkUpdateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdateForm updateForm = new UpdateForm();
+            updateForm.Show();
+        }
+    }
+
+    public class Vector3Converter : System.ComponentModel.TypeConverter
 	{
 		public override bool GetPropertiesSupported(ITypeDescriptorContext context) => true;
 

@@ -57,11 +57,11 @@ namespace BflytPreview
 			glControl.MouseDown += glControl_MouseDown;
 			glControl.MouseMove += glControl_MouseMove;
 			glControl.MouseUp += GlControl_MouseUp;
-		}
+        }
 
-		#region OnLoad
+        #region OnLoad
 
-		private void EditorView_Load(object sender, System.EventArgs e)
+        private void EditorView_Load(object sender, System.EventArgs e)
 		{
 			bringToFront();
 			glControl_Resize(glControl, EventArgs.Empty);
@@ -334,7 +334,7 @@ namespace BflytPreview
 			}
 		}
 
-		void SaveBflyt()
+        void SaveBflyt()
 		{
 			SaveFileDialog sav = new SaveFileDialog() { Filter = "Binary cafe layout (*.bflyt)|*.bflyt" };
 			if (sav.ShowDialog() != DialogResult.OK) return;
