@@ -27,6 +27,9 @@ namespace BflytPreview.EditorForms
 			InitializeComponent();
 			loadedSarc = _sarc;
 			MainForm = _parentForm;
+#if DEBUG
+			tb_search.Visible = true;
+#endif
 		}
 
 		private void SzsEditor_Load(object sender, EventArgs e)
@@ -296,5 +299,23 @@ namespace BflytPreview.EditorForms
             }
             return true;
         }
-    }
+
+		private void listBox1_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (listBox1.SelectedItem == null) return;
+			if (e.KeyCode == Keys.Q)
+				HexEditorForm.Show(loadedSarc.Files[listBox1.SelectedItem as string]);
+		}
+
+		private void tb_search_TextChanged(object sender, EventArgs e)
+		{
+			listBox1.Items.Clear();
+			if (tb_search.Text.Trim() == "")
+				listBox1.Items.AddRange(loadedSarc.Files.Keys.ToArray());
+			else
+				foreach (var k in loadedSarc.Files.Keys)
+					if (k.IndexOf(tb_search.Text, StringComparison.InvariantCultureIgnoreCase) != -1)
+						listBox1.Items.Add(k);
+		}
+	}
 }

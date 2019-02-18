@@ -234,7 +234,7 @@ namespace SwitchThemesCommon.Bflyt
 			Size = dataReader.ReadVector2();
 		}
 
-		protected virtual void ApplyChanges(BinaryDataWriter bin)
+		protected override void ApplyChanges(BinaryDataWriter bin)
 		{
 			void WriteBinaryString(string s, int max)
 			{

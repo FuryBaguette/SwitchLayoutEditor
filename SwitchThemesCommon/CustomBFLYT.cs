@@ -79,6 +79,8 @@ namespace SwitchThemes.Common.Custom
 				WritePane(bin);
 				return new BasePane(name, (byte[])data.Clone());
 			}
+
+			protected virtual void ApplyChanges(BinaryDataWriter bin) { }
 		}
 
         public class CusRectangle
@@ -359,16 +361,18 @@ namespace SwitchThemes.Common.Custom
 		}
 
 		BasePane DetectProperPaneClass(BasePane pane)
-		{
-			if (pane.data.Length < 0x4C || pane.name == "usd1" || pane.name == "grp1" || pane.name == "cnt1")
-				return pane;
+		{			
 			switch (pane.name)
 			{
 				case "pic1":
 					return new Pic1Pane(pane, FileByteOrder);
                 case "txt1":
                     return new Txt1Pane(pane, FileByteOrder);
+				case "usd1":
+					return new Usd1Pane(pane, FileByteOrder);
                 default:
+					if (pane.data.Length < 0x4C || pane.name == "grp1" || pane.name == "cnt1")
+						return pane;
 					return new EditablePane(pane, FileByteOrder);
 			}
 		}

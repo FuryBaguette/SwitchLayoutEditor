@@ -313,7 +313,7 @@ namespace BflytPreview
 
 		private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			propertyGrid1.SelectedObject = treeView1.SelectedNode.Tag as EditablePane;
+			propertyGrid1.SelectedObject = treeView1.SelectedNode.Tag;
 			glControl.Invalidate();
 		}
 
