@@ -4,6 +4,7 @@ using SwitchThemesCommon.Bflyt;
 using Syroot.BinaryData;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -25,6 +26,10 @@ namespace SwitchThemes.Common.Custom
 		{
 			public BasePane Parent;
 			public List<BasePane> Children = new List<BasePane>();
+
+			[Browsable(true)]
+			[TypeConverter(typeof(ExpandableObjectConverter))]
+			virtual public Usd1Pane UserData { get; set; }  = null;
 
 			public override string ToString()
 			{
@@ -48,6 +53,8 @@ namespace SwitchThemes.Common.Custom
 				name = basePane.name;
 				length = basePane.length;
 				data = basePane.data;
+				if (name != "usd1")
+					UserData = basePane.UserData;
 			}
 
 			public BasePane(string _name, BinaryDataReader bin)
@@ -70,6 +77,8 @@ namespace SwitchThemes.Common.Custom
 				length = data.Length + 8;
 				bin.Write(length);
 				bin.Write(data);
+				if (UserData != null)
+					UserData.WritePane(bin);
 			}
 
 			public virtual BasePane Clone()
@@ -77,7 +86,10 @@ namespace SwitchThemes.Common.Custom
 				MemoryStream mem = new MemoryStream();
 				BinaryDataWriter bin = new BinaryDataWriter(mem);
 				WritePane(bin);
-				return new BasePane(name, (byte[])data.Clone());
+				BasePane res = new BasePane(name, (byte[])data.Clone());
+				if (name != "usd1" && UserData != null)
+					res.UserData = (Usd1Pane)UserData.Clone();
+				return res;
 			}
 
 			protected virtual void ApplyChanges(BinaryDataWriter bin) { }
@@ -129,13 +141,13 @@ namespace SwitchThemes.Common.Custom
 				{
 					uint off = (uint)dataWriter.Position;
 					dataWriter.Write(Textures[i], BinaryStringFormat.ZeroTerminated);
-					while (dataWriter.BaseStream.Position % 4 != 0)
-						dataWriter.Write((byte)0);
 					uint endPos = (uint)dataWriter.Position;
 					dataWriter.Position = 4 + i * 4;
 					dataWriter.Write(off - 4);
 					dataWriter.Position = endPos;
 				}
+				while (dataWriter.BaseStream.Position % 4 != 0)
+					dataWriter.Write((byte)0);
 				data = newData.ToArray();
 				base.WritePane(bin);
 			}
@@ -195,7 +207,10 @@ namespace SwitchThemes.Common.Custom
 			bin.Write((UInt16)0x14); //Header size
 			bin.Write(version);
 			bin.Write((Int32)0);
-			bin.Write((UInt16)Panes.Count);
+			UInt16 PaneCount = (UInt16)Panes.Count;
+			for (int i = 0; i < Panes.Count; i++)
+				if (Panes[i].UserData != null) PaneCount++;
+			bin.Write(PaneCount);
 			bin.Write((UInt16)0); //padding
 			foreach (var p in Panes)
 				p.WritePane(bin);
@@ -265,6 +280,9 @@ namespace SwitchThemes.Common.Custom
 						break;
 					case "mat1":
 						Panes.Add(new MaterialsSection(bin));
+						break;
+					case "usd1":
+						Panes.Last().UserData = new Usd1Pane(bin); 
 						break;
 					default:
 						var pane = new BasePane(name, bin);
@@ -368,8 +386,6 @@ namespace SwitchThemes.Common.Custom
 					return new Pic1Pane(pane, FileByteOrder);
                 case "txt1":
                     return new Txt1Pane(pane, FileByteOrder);
-				case "usd1":
-					return new Usd1Pane(pane, FileByteOrder);
                 default:
 					if (pane.data.Length < 0x4C || pane.name == "grp1" || pane.name == "cnt1")
 						return pane;
@@ -441,8 +457,8 @@ namespace SwitchThemes.Common.Custom
                         p.Size.Value.X ?? e.Size.X,
                         p.Size.Value.Y ?? e.Size.Y);
                 }
-                #endregion
-                /*#region ColorDataForPic1
+				#endregion
+				/*#region ColorDataForPic1
                 if (e.name == "pic1")
                 {
                     if (p.ColorTL != null)
@@ -455,8 +471,23 @@ namespace SwitchThemes.Common.Custom
                         e.ColorData[3] = Convert.ToUInt32(p.ColorBR, 16);
                 }
                 #endregion*/
-            }
-            return true;
+				#region usdPane
+				if (e.UserData != null)
+				{
+					Usd1Pane usd = e.UserData;
+					foreach (var patch in p.UsdPatches)
+					{
+						var v = usd.FindName(patch.PropName);
+						if (v == null)
+							usd.Properties.Add(new Usd1Pane.EditableProperty() { Name = patch.PropName, value = patch.PropValues, type = (Usd1Pane.EditableProperty.ValueType)patch.type });
+						if (v != null && v.ValueCount == patch.PropValues.Length && (int)v.type == patch.type)
+							v.value = patch.PropValues;
+					}
+					usd.ApplyChanges();
+				}
+				#endregion
+			}
+			return true;
         }
     }
 }

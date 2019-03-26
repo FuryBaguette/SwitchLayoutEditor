@@ -15,15 +15,17 @@ using System.Windows.Forms;
 
 namespace SwitchThemes.Common.Custom
 {
-	public class Usd1Pane : BasePane, ICustomTypeDescriptor
+	public class Usd1Pane : BasePane
 	{
-		ByteOrder order;
+		public ByteOrder order;
 
-		Dictionary<string, dynamic> Properties;
+		public override string ToString() => "User data pane";
 
-		EditableProperty[] PropertyMetadata;
-		public struct EditableProperty
+		[TypeConverter(typeof(ExpandableObjectConverter))]
+		public class EditableProperty
 		{
+			public override string ToString() => Name;
+
 			public enum ValueType : byte
 			{
 				data = 0,
@@ -32,27 +34,27 @@ namespace SwitchThemes.Common.Custom
 				other = 3
 			}
 
-			public string Name;
 			public long ValueOffset;
 			public ushort ValueCount;
-			public ValueType type;
+
+			public ValueType type { get; set; }
+			public string Name { get; set; }
+			public string[] value { get; set; }
 		}
 
-		public override string ToString()
-		{
-			return "[usd1 pane]";
-		}
+		List<string> OriginalProperties = new List<string>();
 
-		public Usd1Pane(BasePane p, ByteOrder b) : base(p)
+		public List<EditableProperty> Properties { get; set; }
+		public EditableProperty FindName(string name) => Properties.Where(x => x.Name == name).FirstOrDefault();
+
+		void LoadProperties()
 		{
+			Properties = new List<EditableProperty>();
 			BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
-			order = b;
-			dataReader.ByteOrder = order;
+			dataReader.ByteOrder = ByteOrder.LittleEndian;
 			dataReader.Position = 0;
 			ushort Count = dataReader.ReadUInt16();
 			ushort Unk1 = dataReader.ReadUInt16();
-			Properties = new Dictionary<string, dynamic>();
-			var prop = new List<EditableProperty>();
 			for (int i = 0; i < Count; i++)
 			{
 				var EntryOffset = dataReader.Position;
@@ -62,7 +64,8 @@ namespace SwitchThemes.Common.Custom
 				byte dataType = dataReader.ReadByte();
 				dataReader.ReadByte(); //padding ?
 
-				if (!(dataType == 1 || dataType == 2)) continue;
+				if (!(dataType == 1 || dataType == 2))
+					continue;
 
 				var pos = dataReader.Position;
 				dataReader.Position = EntryOffset + NameOffset;
@@ -70,187 +73,118 @@ namespace SwitchThemes.Common.Custom
 				var type = (EditableProperty.ValueType)dataType;
 
 				dataReader.Position = EntryOffset + DataOffset;
-				dynamic values;
-				if (type == EditableProperty.ValueType.int32)
-					values = dataReader.ReadUInt32s(ValueLen);
-				else
-					values = dataReader.ReadSingles(ValueLen);
+				string[] values = new string[ValueLen];
 
+				for (int j = 0; j < ValueLen; j++)
+					if (type == EditableProperty.ValueType.int32)
+						values[j] = dataReader.ReadInt32().ToString();
+					else
+						values[j] = dataReader.ReadSingle().ToString();
 
-				prop.Add(new EditableProperty()
+				Properties.Add(new EditableProperty()
 				{
 					Name = propName,
 					type = type,
 					ValueOffset = EntryOffset + DataOffset,
 					ValueCount = ValueLen,
+					value = values
 				});
-
-				Properties.Add(propName, values);
+				OriginalProperties.Add(propName);
 
 				dataReader.Position = pos;
 			}
-			PropertyMetadata = prop.ToArray();
 		}
 
-		protected override void ApplyChanges(BinaryDataWriter bin)
+		public Usd1Pane(BinaryDataReader bin) : base("usd1", bin)
 		{
-			bin.Write(data);
-			bin.Position = 0;
-			foreach (var m in PropertyMetadata)
+			order = bin.ByteOrder;
+			LoadProperties();
+		}
+
+		public Usd1Pane(Usd1Pane p) : base("usd1", p.data)
+		{
+			order = p.order;
+			LoadProperties();
+			Properties = p.Properties;
+		}
+
+		List<EditableProperty> AddedProperties = new List<EditableProperty>();
+		void AddNewProperties()
+		{
+			foreach (var p in Properties)
+				if (!OriginalProperties.Contains(p.Name))
+				{
+					if (p.type != EditableProperty.ValueType.int32 && p.type != EditableProperty.ValueType.single)
+						throw new Exception("The only types supported for usd properties are single and int32");
+					AddedProperties.Add(p);
+				}
+			Properties.RemoveAll(x => !OriginalProperties.Contains(x.Name));
+			foreach (var s in OriginalProperties)
+				if (!Properties.Any(x => x.Name == s))
+					throw new Exception("You can't remove existing properties");
+		}
+
+		public void ApplyChanges()
+		{
+			AddNewProperties();
+
+			MemoryStream mem = new MemoryStream();
+			BinaryDataWriter bin = new BinaryDataWriter(mem);
+			bin.ByteOrder = order;
+			bin.Write((ushort)(Properties.Count + AddedProperties.Count));
+			bin.Write((ushort)0);
+			bin.Write(new byte[0xC * AddedProperties.Count]);
+			bin.Write(data, 4, data.Length - 4); //write rest of entries, adding new elements first doesn't break relative offets in the struct
+			foreach (var m in Properties)
 			{
 				if ((byte)m.type != 1 && (byte)m.type != 2) continue;
-				if (!Properties.ContainsKey(m.Name)) continue;
-				if (((Array)Properties[m.Name]).Length > m.ValueCount)
-					MessageBox.Show("The number of values for usd1 panes must not be changed, extra values will be skipped");
-				if (((Array)Properties[m.Name]).Length < m.ValueCount)
-				{
-					MessageBox.Show("The number of values for usd1 panes must not be changed, removed values will be ignored");
-					continue;
-				}
+				m.ValueOffset += + 0xC * AddedProperties.Count;
 				bin.Position = m.ValueOffset;
+				if (m.value.Length != m.ValueCount) throw new Exception("Can't change the number of values of an usd1 property");
 				for (int i = 0; i < m.ValueCount; i++)
-					bin.Write(Properties[m.Name][i]);
+					if (m.type == EditableProperty.ValueType.int32)
+						bin.Write(int.Parse(m.value[i]));
+					else
+						bin.Write(float.Parse(m.value[i]));
 			}
+			for (int i = 0; i < AddedProperties.Count; i++)
+			{
+				bin.Position = bin.BaseStream.Length;
+				uint DataOffset = (uint)bin.BaseStream.Position;
+				AddedProperties[i].ValueOffset = DataOffset;
+				AddedProperties[i].ValueCount = (ushort)AddedProperties[i].value.Length;
+				for (int j = 0; j < AddedProperties[i].value.Length; j++)
+					if (AddedProperties[i].type == EditableProperty.ValueType.int32)
+						bin.Write(int.Parse(AddedProperties[i].value[j]));
+					else
+						bin.Write(float.Parse(AddedProperties[i].value[j]));
+				uint NameOffest = (uint)bin.BaseStream.Position;
+				bin.Write(AddedProperties[i].Name, BinaryStringFormat.ZeroTerminated);
+				bin.Align(4);
+				uint entryStart = (uint)(4 + i * 0xC);
+				bin.BaseStream.Position = entryStart;
+				bin.Write(NameOffest - entryStart);
+				bin.Write(DataOffset - entryStart);
+				bin.Write((ushort)AddedProperties[i].ValueCount);
+				bin.Write((byte)AddedProperties[i].type);
+				bin.Write((byte)0);
+				OriginalProperties.Add(AddedProperties[i].Name);
+			}
+			data = mem.ToArray();
+
+			Properties.AddRange(AddedProperties);
+			AddedProperties.Clear();
 		}
 
 		public override void WritePane(BinaryDataWriter bin)
 		{
-			using (var mem = new MemoryStream())
-			{
-				BinaryDataWriter dataWriter = new BinaryDataWriter(mem);
-				dataWriter.ByteOrder = bin.ByteOrder;
-				ApplyChanges(dataWriter);
-				data = mem.ToArray();
-			}
+			ApplyChanges();
 			base.WritePane(bin);
 		}
 
-		public override BasePane Clone()
-		{
-			return new Usd1Pane(base.Clone(), order);
-		}
+		public override BasePane Clone() => new Usd1Pane(this);
 
-		#region PropertyGridMagic
-		public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
-		{
-			ArrayList properties = new ArrayList();
-			foreach (DictionaryEntry e in (IDictionary)Properties)
-			{
-				properties.Add(new DictionaryPropertyDescriptor(Properties, e.Key));
-			}
-
-			PropertyDescriptor[] props =
-				(PropertyDescriptor[])properties.ToArray(typeof(PropertyDescriptor));
-
-			return new PropertyDescriptorCollection(props);
-		}
-
-		public AttributeCollection GetAttributes()
-		{
-			return TypeDescriptor.GetAttributes(this, true);
-		}
-
-		public string GetClassName()
-		{
-			return TypeDescriptor.GetClassName(this, true);
-		}
-
-		public string GetComponentName()
-		{
-			return TypeDescriptor.GetComponentName(this, true);
-		}
-
-		public TypeConverter GetConverter()
-		{
-			return TypeDescriptor.GetConverter(this, true);
-		}
-
-		public EventDescriptor GetDefaultEvent()
-		{
-			return TypeDescriptor.GetDefaultEvent(this, true);
-		}
-
-		public PropertyDescriptor GetDefaultProperty()
-		{
-			return null;
-		}
-
-		public object GetEditor(Type editorBaseType)
-		{
-			return TypeDescriptor.GetEditor(this, editorBaseType, true);
-		}
-
-		public EventDescriptorCollection GetEvents()
-		{
-			return TypeDescriptor.GetEvents(this, true);
-		}
-
-		public EventDescriptorCollection GetEvents(Attribute[] attributes)
-		{
-			return TypeDescriptor.GetEvents(this, attributes, true);
-		}
-
-		public PropertyDescriptorCollection GetProperties()
-		{
-			return ((ICustomTypeDescriptor)this).GetProperties(new Attribute[0]);
-		}
-
-		public object GetPropertyOwner(PropertyDescriptor pd)
-		{
-			return this;
-		}
-
-		class DictionaryPropertyDescriptor : PropertyDescriptor
-		{
-			IDictionary _dictionary;
-			object _key;
-
-			internal DictionaryPropertyDescriptor(IDictionary d, object key)
-				: base(key.ToString(), null)
-			{
-				_dictionary = d;
-				_key = key;
-			}
-
-			public override Type PropertyType
-			{
-				get { return _dictionary[_key].GetType(); }
-			}
-
-			public override void SetValue(object component, object value)
-			{
-				_dictionary[_key] = value;
-			}
-
-			public override object GetValue(object component)
-			{
-				return _dictionary[_key];
-			}
-
-			public override bool IsReadOnly
-			{
-				get { return false; }
-			}
-
-			public override Type ComponentType
-			{
-				get { return null; }
-			}
-
-			public override bool CanResetValue(object component)
-			{
-				return false;
-			}
-
-			public override void ResetValue(object component)
-			{
-			}
-
-			public override bool ShouldSerializeValue(object component)
-			{
-				return false;
-			}
-		}
-		#endregion
+		[Browsable(false)]
+		public override Usd1Pane UserData { get => base.UserData; set => base.UserData = value; }
 	}
 }

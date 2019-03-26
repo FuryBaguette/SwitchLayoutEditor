@@ -37,12 +37,19 @@ namespace SwitchThemes
 				List<PanePatch> curFile = new List<PanePatch>();
 				for (int i = 0; i < edPaneNames.Length; i++)
 				{
-					if (edPaneNames[i] == null || !(ed[i] is EditablePane)) continue;
+					if (edPaneNames[i] == null || !(ed[i] is EditablePane) || IgnorePaneList.Contains(ed[i].name)) continue;
 					var j = Array.IndexOf(orPaneNames, edPaneNames[i]);
 					if (j == -1) continue;
-					if (ed[i].data.SequenceEqual(or[j].data)) continue;
-					if (!(or[j] is EditablePane)) continue;
+
 					PanePatch curPatch = new PanePatch() { PaneName = edPaneNames[i] };
+					curPatch.UsdPatches = MakeUsdPatch(or[j].UserData, ed[i].UserData);
+					if (ed[i].data.SequenceEqual(or[j].data))
+					{
+						if (curPatch.UsdPatches == null) continue;
+						curFile.Add(curPatch);
+						continue;
+					}
+
 					var orPan = (EditablePane)(or[j]);
 					var edPan = (EditablePane)(ed[i]);
 					if (!VecEqual(edPan.Position, orPan.Position))
@@ -84,6 +91,35 @@ namespace SwitchThemes
 				AuthorName = "autoDiff",
 				Files = Patches.ToArray()
 			};
+		}
+
+		static List<UsdPatch> MakeUsdPatch(Usd1Pane or, Usd1Pane ed)
+		{
+			if (or == null || ed == null) return null;
+			if (or.data.SequenceEqual(ed.data)) return null;
+
+			List<UsdPatch> res = new List<UsdPatch>();
+			foreach (var edP in ed.Properties)
+			{
+				var orP = or.FindName(edP.Name);
+				if (orP != null)
+				{
+					if (orP.ValueCount != edP.ValueCount) continue;
+					if (orP.type != edP.type) continue;
+					if (orP.type != Usd1Pane.EditableProperty.ValueType.int32 && orP.type != Usd1Pane.EditableProperty.ValueType.single) continue;
+
+					if (orP.value.SequenceEqual(edP.value)) continue;
+				}
+				res.Add(new UsdPatch()
+				{
+					PropName = edP.Name,
+					PropValues = edP.value,
+					type = (int)edP.type
+				});
+			}
+
+			if (res.Count == 0) return null;
+			return res;
 		}
 
 		static bool VecEqual(Vector3 v, Vector3 v1) => v.X == v1.X && v.Y == v1.Y && v.Z == v1.Z;

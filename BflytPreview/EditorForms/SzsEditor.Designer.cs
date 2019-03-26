@@ -255,7 +255,6 @@
 			this.tb_search.Size = new System.Drawing.Size(100, 20);
 			this.tb_search.TabIndex = 8;
 			this.tb_search.Text = "Search";
-			this.tb_search.Visible = false;
 			this.tb_search.TextChanged += new System.EventHandler(this.tb_search_TextChanged);
 			// 
 			// SzsEditor

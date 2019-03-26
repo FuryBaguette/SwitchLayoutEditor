@@ -27,9 +27,6 @@ namespace BflytPreview.EditorForms
 			InitializeComponent();
 			loadedSarc = _sarc;
 			MainForm = _parentForm;
-#if DEBUG
-			tb_search.Visible = true;
-#endif
 		}
 
 		private void SzsEditor_Load(object sender, EventArgs e)
