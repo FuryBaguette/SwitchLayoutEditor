@@ -141,8 +141,8 @@ namespace BflytPreview
         {
             var version1 = new Version(CurrentVer);
             var version2 = new Version(NewVer);
-
-            if (version1.CompareTo(version2) >= 0)
+            var compare = version1.CompareTo(version2);
+            if (compare <= 0)
                 return true;
             else
                 return false;
