@@ -472,7 +472,7 @@ namespace SwitchThemes.Common.Custom
                 }
                 #endregion*/
 				#region usdPane
-				if (e.UserData != null)
+				if (e.UserData != null && p.UsdPatches != null)
 				{
 					Usd1Pane usd = e.UserData;
 					foreach (var patch in p.UsdPatches)
