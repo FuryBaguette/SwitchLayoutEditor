@@ -12,7 +12,7 @@ namespace BflytPreview
 	public partial class Form1 : Form
 	{
 
-        public const string AppVersion = "1.0.0.31";
+        public const string AppVersion = "1.0.0.4";
 
         public Form1()
 		{
