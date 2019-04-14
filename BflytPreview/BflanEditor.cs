@@ -9,12 +9,16 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using SwitchThemesCommon;
+using BflytPreview.EditorForms;
 
 namespace BflytPreview
 {
-	public partial class BflanEditor : Form
+	public partial class BflanEditor : Form, IFormSaveToArchive
 	{
 		Bflan file = null;
+		IFileProvider _parentArch;
+		public IFileProvider ParentArchive { get => _parentArch; set { _parentArch = value; saveToArchiveToolStripMenuItem.Visible = _parentArch != null; } }
+
 		public BflanEditor(Bflan _file)
 		{
 			InitializeComponent();
@@ -24,6 +28,7 @@ namespace BflytPreview
 		private void BflanEditor_Load(object sender, EventArgs e)
 		{
 			UpdateTreeview();
+			FormBringToFront();
 		}
 
 		void UpdateTreeview()
@@ -66,5 +71,34 @@ namespace BflytPreview
 		{
 			propertyGrid1.SelectedObject = e.Node.Tag;
 		}
+
+		private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveFileDialog sav = new SaveFileDialog() { Filter = "Bflan file|*.bflan" };
+			if (sav.ShowDialog() != DialogResult.OK) return;
+			File.WriteAllBytes(sav.FileName,file.WriteFile());
+		}
+
+		private void SaveToArchiveToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			_parentArch.SaveToArchive(file.WriteFile(), this);
+		}
+
+		private void BflanEditor_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (ParentArchive != null)
+				ParentArchive.EditorClosed(this);
+			Settings.Default.ShowImage = false;
+		}
+
+		void FormBringToFront()
+		{
+			this.Activate();
+			this.BringToFront();
+			this.Focus();
+		}
+
+		private void BflanEditor_Click(object sender, EventArgs e) => FormBringToFront();
+		private void BflanEditor_LocationChanged(object sender, EventArgs e) => FormBringToFront();
 	}
 }

@@ -302,6 +302,8 @@ namespace BflytPreview.EditorForms
 			if (listBox1.SelectedItem == null) return;
 			if (e.KeyCode == Keys.Q)
 				HexEditorForm.Show(loadedSarc.Files[listBox1.SelectedItem as string]);
+			else if (e.KeyCode == Keys.Return)
+				listBox1_DoubleClick(sender, null);
 		}
 
 		private void tb_search_TextChanged(object sender, EventArgs e)

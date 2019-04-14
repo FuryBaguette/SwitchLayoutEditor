@@ -28,8 +28,9 @@ namespace SwitchThemesCommon
 		public virtual void Write(BinaryDataWriter bin)
 		{
 			if (TypeName.Length != 4) throw new Exception("unexpected type len");
+			BuildData(bin.ByteOrder);
 			bin.Write(TypeName, BinaryStringFormat.NoPrefixOrTermination);
-			bin.Write((int)Data.Length);
+			bin.Write((int)Data.Length + 8);
 			bin.Write(Data);
 		}
 	}
@@ -42,8 +43,8 @@ namespace SwitchThemesCommon
 		public byte ChildBinding { get; set; }
 		public List<string> Groups { get; set; } = new List<string>();
 
-		public uint Unk_StartOfFile { get; set; }
-		public uint Unk_EndOfFile { get; set; }
+		public UInt16 Unk_StartOfFile { get; set; }
+		public UInt16 Unk_EndOfFile { get; set; }
 		public byte[] Unk_EndOfHeader { get; set; }
 
 		const int groupNameLen = 0x24;
@@ -65,7 +66,7 @@ namespace SwitchThemesCommon
 			Unk_StartOfFile = bin.ReadUInt16();
 			Unk_EndOfFile = bin.ReadUInt16();
 			ChildBinding = bin.ReadByte();
-			//Unk_EndOfHeader = bin.ReadBytes((int)animName - (int)bin.Position);
+			Unk_EndOfHeader = bin.ReadBytes((int)animName - (int)bin.Position);
 			bin.BaseStream.Position = animName;
 			Name = bin.ReadString(BinaryStringFormat.ZeroTerminated);
 			for (int i = 0; i < groupCount; i++)
@@ -79,13 +80,43 @@ namespace SwitchThemesCommon
 			}
 		}
 
+		public override void BuildData(ByteOrder byteOrder)
+		{
+			MemoryStream mem = new MemoryStream();
+			BinaryDataWriter bin = new BinaryDataWriter(mem);
+			bin.ByteOrder = byteOrder;
+			bin.Write((UInt16)AnimationOrder);
+			bin.Write((UInt16)Groups.Count);
+			var UpdateOffsetsPos = bin.Position;
+			bin.Write((UInt32)0);
+			bin.Write((UInt32)0);
+			bin.Write(Unk_StartOfFile);
+			bin.Write(Unk_EndOfFile);
+			bin.Write(ChildBinding);
+			bin.Write(Unk_EndOfHeader);
+			var oldPos = bin.Position;
+			bin.Position = UpdateOffsetsPos;
+			bin.Write((uint)oldPos + 8); //name offset
+			bin.Position = oldPos;
+			bin.Write(Name, BinaryStringFormat.ZeroTerminated);
+			while (bin.BaseStream.Position % 4 != 0)
+				bin.Write((byte)0);
+			oldPos = bin.Position;
+			bin.Position = UpdateOffsetsPos + 4; //Group name table
+			bin.Write((uint)oldPos + 8);
+			bin.Position = oldPos;
+			for (int i = 0; i < Groups.Count; i++)
+				bin.WriteFixedLenString(Groups[i], groupNameLen);
+			Data = mem.ToArray();
+		}
+
 		public override string ToString() => "[Pat1 section]";
 	}
 
 	[TypeConverter(typeof(ExpandableObjectConverter))]
 	public class Pai1Section : BflanSection
 	{
-		public uint FrameSize { get; set; }
+		public UInt16 FrameSize { get; set; }
 		public byte Flags { get; set; }
 		public List<string> Textures { get; set; } = new List<string>();
 		public List<PaiEntry> Entries = new List<PaiEntry>();
@@ -102,6 +133,7 @@ namespace SwitchThemesCommon
 			public string Name { get; set; }
 			public AnimationTarget Target { get; set; }
 			public List<PaiTag> Tags = new List<PaiTag>();
+			public byte[] UnkwnownData { get; set; }
 
 			public PaiEntry(BinaryDataReader bin)
 			{
@@ -110,10 +142,36 @@ namespace SwitchThemesCommon
 				var tagCount = bin.ReadByte();
 				Target = (AnimationTarget)bin.ReadByte();
 				bin.ReadUInt16(); //padding
-				var tagOffsets = bin.ReadUInt32();
-				bin.BaseStream.Position = tagOffsets + SectionStart;
+				List<uint> TagOffsets = new List<uint>();
+				for (int i= 0; i < tagCount; i++)
+					TagOffsets.Add(bin.ReadUInt32());
+				UnkwnownData = bin.ReadBytes((int)(TagOffsets[0] + SectionStart - bin.Position));
 				for (int i = 0; i < tagCount; i++)
+				{
+					bin.BaseStream.Position = TagOffsets[i] + SectionStart;
 					Tags.Add(new PaiTag(bin, (byte)Target));
+				}
+			}
+
+			public void Write(BinaryDataWriter bin)
+			{
+				uint SectionStart = (uint)bin.Position;
+				bin.WriteFixedLenString(Name, 28);
+				bin.Write((byte)Tags.Count);
+				bin.Write((byte)Target);
+				bin.Write((UInt16)0);
+				var tagTable = bin.Position;
+				for (int i = 0; i < Tags.Count; i++)
+					bin.Write((uint)0);
+				bin.Write(UnkwnownData);
+				for (int i = 0; i < Tags.Count; i++)
+				{
+					var oldPos = bin.Position;
+					bin.Position = tagTable + i * 4;
+					bin.Write((uint)oldPos - SectionStart);
+					bin.Position = oldPos;
+					Tags[i].Write(bin, (byte)Target);
+				}
 			}
 		}
 
@@ -126,14 +184,39 @@ namespace SwitchThemesCommon
 
 			public PaiTag(BinaryDataReader bin, byte TargetType)
 			{
-				var sectionStart = (uint)bin.Position;
 				if (TargetType == 2)
-					Unknown = bin.ReadUInt32();
+					Unknown = bin.ReadUInt32(); //This doesn't seem to be included in the offsets to the entries (?)
+				var sectionStart = (uint)bin.Position;
 				TagType = bin.ReadString(4);
 				var entryCount = bin.ReadUInt32();
-				bin.Position = bin.ReadUInt32() + sectionStart;
+				List<uint> EntryOffsets = new List<uint>();
 				for (int i = 0; i < entryCount; i++)
-					Entries.Add(new PaiTagEntry(bin));
+					EntryOffsets.Add(bin.ReadUInt32());
+				for (int i = 0; i < entryCount; i++)
+				{
+					bin.Position = EntryOffsets[i] + sectionStart;
+					Entries.Add(new PaiTagEntry(bin, TagType));
+				}
+			}
+
+			public void Write(BinaryDataWriter bin, byte TargetType)
+			{
+				if (TargetType == 2)
+					bin.Write(Unknown);
+				var sectionStart = (uint)bin.Position;
+				bin.Write(TagType, BinaryStringFormat.NoPrefixOrTermination);
+				bin.Write((uint)Entries.Count);
+				var EntryTable = bin.Position;
+				for (int i = 0; i < Entries.Count; i++)
+					bin.Write((uint)0);
+				for (int i = 0; i < Entries.Count; i++)
+				{
+					var oldpos = bin.Position;
+					bin.Position = EntryTable + i * 4;
+					bin.Write((uint)oldpos - sectionStart);
+					bin.Position = oldpos;
+					Entries[i].Write(bin, TagType);
+				}
 			}
 		}
 
@@ -145,7 +228,10 @@ namespace SwitchThemesCommon
 			public UInt16 DataType { get; set; }
 			public List<KeyFrame> KeyFrames { get; set; } = new List<KeyFrame>();
 
-			public PaiTagEntry(BinaryDataReader bin)
+			public uint FLEUUnknownInt { get; set; } = 0;
+			public string FLEUEntryName { get; set; } = "";
+
+			public PaiTagEntry(BinaryDataReader bin, string TagName)
 			{
 				uint tagStart = (uint)bin.Position;
 				Index = bin.ReadByte();
@@ -156,6 +242,44 @@ namespace SwitchThemesCommon
 				bin.BaseStream.Position = tagStart + bin.ReadUInt32(); //offset to first keyframe
 				for (int i = 0; i < KeyFrameCount; i++)
 					KeyFrames.Add(new KeyFrame(bin, DataType));
+				if (TagName == "FLEU")
+				{
+					FLEUUnknownInt = bin.ReadUInt32();
+					FLEUEntryName = bin.ReadString(BinaryStringFormat.ZeroTerminated);
+				}
+			}
+
+			public void Write(BinaryDataWriter bin, string TagName)
+			{
+				uint tagStart = (uint)bin.Position;
+				bin.Write(Index);
+				bin.Write(AnimationTarget);
+				bin.Write(DataType);
+				bin.Write((UInt16)KeyFrames.Count);
+				bin.Write((UInt16)0);
+				bin.Write((uint)bin.Position - tagStart + 4);
+				for (int i = 0; i < KeyFrames.Count; i++)
+				{
+					bin.Write(KeyFrames[i].Frame);
+					if (DataType == 2)
+					{
+						bin.Write(KeyFrames[i].Value);
+						bin.Write(KeyFrames[i].Blend);
+					}
+					else if (DataType == 1)
+					{
+						bin.Write((Int16)KeyFrames[i].Value);
+						bin.Write((Int16)KeyFrames[i].Blend);
+					}
+					else throw new Exception("Unexpected data type for KeyFrame");
+				}
+				if (TagName == "FLEU")
+				{
+					bin.Write(FLEUUnknownInt);
+					bin.Write(FLEUEntryName, BinaryStringFormat.ZeroTerminated);
+					while (bin.BaseStream.Position % 4 != 0)
+						bin.Write((byte)0);
+				}
 			}
 		}
 
@@ -214,6 +338,45 @@ namespace SwitchThemesCommon
 			}
 		}
 
+		public override void BuildData(ByteOrder byteOrder)
+		{
+			MemoryStream mem = new MemoryStream();
+			BinaryDataWriter bin = new BinaryDataWriter(mem);
+			bin.ByteOrder = byteOrder;
+			bin.Write(FrameSize);
+			bin.Write(Flags);
+			bin.Write((byte)0);
+			bin.Write((UInt16)Textures.Count);
+			bin.Write((UInt16)Entries.Count);
+			var updateOffsets = bin.Position;
+			bin.Write((uint)0);
+			if (Textures.Count != 0)
+			{
+				bin.Write((uint)bin.Position + 4 + 8); // +8 cause we have to account for the header +4 cause it's after the current field
+				for (int i = 0; i < Textures.Count; i++)
+					bin.Write(Textures[i], BinaryStringFormat.ZeroTerminated);
+				while (bin.BaseStream.Position % 4 != 0)
+					bin.Write((byte)0);
+			}
+			var EntryTableStart = bin.Position;
+			bin.Position = updateOffsets;
+			bin.Write((uint)EntryTableStart + 8);
+			bin.Position = EntryTableStart;
+			for (int i = 0; i < Entries.Count; i++)
+				bin.Write((uint)0);
+
+			for (int i = 0; i < Entries.Count; i++)
+			{
+				var oldpos = bin.Position;
+				bin.Position = EntryTableStart + 4 * i;
+				bin.Write((uint)oldpos + 8);
+				bin.Position = oldpos;
+				Entries[i].Write(bin);
+			}
+
+			Data = mem.ToArray();
+		}
+
 		public override string ToString() => "[Pai1 section]";
 	}
 
@@ -230,6 +393,27 @@ namespace SwitchThemesCommon
 		public Pai1Section paiData => Sections.Where(x => x is Pai1Section).FirstOrDefault() as Pai1Section;
 
 		public Bflan(byte[] data) => ParseFile(new MemoryStream(data));
+
+		public byte[] WriteFile()
+		{
+			MemoryStream mem = new MemoryStream();
+			BinaryDataWriter bin = new BinaryDataWriter(mem);
+			bin.ByteOrder = byteOrder;
+			bin.Write("FLAN", BinaryStringFormat.NoPrefixOrTermination);
+			bin.Write((UInt16)0xFEFF);
+			bin.Write((UInt16)0x14);
+			bin.Write(Version);
+			bin.Write((uint)0); //Filesize
+			bin.Write((UInt16)Sections.Count);
+			bin.Write((UInt16)0);
+
+			for (int i = 0; i < Sections.Count; i++)
+				Sections[i].Write(bin);
+
+			bin.Position = 0xC;
+			bin.Write((uint)bin.BaseStream.Length);
+			return mem.ToArray();
+		}
 
 		void ParseFile(Stream input)
 		{
