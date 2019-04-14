@@ -43,15 +43,16 @@
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
 			this.treeView1 = new System.Windows.Forms.TreeView();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.clonePaneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.nullPaneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.pic1PaneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.txtPaneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.zoomSlider = new System.Windows.Forms.TrackBar();
 			this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.pic1PaneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.txtPaneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.clonePaneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.addGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -202,9 +203,18 @@
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.clonePaneToolStripMenuItem,
             this.addToolStripMenuItem,
+            this.addGroupToolStripMenuItem,
             this.removeToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(181, 92);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(181, 114);
+			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenuStrip1_Opening);
+			// 
+			// clonePaneToolStripMenuItem
+			// 
+			this.clonePaneToolStripMenuItem.Name = "clonePaneToolStripMenuItem";
+			this.clonePaneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.clonePaneToolStripMenuItem.Text = "Clone Pane";
+			this.clonePaneToolStripMenuItem.Click += new System.EventHandler(this.clonePaneToolStripMenuItem_Click);
 			// 
 			// addToolStripMenuItem
 			// 
@@ -222,6 +232,20 @@
 			this.nullPaneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.nullPaneToolStripMenuItem.Text = "Null Pane";
 			this.nullPaneToolStripMenuItem.Click += new System.EventHandler(this.nullPaneToolStripMenuItem_Click);
+			// 
+			// pic1PaneToolStripMenuItem
+			// 
+			this.pic1PaneToolStripMenuItem.Name = "pic1PaneToolStripMenuItem";
+			this.pic1PaneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.pic1PaneToolStripMenuItem.Text = "Pic1 Pane";
+			this.pic1PaneToolStripMenuItem.Click += new System.EventHandler(this.pic1PaneToolStripMenuItem_Click);
+			// 
+			// txtPaneToolStripMenuItem
+			// 
+			this.txtPaneToolStripMenuItem.Name = "txtPaneToolStripMenuItem";
+			this.txtPaneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.txtPaneToolStripMenuItem.Text = "Txt Pane";
+			this.txtPaneToolStripMenuItem.Click += new System.EventHandler(this.txtPaneToolStripMenuItem_Click);
 			// 
 			// removeToolStripMenuItem
 			// 
@@ -266,26 +290,13 @@
 			this.panel1.Size = new System.Drawing.Size(527, 420);
 			this.panel1.TabIndex = 0;
 			// 
-			// pic1PaneToolStripMenuItem
+			// addGroupToolStripMenuItem
 			// 
-			this.pic1PaneToolStripMenuItem.Name = "pic1PaneToolStripMenuItem";
-			this.pic1PaneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.pic1PaneToolStripMenuItem.Text = "Pic1 Pane";
-			this.pic1PaneToolStripMenuItem.Click += new System.EventHandler(this.pic1PaneToolStripMenuItem_Click);
-			// 
-			// txtPaneToolStripMenuItem
-			// 
-			this.txtPaneToolStripMenuItem.Name = "txtPaneToolStripMenuItem";
-			this.txtPaneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.txtPaneToolStripMenuItem.Text = "Txt Pane";
-			this.txtPaneToolStripMenuItem.Click += new System.EventHandler(this.txtPaneToolStripMenuItem_Click);
-			// 
-			// clonePaneToolStripMenuItem
-			// 
-			this.clonePaneToolStripMenuItem.Name = "clonePaneToolStripMenuItem";
-			this.clonePaneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.clonePaneToolStripMenuItem.Text = "Clone Pane";
-			this.clonePaneToolStripMenuItem.Click += new System.EventHandler(this.clonePaneToolStripMenuItem_Click);
+			this.addGroupToolStripMenuItem.Name = "addGroupToolStripMenuItem";
+			this.addGroupToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.addGroupToolStripMenuItem.Text = "Add group";
+			this.addGroupToolStripMenuItem.Visible = false;
+			this.addGroupToolStripMenuItem.Click += new System.EventHandler(this.AddGroupToolStripMenuItem_Click);
 			// 
 			// EditorView
 			// 
@@ -343,5 +354,6 @@
 		private System.Windows.Forms.ToolStripMenuItem clonePaneToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pic1PaneToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem txtPaneToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem addGroupToolStripMenuItem;
 	}
 }

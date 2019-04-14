@@ -106,9 +106,7 @@ namespace SwitchThemes.Common.Custom
                 width = _width;
                 height = _height;
             }
-        }
-
-		
+        }		
 
         public class TextureSection : BasePane
 		{
@@ -194,8 +192,9 @@ namespace SwitchThemes.Common.Custom
 		}
 
 		public BasePane RootPane;
+		public Grp1Pane RootGroup { get; set; }
 		public List<BasePane> Panes = new List<BasePane>();
-		UInt32 version;
+		public UInt32 version;
 
 		public byte[] SaveFile()
 		{
@@ -296,14 +295,17 @@ namespace SwitchThemes.Common.Custom
 
 		public void RemovePane(BasePane pane)
 		{
+			string childStarter = pane is Grp1Pane ? "grs1" : "pas1";
+			string childCloser = pane is Grp1Pane ? "gre1" : "pae1";
+
 			int paneIndex = Panes.IndexOf(pane);
-			if (Panes[paneIndex + 1].name == "pas1")
+			if (Panes[paneIndex + 1].name == childStarter)
 			{
 				int ChildLevel = 0;
 				int TargetDelete = -1;
 				for (int i = paneIndex + 2; i < Panes.Count; i++)
 				{
-					if (Panes[i].name == "pae1")
+					if (Panes[i].name == childCloser)
 					{
 						if (ChildLevel == 0)
 						{
@@ -312,7 +314,7 @@ namespace SwitchThemes.Common.Custom
 						}
 						ChildLevel--;
 					}
-					if (Panes[i].name == "pas1")
+					if (Panes[i].name == childStarter)
 						ChildLevel++;
 				}
 				if (TargetDelete == -1)
@@ -327,13 +329,16 @@ namespace SwitchThemes.Common.Custom
 
 		public void AddPane(BasePane pane, BasePane Parent)
 		{
+			string childStarter = pane is Grp1Pane ? "grs1" : "pas1";
+			string childCloser = pane is Grp1Pane ? "gre1" : "pae1";
+
 			if (Parent == null) Parent = RootPane;
 			int parentIndex = Panes.IndexOf(Parent);
-			if (Panes[parentIndex + 1].name != "pas1")
+			if (Panes[parentIndex + 1].name != childStarter)
 			{
 				if (Parent.Children.Count != 0) throw new Exception("Inconsistend data !");
-				Panes.Insert(parentIndex + 1, new BasePane("pas1", 8));
-				Panes.Insert(parentIndex + 2, new BasePane("pae1", 8));
+				Panes.Insert(parentIndex + 1, new BasePane(childStarter, 8));
+				Panes.Insert(parentIndex + 2, new BasePane(childCloser, 8));
 			}
 			Parent.Children.Add(pane);
 			pane.Parent = Parent;
@@ -343,6 +348,7 @@ namespace SwitchThemes.Common.Custom
 
 		void RebuildParentingData()
 		{
+			RebuildGroupingData();
 			BasePane CurrentRoot = null;
 			int RootIndex = -1;
 			for (int i = 0; i < Panes.Count; i++)
@@ -378,6 +384,32 @@ namespace SwitchThemes.Common.Custom
 				throw new Exception("Unexpected pane data ending: one or more children sections are not closed by the end of the file");
 		}
 
+		void RebuildGroupingData()
+		{
+			int rootGroupIndex = Panes.FindIndex(x => x.name == "grp1");
+			var curRoot = Panes[rootGroupIndex] as Grp1Pane;
+			RootGroup = curRoot;
+			curRoot.Parent = null;
+			curRoot.Children.Clear();
+			for (int i = rootGroupIndex + 1; i < Panes.Count; i++)
+			{
+				if (Panes[i].name == "grs1")
+				{
+					curRoot = (Grp1Pane)Panes[i - 1];
+					curRoot.Children.Clear();
+					continue;
+				}
+				else if (Panes[i].name == "gre1")
+				{
+					curRoot = (Grp1Pane)curRoot.Parent;
+					if (curRoot == null) return;
+					continue;
+				}
+				((Grp1Pane)Panes[i]).Parent = curRoot;
+				curRoot.Children.Add((Grp1Pane)Panes[i]);
+			}
+		}
+
 		BasePane DetectProperPaneClass(BasePane pane)
 		{			
 			switch (pane.name)
@@ -386,6 +418,8 @@ namespace SwitchThemes.Common.Custom
 					return new Pic1Pane(pane, FileByteOrder);
                 case "txt1":
                     return new Txt1Pane(pane, FileByteOrder);
+				case "grp1":
+					return new Grp1Pane(pane, FileByteOrder, version);
                 default:
 					if (pane.data.Length < 0x4C || pane.name == "grp1" || pane.name == "cnt1")
 						return pane;

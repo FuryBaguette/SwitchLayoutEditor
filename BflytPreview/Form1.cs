@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows.Forms;
 using SwitchThemes.Common.Custom;
 using Syroot.BinaryData;
+using SwitchThemesCommon;
 
 namespace BflytPreview
 {
@@ -31,11 +32,11 @@ namespace BflytPreview
 
 		private void Form1_Load(object sender, System.EventArgs e)
 		{
-#if DEBUG
-			string AutoLaunch = @"RdtBase.bflyt";
-			if (!File.Exists(AutoLaunch)) return;
-			OpenFile(File.ReadAllBytes(AutoLaunch), AutoLaunch);
-#endif
+//#if DEBUG
+//			string AutoLaunch = @"RdtBase.bflyt";
+//			if (!File.Exists(AutoLaunch)) return;
+//			OpenFile(File.ReadAllBytes(AutoLaunch), AutoLaunch);
+//#endif
 		}
 
 		public void OpenForm(Form f)
@@ -67,6 +68,12 @@ namespace BflytPreview
 				editorView.Text = name;
 				OpenForm(editorView);
 				return editorView;
+			}
+			else if (Magic == "FLAN")
+			{
+				var editor = new BflanEditor(new Bflan(File));
+				OpenForm(editor);
+				return editor;
 			}
 			return null;
 		}

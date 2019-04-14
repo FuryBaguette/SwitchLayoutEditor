@@ -9,6 +9,8 @@
     <Import_RootNamespace>SwitchThemesCommon</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Bflan.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bflyt\Grp1Pane.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bflyt\Pan1Pane.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bflyt\Pic1Pane.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bflyt\Txt1Pane.cs" />

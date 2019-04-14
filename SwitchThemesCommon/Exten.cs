@@ -31,6 +31,25 @@ namespace ExtensionMethods
 		public static Vector2 ReadVector2(this BinaryDataReader bin) =>
 			new Vector2 { X = bin.ReadSingle(), Y = bin.ReadSingle() };
 
+		public static void WriteFixedLenString(this BinaryDataWriter bin, string s, int max)
+		{
+			if (s.Length > max) throw new Exception("The string is longer than the field");
+			bin.Write(s, BinaryStringFormat.NoPrefixOrTermination);
+			for (int i = s.Length; i < max; i++)
+				bin.Write((byte)0);
+		}
+
+		public static string ReadFixedLenString(this BinaryDataReader bin, int max) =>
+			bin.ReadFixedLenString(max, Encoding.UTF8);
+
+		public static string ReadFixedLenString(this BinaryDataReader bin, int max, Encoding encoding)
+		{
+			var data = bin.ReadBytes(max);
+			int count = 0;
+			for (; count < max && data[count] != 0; count++) ;
+			return encoding.GetString(data, 0, count);
+		}
+
 		public static void Write(this BinaryDataWriter bin, Vector2 vec)
 		{
 			bin.Write((float)vec.X);

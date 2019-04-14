@@ -249,6 +249,7 @@ namespace BflytPreview
 		{
 			treeView1.Nodes.Clear();
 			RecursiveAddNode(layout.RootPane, treeView1.Nodes);
+			RecursiveAddNode(layout.RootGroup, treeView1.Nodes);
 			glControl.Invalidate();
 		}
 
@@ -296,7 +297,7 @@ namespace BflytPreview
             pictureBox1.Image = b;
         }*/
 
-		void RecursiveAddNode(BFLYT.BasePane p, TreeNodeCollection node)
+		public static void RecursiveAddNode(BFLYT.BasePane p, TreeNodeCollection node)
 		{
 			var TargetNode = node.Add(p.ToString());
 			TargetNode.Tag = p;
@@ -511,6 +512,11 @@ namespace BflytPreview
 		{
 			if (treeView1.SelectedNode != null)
 			{
+				if (((BasePane)treeView1.SelectedNode.Tag).Parent == null)
+				{
+					MessageBox.Show("You can't remove a root pane");
+					return;
+				}
 				EditablePane RemovePane = treeView1.SelectedNode.Tag as EditablePane;
 				layout.RemovePane(RemovePane);
 				UpdateView();
@@ -540,10 +546,26 @@ namespace BflytPreview
 			UpdateView();
 		}
 
+		private void ContextMenuStrip1_Opening(object sender, CancelEventArgs e)
+		{
+			bool editingGroup = treeView1.SelectedNode.Tag is Grp1Pane;
+			addGroupToolStripMenuItem.Visible = editingGroup;
+			addToolStripMenuItem.Visible = !editingGroup;
+			clonePaneToolStripMenuItem.Visible = !editingGroup;
+		}
+
+		private void AddGroupToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Grp1Pane pane = new Grp1Pane(layout.version);
+			pane.GroupName = "New group";
+			layout.AddPane(pane, treeView1.SelectedNode.Tag as Grp1Pane);
+			UpdateView();
+		}
+
 		private void EditorView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Control && e.Shift && e.KeyCode == Keys.S) SaveBflyt();
-            else if (e.Control && e.KeyCode == Keys.S) _parentArch.SaveToArchive(layout.SaveFile(), this);
+            else if (e.Control && e.KeyCode == Keys.S && _parentArch != null) _parentArch.SaveToArchive(layout.SaveFile(), this);
             else if (e.Control && e.KeyCode == Keys.L) treeView1.ExpandAll();
             else if (e.Control && e.KeyCode == Keys.K) treeView1.CollapseAll();
         }
