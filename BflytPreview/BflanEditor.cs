@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.IO;
 using SwitchThemesCommon;
 using BflytPreview.EditorForms;
+using Newtonsoft.Json;
+using SwitchThemesCommon.Serializers;
 
 namespace BflytPreview
 {
@@ -27,6 +29,7 @@ namespace BflytPreview
 
 		private void BflanEditor_Load(object sender, EventArgs e)
 		{
+			if (file == null) this.Close();
 			UpdateTreeview();
 			FormBringToFront();
 		}
@@ -100,5 +103,87 @@ namespace BflytPreview
 
 		private void BflanEditor_Click(object sender, EventArgs e) => FormBringToFront();
 		private void BflanEditor_LocationChanged(object sender, EventArgs e) => FormBringToFront();
+
+		private void AddEntryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var selected = treeView1.SelectedNode.Tag;
+			if (selected is Pai1Section)
+			{
+				var sect = (Pai1Section)selected;
+				sect.Entries.Add(new Pai1Section.PaiEntry() { Name = "NEW-" });
+			}
+			else if (selected is Pai1Section.PaiEntry)
+			{
+				var entry = (Pai1Section.PaiEntry)selected;
+				entry.Tags.Add(new Pai1Section.PaiTag() { TagType = "NEW-" });
+			}
+			else if (selected is Pai1Section.PaiTag)
+			{
+				var tag = (Pai1Section.PaiTag)selected;
+				tag.Entries.Add(new Pai1Section.PaiTagEntry());
+			}
+			else
+			{
+				MessageBox.Show("Can't add an entry to the selected object");
+				return;
+			}
+			UpdateTreeview();
+		}
+
+		private void DeleteToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var selected = treeView1.SelectedNode?.Tag;
+			var parent = treeView1.SelectedNode?.Parent?.Tag;
+			if (selected is Pai1Section.PaiEntry)
+			{
+				var par = (Pai1Section)parent;
+				par.Entries.Remove((Pai1Section.PaiEntry)selected);
+			}
+			else if (selected is Pai1Section.PaiTag)
+			{
+				var par = (Pai1Section.PaiEntry)parent;
+				par.Tags.Remove((Pai1Section.PaiTag)selected);
+			}
+			else if (selected is Pai1Section.PaiTagEntry)
+			{
+				var par = (Pai1Section.PaiTag)parent;
+				par.Entries.Remove((Pai1Section.PaiTagEntry)selected);
+			}
+			else
+			{
+				MessageBox.Show("Can't remove this element");
+				return;
+			}
+			UpdateTreeview();
+		}
+
+		private void ExportToJSONToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveFileDialog sav = new SaveFileDialog() { Filter = "JSON file|*.json" };
+			if (sav.ShowDialog() != DialogResult.OK) return;
+			File.WriteAllText(sav.FileName, JsonConvert.SerializeObject(BflanSerializer.Serialize(file)));
+		}
+
+		private void ImportFromJSONToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog opn = new OpenFileDialog() { Filter = "JSON file|*.json" };
+			if (opn.ShowDialog() != DialogResult.OK) return;
+			var SerializedFile = JsonConvert.DeserializeObject<BflanSerializer>(File.ReadAllText(opn.FileName));
+			file = SerializedFile.Deserialize();
+			UpdateTreeview();
+		}
+
+		public static Form OpenFromJson()
+		{
+			var b = new BflanEditor(null);
+			b.ImportFromJSONToolStripMenuItem_Click(null,null);
+			if (b.file == null) return null;
+			return b;
+		}
+
+		private void PropertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+		{
+			treeView1.Invalidate();
+		}
 	}
 }

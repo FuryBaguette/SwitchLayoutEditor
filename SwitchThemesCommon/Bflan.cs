@@ -14,6 +14,11 @@ namespace SwitchThemesCommon
 		public string TypeName { get; set; }
 		public byte[] Data;
 
+		public BflanSection(string name)
+		{
+			TypeName = name;
+		}
+
 		public BflanSection(string name, byte[] data)
 		{
 			TypeName = name;
@@ -48,6 +53,8 @@ namespace SwitchThemesCommon
 		public byte[] Unk_EndOfHeader { get; set; }
 
 		const int groupNameLen = 0x24;
+
+		public Pat1Section() : base("pat1") { }
 
 		public Pat1Section(byte[] data, ByteOrder bo) : base("pat1", data)
 		{
@@ -135,6 +142,8 @@ namespace SwitchThemesCommon
 			public List<PaiTag> Tags = new List<PaiTag>();
 			public byte[] UnkwnownData { get; set; }
 
+			public PaiEntry() { }
+
 			public PaiEntry(BinaryDataReader bin)
 			{
 				uint SectionStart = (uint)bin.Position;
@@ -181,6 +190,8 @@ namespace SwitchThemesCommon
 			public uint Unknown { get; set; }
 			public string TagType { get; set; }
 			public List<PaiTagEntry> Entries = new List<PaiTagEntry>();
+
+			public PaiTag() { }
 
 			public PaiTag(BinaryDataReader bin, byte TargetType)
 			{
@@ -230,6 +241,8 @@ namespace SwitchThemesCommon
 
 			public uint FLEUUnknownInt { get; set; } = 0;
 			public string FLEUEntryName { get; set; } = "";
+
+			public PaiTagEntry() { }
 
 			public PaiTagEntry(BinaryDataReader bin, string TagName)
 			{
@@ -304,7 +317,11 @@ namespace SwitchThemesCommon
 				}
 				else throw new Exception("Unexpected data type for keyframe");
 			}
+
+			public KeyFrame() { }
 		}
+
+		public Pai1Section() : base("pai1") { }
 
 		public Pai1Section(byte[] data, ByteOrder bo) : base("pai1", data)
 		{
@@ -391,6 +408,8 @@ namespace SwitchThemesCommon
 		public Pat1Section patData => Sections.Where(x => x is Pat1Section).FirstOrDefault() as Pat1Section;
 		[Browsable(false)]
 		public Pai1Section paiData => Sections.Where(x => x is Pai1Section).FirstOrDefault() as Pai1Section;
+
+		public Bflan() { }
 
 		public Bflan(byte[] data) => ParseFile(new MemoryStream(data));
 

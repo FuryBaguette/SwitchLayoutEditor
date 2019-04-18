@@ -98,9 +98,15 @@ namespace BflytPreview
             UpdateForm updateForm = new UpdateForm();
             updateForm.Show();
         }
-    }
 
-    public class Vector3Converter : System.ComponentModel.TypeConverter
+		private void BFLANToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var f = BflanEditor.OpenFromJson();
+			if (f != null) OpenForm(f);
+		}
+	}
+
+	public class Vector3Converter : System.ComponentModel.TypeConverter
 	{
 		public override bool GetPropertiesSupported(ITypeDescriptorContext context) => true;
 
