@@ -226,9 +226,25 @@ namespace BflytPreview
 			if (DrawOnTop != null)
 			{
 				GL.LoadMatrix(DrawOnTopTransform);
-				DrawPane(DrawOnTop.transformedRect, Settings.Default.SelectedColor);
-			}
+                DrawPane(DrawOnTop.transformedRect, Settings.Default.SelectedColor);
+                DrawPaneMiddlePoint(DrawOnTop.transformedRect, Settings.Default.SelectedColor);
+            }
 		}
+
+        void DrawPaneMiddlePoint(BFLYT.CusRectangle rect, Color color)
+        {
+            GL.Color3(color);
+            GL.Begin(PrimitiveType.Lines);
+            GL.Vertex2(rect.x + (rect.width / 2) - 1, rect.y + (rect.height / 2) - 1);
+            GL.Vertex2(rect.x + (rect.width / 2) - 1, rect.y + (rect.height / 2) + 1);
+            GL.Vertex2(rect.x + (rect.width / 2) - 1, rect.y + (rect.height / 2) + 1);
+            GL.Vertex2(rect.x + (rect.width / 2) + 1, rect.y + (rect.height / 2) + 1);
+            GL.Vertex2(rect.x + (rect.width / 2) + 1, rect.y + (rect.height / 2) + 1);
+            GL.Vertex2(rect.x + (rect.width / 2) + 1, rect.y + (rect.height / 2) - 1);
+            GL.Vertex2(rect.x + (rect.width / 2) + 1, rect.y + (rect.height / 2) - 1);
+            GL.Vertex2(rect.x + (rect.width / 2) - 1, rect.y + (rect.height / 2) - 1);
+            GL.End();
+        }
 
 		void DrawPane(BFLYT.CusRectangle rect, Color color)
 		{
