@@ -140,7 +140,7 @@ namespace SwitchThemesCommon
 			public string Name { get; set; }
 			public AnimationTarget Target { get; set; }
 			public List<PaiTag> Tags = new List<PaiTag>();
-			public byte[] UnkwnownData { get; set; }
+			public byte[] UnkwnownData { get; set; } = new byte[0];
 
 			public PaiEntry() { }
 
@@ -154,6 +154,7 @@ namespace SwitchThemesCommon
 				List<uint> TagOffsets = new List<uint>();
 				for (int i= 0; i < tagCount; i++)
 					TagOffsets.Add(bin.ReadUInt32());
+				if (tagCount == 0) return;
 				UnkwnownData = bin.ReadBytes((int)(TagOffsets[0] + SectionStart - bin.Position));
 				for (int i = 0; i < tagCount; i++)
 				{
@@ -340,12 +341,15 @@ namespace SwitchThemesCommon
 			var entryTable = bin.ReadUInt32() - 8;
 			if (texCount != 0)
 			{
-				var texTable = bin.ReadUInt32() - 8; //apparently the texTable field is missing if texCount == 0
-				var pos = bin.Position;
-				bin.Position = texTable;
+				var texTableStart = bin.Position;
+				List<uint> offsets = new List<uint>();
 				for (int i = 0; i < texCount; i++)
+					offsets.Add(bin.ReadUInt32());
+				for (int i = 0; i < texCount; i++)
+				{
+					bin.Position = texTableStart + offsets[i];
 					Textures.Add(bin.ReadString(BinaryStringFormat.ZeroTerminated));
-				bin.Position = pos;
+				}
 			}
 			for (int i = 0; i < entryCount; i++)
 			{
@@ -369,9 +373,19 @@ namespace SwitchThemesCommon
 			bin.Write((uint)0);
 			if (Textures.Count != 0)
 			{
-				bin.Write((uint)bin.Position + 4 + 8); // +8 cause we have to account for the header +4 cause it's after the current field
+				var texTableStart = bin.Position;
+				bin.Write(new byte[Textures.Count * 4]); //make space for tex offsets
+
 				for (int i = 0; i < Textures.Count; i++)
+				{
+					var texPos = bin.Position;
 					bin.Write(Textures[i], BinaryStringFormat.ZeroTerminated);
+					var endPos = bin.Position;
+					bin.Position = texTableStart + i * 4;
+					bin.Write((UInt32)(texPos - texTableStart));
+					bin.Position = endPos;
+				}
+
 				while (bin.BaseStream.Position % 4 != 0)
 					bin.Write((byte)0);
 			}
