@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SwitchThemes.Common;
 using SwitchThemes.Common.Custom;
+using SwitchThemes.Common.Serializers;
 
 namespace BflytPreview.EditorForms
 {
@@ -270,19 +271,36 @@ namespace BflytPreview.EditorForms
         {
             var opn = new OpenFileDialog();
             if (opn.ShowDialog() != DialogResult.OK) return;
+			bool useAnimation = MessageBox.Show("Do you want to patch animations as well ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes;
             LayoutPatch JSONLayout = LayoutPatch.LoadTemplate(File.ReadAllText(opn.FileName));
             if (JSONLayout.IsCompatible(loadedSarc))
             {
-                var layoutRes = PatchLayouts(loadedSarc, JSONLayout.Files);
+                var layoutRes = PatchLayouts(loadedSarc, JSONLayout.Files, useAnimation);
                 if (layoutRes)
                     MessageBox.Show("Loaded JSON patch");
                 else
                     MessageBox.Show("Something is wrong with your layout patch.");
+				if (useAnimation)
+				{
+					layoutRes = PatchAnimations(loadedSarc, JSONLayout.Anims); //this always returns true for now
+				}
             }
 
         }
 
-        public static bool PatchLayouts(SARCExt.SarcData sarc, LayoutFilePatch[] Files)
+		public static bool PatchAnimations(SARCExt.SarcData sarc, AnimFilePatch[] files)
+		{
+			if (files == null) return true;
+			foreach (var p in files)
+			{
+				if (!sarc.Files.ContainsKey(p.FileName))
+					continue; //return BflytFile.PatchResult.Fail; Don't be so strict as older firmwares may not have all the animations (?)
+				sarc.Files[p.FileName] = BflanSerializer.FromJson(p.AnimJson).WriteFile();
+			}
+			return true;
+		}
+
+		public static bool PatchLayouts(SARCExt.SarcData sarc, LayoutFilePatch[] Files, bool AddAnimations)
         {
             foreach (var p in Files)
             {
@@ -292,7 +310,13 @@ namespace BflytPreview.EditorForms
                 var res = target.ApplyLayoutPatch(p.Patches);
                 if (res != true)
                     return res;
-                sarc.Files[p.FileName] = target.SaveFile();
+				if (AddAnimations)
+				{
+					res = target.AddGroupNames(p.AddGroups);
+					if (!res)
+						return res;
+				}
+				sarc.Files[p.FileName] = target.SaveFile();
             }
             return true;
         }

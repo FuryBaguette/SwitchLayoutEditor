@@ -7,7 +7,7 @@ using Syroot.BinaryData;
 using System.Linq;
 using System.ComponentModel;
 
-namespace SwitchThemesCommon
+namespace SwitchThemes.Common
 {
 	public class BflanSection
 	{
@@ -152,7 +152,7 @@ namespace SwitchThemesCommon
 				Target = (AnimationTarget)bin.ReadByte();
 				bin.ReadUInt16(); //padding
 				List<uint> TagOffsets = new List<uint>();
-				for (int i= 0; i < tagCount; i++)
+				for (int i = 0; i < tagCount; i++)
 					TagOffsets.Add(bin.ReadUInt32());
 				if (tagCount == 0) return;
 				UnkwnownData = bin.ReadBytes((int)(TagOffsets[0] + SectionStart - bin.Position));

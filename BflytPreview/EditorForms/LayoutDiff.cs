@@ -9,6 +9,7 @@ using ExtensionMethods;
 using SARCExt;
 using SwitchThemes.Common;
 using SwitchThemes.Common.Custom;
+using SwitchThemes.Common.Serializers;
 using SwitchThemesCommon.Bflyt;
 using Syroot.BinaryData;
 using static SwitchThemes.Common.Custom.BFLYT;
@@ -17,7 +18,7 @@ namespace SwitchThemes
 {
 	public static class LayoutDiff
 	{
-		readonly static string[] IgnorePaneList = new string[] { "usd1", "lyt1", "mat1", "txl1", "fnl1", "grp1", "pae1", "pas1" };
+		readonly static string[] IgnorePaneList = new string[] { "usd1", "lyt1", "mat1", "txl1", "fnl1", "grp1", "pae1", "pas1", "cnt1" };
 
 		public static LayoutPatch Diff(SarcData original, SarcData edited)
 		{
@@ -27,6 +28,8 @@ namespace SwitchThemes
 				MessageBox.Show("The provided archives don't have the same files");
 				return null;
 			}
+
+			bool hasAtLeastAnExtraGroup = false; //Used to detect if animations are properly implemented
 			foreach (var f in original.Files.Keys.Where(x => x.EndsWith(".bflyt")))
 			{
 				if (original.Files[f].SequenceEqual(edited.Files[f])) continue;
@@ -77,19 +80,43 @@ namespace SwitchThemes
 					}
 					curFile.Add(curPatch);
 				}
+
+				List<ExtraGroup> extraGroups = new List<ExtraGroup>();
+				string[] ogPanes = or.GetGroupNames();
+				foreach (var p_ in ed.Panes.Where(x => x is Grp1Pane))
+				{
+					var p = ((Grp1Pane)p_);
+					if (ogPanes.Contains(p.GroupName)) continue;
+					extraGroups.Add(new ExtraGroup() { GroupName = p.GroupName, Panes = p.Panes.ToArray() });
+					hasAtLeastAnExtraGroup = true;
+				}
+				if (extraGroups.Count == 0) extraGroups = null;
+
 				if (curFile.Count > 0)
 					Patches.Add(new LayoutFilePatch() { FileName = f, Patches = curFile.ToArray() });
 			}
-			if (Patches.Count == 0)
+			if (Patches.Count == 0) //animation edits depend on bflyt changes so this is relevant
 			{
 				MessageBox.Show("Couldn't find any difference");
 				return null; 
 			}
+
+			List<AnimFilePatch> AnimPatches = new List<AnimFilePatch>();
+			foreach (var f in original.Files.Keys.Where(x => x.EndsWith(".bflan")))
+			{
+				if (original.Files[f].SequenceEqual(edited.Files[f])) continue;
+				Bflan anim = new Bflan(edited.Files[f]);
+				AnimPatches.Add(new AnimFilePatch() { FileName = f, AnimJson = BflanSerializer.ToJson(anim) });
+			}
+			if (AnimPatches.Count == 0) AnimPatches = null;
+			else if (!hasAtLeastAnExtraGroup) MessageBox.Show("This theme uses custom animations but doesn't have custom group in the layouts, this means that the nxtheme will work on the firmware it has been developed on but it may break on older or newer ones. It's *highly recommended* to create custom groups to handle animations");
+
 			return new LayoutPatch()
 			{
 				PatchName = "diffPatch",
 				AuthorName = "autoDiff",
-				Files = Patches.ToArray()
+				Files = Patches.ToArray(),
+				Anims = AnimPatches?.ToArray()
 			};
 		}
 

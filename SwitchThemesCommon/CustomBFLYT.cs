@@ -451,7 +451,9 @@ namespace SwitchThemes.Common.Custom
             return paneNames;
         }
 
-        public bool ApplyLayoutPatch(PanePatch[] Patches)
+		public string[] GetGroupNames() => Panes.Where(x => x is Grp1Pane).Select(x => ((Grp1Pane)x).GroupName).ToArray();
+
+		public bool ApplyLayoutPatch(PanePatch[] Patches)
         {
             string[] paneNames = GetPaneNames();
             for (int i = 0; i < Patches.Length; i++)
@@ -523,5 +525,24 @@ namespace SwitchThemes.Common.Custom
 			}
 			return true;
         }
-    }
+
+		public bool AddGroupNames(ExtraGroup[] Groups)
+		{
+			if (Groups == null) return true;
+			var PaneNames = GetPaneNames();
+			var GroupNames = GetGroupNames();
+
+			int rootGroupIndex = Panes.FindLastIndex(x => x.name == "gre1"); //find last group child list and append our groups there (aka at the end of RootGroup)
+			if (rootGroupIndex == -1) return false;
+
+			foreach (var g in Groups)
+			{
+				if (GroupNames.ContainsStr(g.GroupName)) continue;
+				foreach (var s in g.Panes) if (!PaneNames.ContainsStr(s)) return false;
+				Panes.Insert(rootGroupIndex, new Grp1Pane(version) { GroupName = g.GroupName, Panes = g.Panes.ToList() });
+			}
+
+			return true;
+		}
+	}
 }

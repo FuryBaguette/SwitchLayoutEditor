@@ -533,8 +533,7 @@ namespace BflytPreview
 					MessageBox.Show("You can't remove a root pane");
 					return;
 				}
-				EditablePane RemovePane = treeView1.SelectedNode.Tag as EditablePane;
-				layout.RemovePane(RemovePane);
+				layout.RemovePane((BasePane)treeView1.SelectedNode.Tag);
 				UpdateView();
 			}
 		}

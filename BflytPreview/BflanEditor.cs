@@ -8,10 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using SwitchThemesCommon;
+using SwitchThemes.Common;
 using BflytPreview.EditorForms;
 using Newtonsoft.Json;
-using SwitchThemesCommon.Serializers;
+using SwitchThemes.Common.Serializers;
 
 namespace BflytPreview
 {

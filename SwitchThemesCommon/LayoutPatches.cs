@@ -8,11 +8,12 @@ using Newtonsoft.Json;
 namespace SwitchThemes.Common
 {
 	public class LayoutPatch
-    {
+	{
 		public string PatchName;
 		public string AuthorName;
 		public string TargetName;
 		public LayoutFilePatch[] Files;
+		public AnimFilePatch[] Anims;
 
 		public override string ToString() => PatchName + " by " + AuthorName;
 
@@ -29,14 +30,21 @@ namespace SwitchThemes.Common
 			return true;
 		}
 
+		public byte[] AsByteArray()
+		{
+			return Encoding.UTF8.GetBytes(AsJson());
+		}
+
 		public string AsJson()
 		{
 			JsonSerializerSettings settings = new JsonSerializerSettings()
 			{
 				DefaultValueHandling = DefaultValueHandling.Ignore,
 				NullValueHandling = NullValueHandling.Ignore,
+#if WIN
 				Formatting = Formatting.Indented,
 				ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+#endif
 			};
 			return JsonConvert.SerializeObject(this, settings);
 		}
@@ -71,13 +79,24 @@ namespace SwitchThemes.Common
 			JsonConvert.DeserializeObject<LayoutPatch>(json);
 	}
 
+	public class AnimFilePatch
+	{
+		public string FileName;
+		public string AnimJson;
+	}
+
 	public class LayoutFilePatch
 	{
 		public string FileName;
 		public PanePatch[] Patches;
+		public ExtraGroup[] AddGroups = null;
 	}
 
-
+	public class ExtraGroup
+	{
+		public string GroupName;
+		public string[] Panes;
+	}
 
 	public class PanePatch
 	{
@@ -103,8 +122,8 @@ namespace SwitchThemes.Common
 		public int type;
 	}
 
-	public struct NullableVector3 { public float? X, Y, Z; public NullableVector3(float x, float y, float z) { X = x;Y = y;Z = z; } }
+	public struct NullableVector3 { public float? X, Y, Z; public NullableVector3(float x, float y, float z) { X = x; Y = y; Z = z; } }
 	public struct Vector3 { public float X, Y, Z; public Vector3(float x, float y, float z) { X = x; Y = y; Z = z; } }
-	public struct NullableVector2 { public float? X, Y; public NullableVector2(float x, float y) { X = x; Y = y;} }
+	public struct NullableVector2 { public float? X, Y; public NullableVector2(float x, float y) { X = x; Y = y; } }
 	public struct Vector2 { public float X, Y; public Vector2(float x, float y) { X = x; Y = y; } }
 }

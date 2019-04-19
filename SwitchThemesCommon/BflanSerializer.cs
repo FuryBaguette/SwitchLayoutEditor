@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using static SwitchThemesCommon.Pai1Section;
+using static SwitchThemes.Common.Pai1Section;
 
-namespace SwitchThemesCommon.Serializers
+namespace SwitchThemes.Common.Serializers
 {
 	public class BflanSerializer
 	{
@@ -13,6 +14,21 @@ namespace SwitchThemesCommon.Serializers
 		//Doesn't seem to contain other sections
 		public Pat1Serializer pat1;
 		public Pai1Serializer pai1;
+
+		public static string ToJson(Bflan file)
+		{
+			JsonSerializerSettings settings = new JsonSerializerSettings()
+			{
+#if WIN
+				Formatting = Formatting.None,
+				ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+#endif
+			};
+			return JsonConvert.SerializeObject(BflanSerializer.Serialize(file), settings);
+		}
+
+		public static Bflan FromJson(string json) =>
+			JsonConvert.DeserializeObject<BflanSerializer>(json).Deserialize();
 
 		public static BflanSerializer Serialize(Bflan file)
 		{
@@ -57,7 +73,7 @@ namespace SwitchThemesCommon.Serializers
 			};
 			res.Sections.Add(_pat1);
 			res.Sections.Add(pai1.Deserialize());
-			
+
 			return res;
 		}
 	}
@@ -111,7 +127,7 @@ namespace SwitchThemesCommon.Serializers
 
 	public struct PaiEntrySerializer
 	{
-		public string Name; 
+		public string Name;
 		public byte Target;
 		public List<PaiTagSerializer> Tags;
 		public byte[] UnkwnownData;
@@ -225,8 +241,8 @@ namespace SwitchThemesCommon.Serializers
 
 	public struct KeyFrameSerializer
 	{
-		public float Frame ;
-		public float Value ;
+		public float Frame;
+		public float Value;
 		public float Blend;
 	}
 }
