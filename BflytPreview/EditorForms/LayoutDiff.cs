@@ -92,8 +92,8 @@ namespace SwitchThemes
 				}
 				if (extraGroups.Count == 0) extraGroups = null;
 
-				if (curFile.Count > 0)
-					Patches.Add(new LayoutFilePatch() { FileName = f, Patches = curFile.ToArray() });
+				if (curFile.Count > 0 || extraGroups?.Count > 0)
+					Patches.Add(new LayoutFilePatch() { FileName = f, Patches = curFile.ToArray(), AddGroups = extraGroups?.ToArray() });
 			}
 			if (Patches.Count == 0) //animation edits depend on bflyt changes so this is relevant
 			{
