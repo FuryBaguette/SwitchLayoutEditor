@@ -291,11 +291,22 @@ namespace BflytPreview.EditorForms
 		public static bool PatchAnimations(SARCExt.SarcData sarc, AnimFilePatch[] files)
 		{
 			if (files == null) return true;
+			uint TargetVersion = 0;
 			foreach (var p in files)
 			{
 				if (!sarc.Files.ContainsKey(p.FileName))
 					continue; //return BflytFile.PatchResult.Fail; Don't be so strict as older firmwares may not have all the animations (?)
-				sarc.Files[p.FileName] = BflanSerializer.FromJson(p.AnimJson).WriteFile();
+
+				if (TargetVersion == 0)
+				{
+					Bflan b = new Bflan(sarc.Files[p.FileName]);
+					TargetVersion = b.Version;
+				}
+
+				var n = BflanSerializer.FromJson(p.AnimJson);
+				n.Version = TargetVersion;
+				n.byteOrder = Syroot.BinaryData.ByteOrder.LittleEndian;
+				sarc.Files[p.FileName] = n.WriteFile();
 			}
 			return true;
 		}

@@ -31,18 +31,20 @@
 			this.components = new System.ComponentModel.Container();
 			this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
 			this.treeView1 = new System.Windows.Forms.TreeView();
+			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.addEntryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveToArchiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.addEntryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exportToJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.importFromJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuStrip1.SuspendLayout();
+			this.ByteOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SwitchByteOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
+			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// propertyGrid1
@@ -65,10 +67,33 @@
 			this.treeView1.TabIndex = 1;
 			this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeView1_AfterSelect);
 			// 
+			// contextMenuStrip1
+			// 
+			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addEntryToolStripMenuItem,
+            this.deleteToolStripMenuItem});
+			this.contextMenuStrip1.Name = "contextMenuStrip1";
+			this.contextMenuStrip1.Size = new System.Drawing.Size(127, 48);
+			// 
+			// addEntryToolStripMenuItem
+			// 
+			this.addEntryToolStripMenuItem.Name = "addEntryToolStripMenuItem";
+			this.addEntryToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+			this.addEntryToolStripMenuItem.Text = "Add entry";
+			this.addEntryToolStripMenuItem.Click += new System.EventHandler(this.AddEntryToolStripMenuItem_Click);
+			// 
+			// deleteToolStripMenuItem
+			// 
+			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+			this.deleteToolStripMenuItem.Text = "Delete";
+			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.DeleteToolStripMenuItem_Click);
+			// 
 			// menuStrip1
 			// 
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.ByteOrderToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(540, 24);
@@ -90,39 +115,17 @@
 			// saveToolStripMenuItem
 			// 
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.saveToolStripMenuItem.Text = "Save...";
 			this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItem_Click);
 			// 
 			// saveToArchiveToolStripMenuItem
 			// 
 			this.saveToArchiveToolStripMenuItem.Name = "saveToArchiveToolStripMenuItem";
-			this.saveToArchiveToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.saveToArchiveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.saveToArchiveToolStripMenuItem.Text = "Save to SZS";
 			this.saveToArchiveToolStripMenuItem.Visible = false;
 			this.saveToArchiveToolStripMenuItem.Click += new System.EventHandler(this.SaveToArchiveToolStripMenuItem_Click);
-			// 
-			// contextMenuStrip1
-			// 
-			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addEntryToolStripMenuItem,
-            this.deleteToolStripMenuItem});
-			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(127, 48);
-			// 
-			// addEntryToolStripMenuItem
-			// 
-			this.addEntryToolStripMenuItem.Name = "addEntryToolStripMenuItem";
-			this.addEntryToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.addEntryToolStripMenuItem.Text = "Add entry";
-			this.addEntryToolStripMenuItem.Click += new System.EventHandler(this.AddEntryToolStripMenuItem_Click);
-			// 
-			// deleteToolStripMenuItem
-			// 
-			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.deleteToolStripMenuItem.Text = "Delete";
-			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.DeleteToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
@@ -143,6 +146,21 @@
 			this.importFromJSONToolStripMenuItem.Text = "Import from JSON";
 			this.importFromJSONToolStripMenuItem.Click += new System.EventHandler(this.ImportFromJSONToolStripMenuItem_Click);
 			// 
+			// ByteOrderToolStripMenuItem
+			// 
+			this.ByteOrderToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.SwitchByteOrderToolStripMenuItem});
+			this.ByteOrderToolStripMenuItem.Name = "ByteOrderToolStripMenuItem";
+			this.ByteOrderToolStripMenuItem.Size = new System.Drawing.Size(113, 20);
+			this.ByteOrderToolStripMenuItem.Text = "Big endian (Wii u)";
+			// 
+			// SwitchByteOrderToolStripMenuItem
+			// 
+			this.SwitchByteOrderToolStripMenuItem.Name = "SwitchByteOrderToolStripMenuItem";
+			this.SwitchByteOrderToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+			this.SwitchByteOrderToolStripMenuItem.Text = "Switch to little endian (Switch)";
+			this.SwitchByteOrderToolStripMenuItem.Click += new System.EventHandler(this.SwitchByteOrderToolStripMenuItem_Click);
+			// 
 			// BflanEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -158,9 +176,9 @@
 			this.Load += new System.EventHandler(this.BflanEditor_Load);
 			this.LocationChanged += new System.EventHandler(this.BflanEditor_LocationChanged);
 			this.Click += new System.EventHandler(this.BflanEditor_Click);
+			this.contextMenuStrip1.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
-			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -180,5 +198,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem exportToJSONToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem importFromJSONToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ByteOrderToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SwitchByteOrderToolStripMenuItem;
 	}
 }

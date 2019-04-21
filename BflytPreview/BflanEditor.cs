@@ -34,8 +34,19 @@ namespace BflytPreview
 			FormBringToFront();
 		}
 
+		void UpdateByteOrder()
+		{
+			ByteOrderToolStripMenuItem.Text =
+				file.byteOrder == Syroot.BinaryData.ByteOrder.BigEndian ?
+				"Big endian (Wii u)" : "Little endian (Switch/3DS)";
+			SwitchByteOrderToolStripMenuItem.Text =
+				file.byteOrder == Syroot.BinaryData.ByteOrder.BigEndian ?
+				"Change to little endian" : "Change to big endian";
+		}
+
 		void UpdateTreeview()
 		{
+			UpdateByteOrder();
 			treeView1.Nodes.Clear();
 			foreach (var section in file.Sections)
 			{
@@ -44,11 +55,6 @@ namespace BflytPreview
 				if (section is Pai1Section)
 					PaiSectionToNode((Pai1Section)section, node);
 			}
-		}
-
-		void PatSectionToNode(Pat1Section sect, TreeNode node)
-		{
-			
 		}
 
 		void PaiSectionToNode(Pai1Section sect, TreeNode node)
@@ -169,7 +175,13 @@ namespace BflytPreview
 			OpenFileDialog opn = new OpenFileDialog() { Filter = "JSON file|*.json" };
 			if (opn.ShowDialog() != DialogResult.OK) return;
 			var SerializedFile = JsonConvert.DeserializeObject<BflanSerializer>(File.ReadAllText(opn.FileName));
-			file = SerializedFile.Deserialize();
+			var newFile = SerializedFile.Deserialize();
+			if (file != null && newFile.Version != file.Version)
+			{
+				if (MessageBox.Show("Do you want to keep the format version of the original file ?\n(You should for custom themes)", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+					newFile.Version = file.Version;
+			}
+			file = newFile;
 			UpdateTreeview();
 		}
 
@@ -184,6 +196,13 @@ namespace BflytPreview
 		private void PropertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
 		{
 			treeView1.Invalidate();
+		}
+
+		private void SwitchByteOrderToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			file.byteOrder = file.byteOrder == Syroot.BinaryData.ByteOrder.BigEndian ?
+				Syroot.BinaryData.ByteOrder.LittleEndian : Syroot.BinaryData.ByteOrder.BigEndian;
+			UpdateByteOrder();
 		}
 	}
 }

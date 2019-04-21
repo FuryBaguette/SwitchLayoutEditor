@@ -405,9 +405,12 @@ namespace SwitchThemes.Common.Custom
 					if (curRoot == null) return;
 					continue;
 				}
+				if (!(Panes[i] is Grp1Pane)) break;
 				((Grp1Pane)Panes[i]).Parent = curRoot;
 				curRoot.Children.Add((Grp1Pane)Panes[i]);
 			}
+			if (curRoot != RootGroup)
+				throw new Exception("Unexpected pane data ending: one or more group sections are not closed by the end of the file");
 		}
 
 		BasePane DetectProperPaneClass(BasePane pane)
