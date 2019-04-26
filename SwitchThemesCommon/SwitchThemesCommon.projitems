@@ -23,6 +23,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CustomBFLYT.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exten.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LayoutPatches.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NewFirmFixes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Sarc\SARC.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Sarc\Yaz0.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\BinaryDataFormats.cs" />

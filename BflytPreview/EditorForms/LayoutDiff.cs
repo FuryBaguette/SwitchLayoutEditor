@@ -116,7 +116,8 @@ namespace SwitchThemes
 				PatchName = "diffPatch",
 				AuthorName = "autoDiff",
 				Files = Patches.ToArray(),
-				Anims = AnimPatches?.ToArray()
+				Anims = AnimPatches?.ToArray(),
+				Ready8X = true
 			};
 		}
 

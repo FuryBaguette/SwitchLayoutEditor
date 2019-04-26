@@ -100,7 +100,11 @@ namespace BflytPreview.EditorForms
 				return;
 			foreach (string f in files)
 			{
-				File.WriteAllBytes(Path.Combine(dlg.SelectedPath, f), loadedSarc.Files[f]);
+				string fOut = Path.Combine(dlg.SelectedPath, f);
+				DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(fOut));
+				if (!dir.Exists)
+					dir.Create();
+				File.WriteAllBytes(fOut, loadedSarc.Files[f]);
 			}
 		}
 
@@ -272,10 +276,11 @@ namespace BflytPreview.EditorForms
             var opn = new OpenFileDialog();
             if (opn.ShowDialog() != DialogResult.OK) return;
 			bool useAnimation = MessageBox.Show("Do you want to patch animations as well ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes;
-            LayoutPatch JSONLayout = LayoutPatch.LoadTemplate(File.ReadAllText(opn.FileName));
+			bool use8Fixes = MessageBox.Show("Enable 8.x default layout fixes ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes;
+			LayoutPatch JSONLayout = LayoutPatch.LoadTemplate(File.ReadAllText(opn.FileName));
             if (JSONLayout.IsCompatible(loadedSarc))
             {
-                var layoutRes = PatchLayouts(loadedSarc, JSONLayout.Files, useAnimation);
+                var layoutRes = PatchLayouts(loadedSarc, JSONLayout, useAnimation, use8Fixes);
                 if (layoutRes)
                     MessageBox.Show("Loaded JSON patch");
                 else
@@ -311,8 +316,18 @@ namespace BflytPreview.EditorForms
 			return true;
 		}
 
-		public static bool PatchLayouts(SARCExt.SarcData sarc, LayoutFilePatch[] Files, bool AddAnimations)
+		public static bool PatchLayouts(SARCExt.SarcData sarc, LayoutPatch patch, bool AddAnimations, bool Support8)
         {
+			List<LayoutFilePatch> Files = new List<LayoutFilePatch>();
+			Files.AddRange(patch.Files);
+
+			if (Support8 && !patch.Ready8X)
+			{
+				var extra = NewFirmFixes.GetFix(patch.PatchName);
+				if (extra != null)
+					Files.AddRange(extra);
+			}
+
             foreach (var p in Files)
             {
                 if (!sarc.Files.ContainsKey(p.FileName))

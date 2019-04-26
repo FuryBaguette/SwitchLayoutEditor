@@ -531,12 +531,20 @@ namespace SwitchThemes.Common.Custom
 
 		public bool AddGroupNames(ExtraGroup[] Groups)
 		{
-			if (Groups == null) return true;
+			if (Groups == null || Groups.Length == 0) return true;
 			var PaneNames = GetPaneNames();
 			var GroupNames = GetGroupNames();
 
 			int rootGroupIndex = Panes.FindLastIndex(x => x.name == "gre1"); //find last group child list and append our groups there (aka at the end of RootGroup)
-			if (rootGroupIndex == -1) return false;
+			if (rootGroupIndex == -1)
+			{
+				rootGroupIndex = Panes.FindIndex(x => x.name == "grp1");
+				if (rootGroupIndex == -1)
+					return false;
+				Panes.Insert(rootGroupIndex + 1, new BasePane("gre1", 8));
+				Panes.Insert(rootGroupIndex + 1, new BasePane("grs1", 8));
+				rootGroupIndex += 2;
+			}
 
 			foreach (var g in Groups)
 			{
