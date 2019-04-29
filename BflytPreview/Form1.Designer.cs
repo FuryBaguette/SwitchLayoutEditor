@@ -32,6 +32,8 @@
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openBFLYTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.importJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.bFLANToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.layoutDiffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.checkUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,8 +45,6 @@
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.pnlSubSystem = new System.Windows.Forms.Panel();
-			this.importJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.bFLANToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -86,6 +86,21 @@
 			this.openBFLYTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.openBFLYTToolStripMenuItem.Text = "Open file";
 			this.openBFLYTToolStripMenuItem.Click += new System.EventHandler(this.openBFLYTToolStripMenuItem_Click);
+			// 
+			// importJSONToolStripMenuItem
+			// 
+			this.importJSONToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.bFLANToolStripMenuItem});
+			this.importJSONToolStripMenuItem.Name = "importJSONToolStripMenuItem";
+			this.importJSONToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.importJSONToolStripMenuItem.Text = "Import JSON";
+			// 
+			// bFLANToolStripMenuItem
+			// 
+			this.bFLANToolStripMenuItem.Name = "bFLANToolStripMenuItem";
+			this.bFLANToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+			this.bFLANToolStripMenuItem.Text = "BFLAN";
+			this.bFLANToolStripMenuItem.Click += new System.EventHandler(this.BFLANToolStripMenuItem_Click);
 			// 
 			// toolsToolStripMenuItem
 			// 
@@ -216,21 +231,6 @@
 			this.pnlSubSystem.DragDrop += new System.Windows.Forms.DragEventHandler(this.pnlSubSystem_DragDrop);
 			this.pnlSubSystem.DragEnter += new System.Windows.Forms.DragEventHandler(this.pnlSubSystem_DragEnter);
 			// 
-			// importJSONToolStripMenuItem
-			// 
-			this.importJSONToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.bFLANToolStripMenuItem});
-			this.importJSONToolStripMenuItem.Name = "importJSONToolStripMenuItem";
-			this.importJSONToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.importJSONToolStripMenuItem.Text = "Import JSON";
-			// 
-			// bFLANToolStripMenuItem
-			// 
-			this.bFLANToolStripMenuItem.Name = "bFLANToolStripMenuItem";
-			this.bFLANToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.bFLANToolStripMenuItem.Text = "BFLAN";
-			this.bFLANToolStripMenuItem.Click += new System.EventHandler(this.BFLANToolStripMenuItem_Click);
-			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -242,7 +242,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "Form1";
-			this.Text = "Switch Layout Editor - v1.0 Beta 4.0";
+			this.Text = "Switch Layout Editor - v1.0 Beta 5.0";
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();

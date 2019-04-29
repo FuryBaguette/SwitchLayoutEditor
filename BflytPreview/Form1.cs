@@ -7,13 +7,36 @@ using System.Windows.Forms;
 using SwitchThemes.Common.Custom;
 using Syroot.BinaryData;
 using SwitchThemesCommon;
+using System.Threading.Tasks;
 
 namespace BflytPreview
 {
 	public partial class Form1 : Form
 	{
+		//Increase this by one for each release on github
+		// 5 = v 1.0 beta 5
+		public const int AppRelease = 3;
 
-        public const string AppVersion = "1.0.0.4";
+		public static void CheckForUpdates(bool showErrors)
+		{
+			try
+			{
+				var githubClient = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("SwitchLayoutEditor"));
+				var ver = githubClient.Repository.Release.GetAll("FuryBaguette", "SwitchLayoutEditor").GetAwaiter().GetResult();
+				if (ver.Count > AppRelease)
+				{
+					if (MessageBox.Show($"A new version has been found: {ver[0].Name}\r\n{ver[0].Body}\r\nDownload it now ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+						new UpdateForm(ver[0]).ShowDialog();
+				}
+				else if (showErrors)
+					MessageBox.Show("You're running the latest version :)");
+			}
+			catch (Exception ex)
+			{
+				if (showErrors)
+					MessageBox.Show("Error while searching for updates:\r\n" + ex.ToString());
+			}
+		}
 
         public Form1()
 		{
@@ -32,11 +55,16 @@ namespace BflytPreview
 
 		private void Form1_Load(object sender, System.EventArgs e)
 		{
-//#if DEBUG
-//			string AutoLaunch = @"RdtBase.bflyt";
-//			if (!File.Exists(AutoLaunch)) return;
-//			OpenFile(File.ReadAllBytes(AutoLaunch), AutoLaunch);
-//#endif
+#if DEBUG
+			this.Text += " - This is a debug build, auto updates are disabled.";
+#else
+			Task.Run(() => CheckForUpdates(false));
+#endif
+			//#if DEBUG
+			//			string AutoLaunch = @"RdtBase.bflyt";
+			//			if (!File.Exists(AutoLaunch)) return;
+			//			OpenFile(File.ReadAllBytes(AutoLaunch), AutoLaunch);
+			//#endif
 		}
 
 		public void OpenForm(Form f)
@@ -95,8 +123,7 @@ namespace BflytPreview
 
         private void checkUpdateToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UpdateForm updateForm = new UpdateForm();
-            updateForm.Show();
+			CheckForUpdates(true);
         }
 
 		private void BFLANToolStripMenuItem_Click(object sender, EventArgs e)
