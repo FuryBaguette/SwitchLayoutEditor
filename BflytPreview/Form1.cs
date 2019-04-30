@@ -38,17 +38,21 @@ namespace BflytPreview
 			}
 		}
 
-        public Form1()
+		public Form1(string[] args = null)
 		{
 			TypeDescriptor.AddAttributes(typeof(Vector3), new TypeConverterAttribute(typeof(Vector3Converter)));
 			TypeDescriptor.AddAttributes(typeof(Vector2), new TypeConverterAttribute(typeof(Vector2Converter)));
 
 			InitializeComponent();
-        }
+
+			foreach (string s in args)
+				if (File.Exists(s))
+					OpenFile(File.ReadAllBytes(s), Path.GetFileName(s));
+		}
 
         private void openBFLYTToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog opn = new OpenFileDialog() { Filter = "Supported files (bflyt,szs)|*.bflyt;*.szs|All files|*.*" };
+			OpenFileDialog opn = new OpenFileDialog() { Filter = "Supported files (bflyt,szs,bflan)|*.bflyt;*.szs;*.bflan|All files|*.*" };
 			if (opn.ShowDialog() != DialogResult.OK) return;
 			OpenFile(File.ReadAllBytes(opn.FileName), opn.FileName);
 		}
