@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <item>
-    <version>1.0.0.4</version>
-    <url>https://github.com/FuryBaguette/SwitchLayoutEditor/releases/download/v1.0.0-beta4/SwitchLayoutEditor1.0-beta4.zip</url>
+    <version>1.0.1.0</version>
+    <url>https://github.com/FuryBaguette/SwitchLayoutEditor/releases/download/v1.0.0-beta5/Release.zip</url>
     <changelog>
-	https://git.io/fjTVa
-    - You can now update the SwitchLayoutEditor directly from within the tool. No need to check Github anymore, just click on the Update button.
-    - Support for usd1 panes + custom usd1 panes.
-    - Search box in the SZS editor
+	    https://git.io/fjZv0
+	    - Animations editor (.bflan files)
+	    - Group (grp panes) editing for bflyt files
+	    - Fix for a some crashes and some minor improvements
     </changelog>
     <mandatory>false</mandatory>
 </item>
