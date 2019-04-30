@@ -15,7 +15,7 @@ namespace BflytPreview
 	{
 		//Increase this by one for each release on github
 		// 5 = v 1.0 beta 5
-		public const int AppRelease = 3;
+		public const int AppRelease = 5;
 
 		public static void CheckForUpdates(bool showErrors)
 		{
@@ -25,8 +25,8 @@ namespace BflytPreview
 				var ver = githubClient.Repository.Release.GetAll("FuryBaguette", "SwitchLayoutEditor").GetAwaiter().GetResult();
 				if (ver.Count > AppRelease)
 				{
-					if (MessageBox.Show($"A new version has been found: {ver[0].Name}\r\n{ver[0].Body}\r\nDownload it now ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
-						new UpdateForm(ver[0]).ShowDialog();
+					if (MessageBox.Show($"A new version has been found: {ver[0].Name}\r\n{ver[0].Body}\r\nOpen the github page ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+						System.Diagnostics.Process.Start("https://github.com/FuryBaguette/SwitchLayoutEditor/releases/latest");
 				}
 				else if (showErrors)
 					MessageBox.Show("You're running the latest version :)");

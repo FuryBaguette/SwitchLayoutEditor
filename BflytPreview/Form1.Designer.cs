@@ -83,7 +83,7 @@
 			// openBFLYTToolStripMenuItem
 			// 
 			this.openBFLYTToolStripMenuItem.Name = "openBFLYTToolStripMenuItem";
-			this.openBFLYTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.openBFLYTToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.openBFLYTToolStripMenuItem.Text = "Open file";
 			this.openBFLYTToolStripMenuItem.Click += new System.EventHandler(this.openBFLYTToolStripMenuItem_Click);
 			// 
@@ -92,7 +92,7 @@
 			this.importJSONToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.bFLANToolStripMenuItem});
 			this.importJSONToolStripMenuItem.Name = "importJSONToolStripMenuItem";
-			this.importJSONToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.importJSONToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.importJSONToolStripMenuItem.Text = "Import JSON";
 			// 
 			// bFLANToolStripMenuItem
@@ -120,8 +120,8 @@
 			// checkUpdateToolStripMenuItem
 			// 
 			this.checkUpdateToolStripMenuItem.Name = "checkUpdateToolStripMenuItem";
-			this.checkUpdateToolStripMenuItem.Size = new System.Drawing.Size(93, 20);
-			this.checkUpdateToolStripMenuItem.Text = "Check Update";
+			this.checkUpdateToolStripMenuItem.Size = new System.Drawing.Size(115, 20);
+			this.checkUpdateToolStripMenuItem.Text = "Check for updates";
 			this.checkUpdateToolStripMenuItem.Click += new System.EventHandler(this.checkUpdateToolStripMenuItem_Click);
 			// 
 			// splitContainer1

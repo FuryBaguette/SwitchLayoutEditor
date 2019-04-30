@@ -13,6 +13,7 @@ using System.Windows.Forms;
 
 namespace BflytPreview
 {
+	//Unused for now
 	public partial class UpdateForm : Form
 	{
 		Octokit.Release rel;
@@ -35,7 +36,7 @@ namespace BflytPreview
 			{
 				wc.DownloadProgressChanged += wc_DownloadProgressChanged;
 				wc.DownloadFileCompleted += wc_DownloadFileCompleted;
-				wc.DownloadFileAsync(new System.Uri(rel.Assets[0].BrowserDownloadUrl), Path.GetDirectoryName(Application.ExecutablePath) + "\\update.zip");
+				wc.DownloadFileAsync(new System.Uri(rel.Assets[0].Url), Path.GetDirectoryName(Application.ExecutablePath) + "\\update.zip");
 			}
 		}
 
