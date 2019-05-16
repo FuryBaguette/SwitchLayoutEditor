@@ -15,6 +15,10 @@ For a more in depth guide, [click here](https://github.com/FuryBaguette/SwitchLa
 - Import/Export JSON patch (Compatible with Switch themes)
 - Animations editing
 
+## Support
+- Use the github issues to report problems/bugs **OR**
+- Join the [discord server](https://discord.gg/RnhJRs) for support, news/announcements before anyone, be a tester or just talk.
+
 ## Screenshot
 This is using the original from the Switch's home menu:
 ![](https://github.com/FuryBaguette/SwitchLayoutEditor/blob/master/Screenshots/MainMenu.png)
