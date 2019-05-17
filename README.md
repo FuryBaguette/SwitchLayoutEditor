@@ -17,7 +17,7 @@ For a more in depth guide, [click here](https://github.com/FuryBaguette/SwitchLa
 
 ## Support
 - Use the github issues to report problems/bugs **OR**
-- Join the [discord server](https://discord.gg/RnhJRs) for support, news/announcements before anyone, be a tester or just talk.
+- Join the [discord server](https://discord.gg/ap6yfR2) for support, news/announcements before anyone, be a tester or just talk.
 
 ## Screenshot
 This is using the original from the Switch's home menu:
