@@ -51,7 +51,7 @@ namespace SwitchThemes.Common.Custom
 		{
 			Properties = new List<EditableProperty>();
 			BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
-			dataReader.ByteOrder = ByteOrder.LittleEndian;
+			dataReader.ByteOrder = order;
 			dataReader.Position = 0;
 			ushort Count = dataReader.ReadUInt16();
 			ushort Unk1 = dataReader.ReadUInt16();
