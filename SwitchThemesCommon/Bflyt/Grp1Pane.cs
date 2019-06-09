@@ -34,13 +34,18 @@ namespace SwitchThemesCommon.Bflyt
 			BinaryDataReader bin = new BinaryDataReader(new MemoryStream(data));
 			bin.ByteOrder = b;
 			Version = version;
-			if (version > 0x05020000)
+			UInt16 NodeCount = 0;
+			if (version >= 0x05020000) //3dskit docs say this should be > but files from mario maker for wii u use 34 bytes for names with version 5.2
+			{
 				GroupName = bin.ReadFixedLenString(34);
+				NodeCount = bin.ReadUInt16();
+			}
 			else
+			{
 				GroupName = bin.ReadFixedLenString(24);
-			var NodeCount = bin.ReadUInt16();
-			if (version <= 0x05020000)
-				bin.ReadUInt16();
+				NodeCount = bin.ReadUInt16();
+				bin.ReadUInt16(); //padding
+			}
 			var pos = bin.Position;
 			for (int i = 0; i < NodeCount; i++)
 			{
@@ -61,13 +66,17 @@ namespace SwitchThemesCommon.Bflyt
 
 		protected override void ApplyChanges(BinaryDataWriter bin)
 		{
-			if (Version > 0x05020000)
+			if (Version >= 0x05020000)
+			{
 				bin.WriteFixedLenString(GroupName, 34);
+				bin.Write((UInt16)Panes.Count);
+			}
 			else
+			{
 				bin.WriteFixedLenString(GroupName, 24);
-			bin.Write((UInt16)Panes.Count);
-			if (Version <= 0x05020000)
+				bin.Write((UInt16)Panes.Count);
 				bin.Write((UInt16)0);
+			}
 			foreach (var s in Panes)
 				bin.WriteFixedLenString(s, 24);
 		}

@@ -62,7 +62,7 @@ namespace SwitchThemesCommon.Bflyt
 			Data = data;
 			BinaryDataReader bin = new BinaryDataReader(new MemoryStream(data));
 			bin.ByteOrder = bo;
-			Name = bin.ReadFixedLenString(28);
+			Name = bin.ReadFixedLenString(28); //this string should be null terminated, the actual len should be 27
 			if (version >= 0x08000000)
 			{
 				bitflags = bin.ReadInt32();
@@ -96,8 +96,9 @@ namespace SwitchThemesCommon.Bflyt
 			BinaryDataWriter bin = new BinaryDataWriter(mem);
 			bin.ByteOrder = _bo;
 			bin.Write(Data);
+
 			bin.BaseStream.Position = 0;
-			bin.WriteFixedLenString(Name, 27);
+			bin.WriteFixedLenString(Name, 28);
 			if (version >= 0x08000000)
 			{
 				bin.Write(bitflags);
