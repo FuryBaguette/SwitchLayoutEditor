@@ -153,9 +153,12 @@ namespace SwitchThemes.Common.Custom
 
 		public class MaterialsSection : BasePane
 		{
-			public List<byte[]> Materials = new List<byte[]>();
-			public MaterialsSection(BinaryDataReader bin) : base("mat1", bin)
+			public List<BflytMaterial> Materials = new List<BflytMaterial>();
+			public uint version;
+
+			public MaterialsSection(BinaryDataReader bin, uint ver) : base("mat1", bin)
 			{
+				version = ver;
 				BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
 				dataReader.ByteOrder = bin.ByteOrder;
 				int matCount = dataReader.ReadInt16();
@@ -164,7 +167,7 @@ namespace SwitchThemes.Common.Custom
 				for (int i = 0; i < matCount; i++)
 				{
 					int matLen = (i == matCount - 1 ? (int)dataReader.BaseStream.Length : Offsets[i + 1]) - (int)dataReader.Position;
-					Materials.Add(dataReader.ReadBytes(matLen));
+					Materials.Add(new BflytMaterial(dataReader.ReadBytes(matLen), dataReader.ByteOrder, version));
 				}
 			}
 
@@ -180,7 +183,7 @@ namespace SwitchThemes.Common.Custom
 				for (int i = 0; i < Materials.Count; i++)
 				{
 					uint off = (uint)dataWriter.Position;
-					dataWriter.Write(Materials[i]);
+					dataWriter.Write(Materials[i].Write(version, bin.ByteOrder));
 					uint endPos = (uint)dataWriter.Position;
 					dataWriter.Position = 4 + i * 4;
 					dataWriter.Write(off + 8);
@@ -278,7 +281,7 @@ namespace SwitchThemes.Common.Custom
 						Panes.Add(new TextureSection(bin));
 						break;
 					case "mat1":
-						Panes.Add(new MaterialsSection(bin));
+						Panes.Add(new MaterialsSection(bin,version));
 						break;
 					case "usd1":
 						Panes.Last().UserData = new Usd1Pane(bin); 

@@ -42,7 +42,7 @@
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
 			this.treeView1 = new System.Windows.Forms.TreeView();
-			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.PaneMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.clonePaneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.nullPaneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,7 +52,15 @@
 			this.zoomSlider = new System.Windows.Forms.TrackBar();
 			this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.addGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GroupMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
+			this.MaterialMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.cloneMaterialToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.removeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.TextureMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.newTextureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -62,8 +70,11 @@
 			this.splitContainer2.Panel1.SuspendLayout();
 			this.splitContainer2.Panel2.SuspendLayout();
 			this.splitContainer2.SuspendLayout();
-			this.contextMenuStrip1.SuspendLayout();
+			this.PaneMenuStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.zoomSlider)).BeginInit();
+			this.GroupMenuStrip.SuspendLayout();
+			this.MaterialMenuStrip.SuspendLayout();
+			this.TextureMenuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -190,29 +201,28 @@
 			this.treeView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.treeView1.ContextMenuStrip = this.contextMenuStrip1;
+			this.treeView1.ContextMenuStrip = this.PaneMenuStrip;
 			this.treeView1.Location = new System.Drawing.Point(0, 26);
 			this.treeView1.Name = "treeView1";
 			this.treeView1.Size = new System.Drawing.Size(266, 201);
 			this.treeView1.TabIndex = 3;
 			this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
+			this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeView1_NodeMouseClick);
 			this.treeView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeView1_KeyDown);
 			// 
-			// contextMenuStrip1
+			// PaneMenuStrip
 			// 
-			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.PaneMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.clonePaneToolStripMenuItem,
             this.addToolStripMenuItem,
-            this.addGroupToolStripMenuItem,
             this.removeToolStripMenuItem});
-			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(181, 114);
-			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenuStrip1_Opening);
+			this.PaneMenuStrip.Name = "contextMenuStrip1";
+			this.PaneMenuStrip.Size = new System.Drawing.Size(135, 70);
 			// 
 			// clonePaneToolStripMenuItem
 			// 
 			this.clonePaneToolStripMenuItem.Name = "clonePaneToolStripMenuItem";
-			this.clonePaneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.clonePaneToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
 			this.clonePaneToolStripMenuItem.Text = "Clone Pane";
 			this.clonePaneToolStripMenuItem.Click += new System.EventHandler(this.clonePaneToolStripMenuItem_Click);
 			// 
@@ -223,34 +233,34 @@
             this.pic1PaneToolStripMenuItem,
             this.txtPaneToolStripMenuItem});
 			this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-			this.addToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.addToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
 			this.addToolStripMenuItem.Text = "Add";
 			// 
 			// nullPaneToolStripMenuItem
 			// 
 			this.nullPaneToolStripMenuItem.Name = "nullPaneToolStripMenuItem";
-			this.nullPaneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.nullPaneToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
 			this.nullPaneToolStripMenuItem.Text = "Null Pane";
 			this.nullPaneToolStripMenuItem.Click += new System.EventHandler(this.nullPaneToolStripMenuItem_Click);
 			// 
 			// pic1PaneToolStripMenuItem
 			// 
 			this.pic1PaneToolStripMenuItem.Name = "pic1PaneToolStripMenuItem";
-			this.pic1PaneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.pic1PaneToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
 			this.pic1PaneToolStripMenuItem.Text = "Pic1 Pane";
 			this.pic1PaneToolStripMenuItem.Click += new System.EventHandler(this.pic1PaneToolStripMenuItem_Click);
 			// 
 			// txtPaneToolStripMenuItem
 			// 
 			this.txtPaneToolStripMenuItem.Name = "txtPaneToolStripMenuItem";
-			this.txtPaneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.txtPaneToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
 			this.txtPaneToolStripMenuItem.Text = "Txt Pane";
 			this.txtPaneToolStripMenuItem.Click += new System.EventHandler(this.txtPaneToolStripMenuItem_Click);
 			// 
 			// removeToolStripMenuItem
 			// 
 			this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-			this.removeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.removeToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
 			this.removeToolStripMenuItem.Text = "Remove";
 			this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
 			// 
@@ -290,13 +300,71 @@
 			this.panel1.Size = new System.Drawing.Size(527, 420);
 			this.panel1.TabIndex = 0;
 			// 
-			// addGroupToolStripMenuItem
+			// GroupMenuStrip
 			// 
-			this.addGroupToolStripMenuItem.Name = "addGroupToolStripMenuItem";
-			this.addGroupToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.addGroupToolStripMenuItem.Text = "Add group";
-			this.addGroupToolStripMenuItem.Visible = false;
-			this.addGroupToolStripMenuItem.Click += new System.EventHandler(this.AddGroupToolStripMenuItem_Click);
+			this.GroupMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem6,
+            this.toolStripMenuItem7});
+			this.GroupMenuStrip.Name = "contextMenuStrip1";
+			this.GroupMenuStrip.Size = new System.Drawing.Size(132, 48);
+			// 
+			// toolStripMenuItem6
+			// 
+			this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+			this.toolStripMenuItem6.Size = new System.Drawing.Size(131, 22);
+			this.toolStripMenuItem6.Text = "Add group";
+			this.toolStripMenuItem6.Click += new System.EventHandler(this.AddGroupToolStripMenuItem_Click);
+			// 
+			// toolStripMenuItem7
+			// 
+			this.toolStripMenuItem7.Name = "toolStripMenuItem7";
+			this.toolStripMenuItem7.Size = new System.Drawing.Size(131, 22);
+			this.toolStripMenuItem7.Text = "Remove";
+			this.toolStripMenuItem7.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
+			// 
+			// MaterialMenuStrip
+			// 
+			this.MaterialMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cloneMaterialToolStripMenuItem,
+            this.removeToolStripMenuItem1});
+			this.MaterialMenuStrip.Name = "MaterialMenuStrip";
+			this.MaterialMenuStrip.Size = new System.Drawing.Size(152, 48);
+			// 
+			// cloneMaterialToolStripMenuItem
+			// 
+			this.cloneMaterialToolStripMenuItem.Name = "cloneMaterialToolStripMenuItem";
+			this.cloneMaterialToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+			this.cloneMaterialToolStripMenuItem.Text = "Clone material";
+			this.cloneMaterialToolStripMenuItem.Click += new System.EventHandler(this.CloneMaterialToolStripMenuItem_Click);
+			// 
+			// removeToolStripMenuItem1
+			// 
+			this.removeToolStripMenuItem1.Name = "removeToolStripMenuItem1";
+			this.removeToolStripMenuItem1.Size = new System.Drawing.Size(151, 22);
+			this.removeToolStripMenuItem1.Text = "Remove";
+			this.removeToolStripMenuItem1.Click += new System.EventHandler(this.RemoveMaterial_Click);
+			// 
+			// TextureMenuStrip
+			// 
+			this.TextureMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newTextureToolStripMenuItem,
+            this.toolStripMenuItem2});
+			this.TextureMenuStrip.Name = "MaterialMenuStrip";
+			this.TextureMenuStrip.Size = new System.Drawing.Size(138, 48);
+			// 
+			// newTextureToolStripMenuItem
+			// 
+			this.newTextureToolStripMenuItem.Name = "newTextureToolStripMenuItem";
+			this.newTextureToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+			this.newTextureToolStripMenuItem.Text = "New texture";
+			this.newTextureToolStripMenuItem.Click += new System.EventHandler(this.NewTextureToolStripMenuItem_Click);
+			// 
+			// toolStripMenuItem2
+			// 
+			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(137, 22);
+			this.toolStripMenuItem2.Text = "Remove";
+			this.toolStripMenuItem2.Click += new System.EventHandler(this.RemoveTexture_Click);
 			// 
 			// EditorView
 			// 
@@ -324,8 +392,11 @@
 			this.splitContainer2.Panel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
 			this.splitContainer2.ResumeLayout(false);
-			this.contextMenuStrip1.ResumeLayout(false);
+			this.PaneMenuStrip.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.zoomSlider)).EndInit();
+			this.GroupMenuStrip.ResumeLayout(false);
+			this.MaterialMenuStrip.ResumeLayout(false);
+			this.TextureMenuStrip.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -347,13 +418,21 @@
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem expandAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem collapseAllToolStripMenuItem;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ContextMenuStrip PaneMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem nullPaneToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem clonePaneToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pic1PaneToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem txtPaneToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem addGroupToolStripMenuItem;
+		private System.Windows.Forms.ContextMenuStrip GroupMenuStrip;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
+		private System.Windows.Forms.ContextMenuStrip MaterialMenuStrip;
+		private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem cloneMaterialToolStripMenuItem;
+		private System.Windows.Forms.ContextMenuStrip TextureMenuStrip;
+		private System.Windows.Forms.ToolStripMenuItem newTextureToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
 	}
 }
