@@ -115,6 +115,7 @@ namespace SwitchThemesCommon.Bflyt
 				bin.Write((byte)Textures[i].WrapS);
 				bin.Write((byte)Textures[i].WrapT);
 			}
+
 			return mem.ToArray();
 		}
 

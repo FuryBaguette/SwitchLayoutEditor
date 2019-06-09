@@ -133,7 +133,8 @@ namespace SwitchThemes.Common.Custom
 				var newData = new MemoryStream();
 				BinaryDataWriter dataWriter = new BinaryDataWriter(newData);
 				dataWriter.ByteOrder = bin.ByteOrder;
-				dataWriter.Write(Textures.Count);
+				dataWriter.Write((Int16)Textures.Count);
+				dataWriter.Write((Int16)0); //padding
 				dataWriter.Write(new int[Textures.Count]);
 				for (int i = 0; i < Textures.Count; i++)
 				{
@@ -178,7 +179,8 @@ namespace SwitchThemes.Common.Custom
 				var newData = new MemoryStream();
 				BinaryDataWriter dataWriter = new BinaryDataWriter(newData);
 				dataWriter.ByteOrder = bin.ByteOrder;
-				dataWriter.Write(Materials.Count);
+				dataWriter.Write((Int16)Materials.Count);
+				dataWriter.Write((Int16)0); //padding
 				dataWriter.Write(new int[Materials.Count]);
 				for (int i = 0; i < Materials.Count; i++)
 				{
