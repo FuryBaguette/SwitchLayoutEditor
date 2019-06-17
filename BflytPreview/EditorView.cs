@@ -267,13 +267,15 @@ namespace BflytPreview
 			{
 				var texNode = treeView1.Nodes.Add("Textures");
 				texNode.Tag = new TextureTag();
+				int index = 0;
 				foreach (var t in layout.GetTex.Textures)
-					texNode.Nodes.Add(t).Tag = new TextureTag();
+					texNode.Nodes.Add($"{index++} : {t}").Tag = new TextureTag(t);
 			}
 			{
 				var matNode = treeView1.Nodes.Add("Materials");
+				int index = 0;
 				foreach (var t in layout.GetMat.Materials)
-					matNode.Nodes.Add(t.ToString()).Tag = t;
+					matNode.Nodes.Add($"{index++} : {t}").Tag = t;
 			}
 			RecursiveAddNode(layout.RootPane, treeView1.Nodes);
 			RecursiveAddNode(layout.RootGroup, treeView1.Nodes);
@@ -605,7 +607,7 @@ namespace BflytPreview
 		private void RemoveTexture_Click(object sender, EventArgs e)
 		{
 			if (treeView1.SelectedNode.Parent == null) return; //the texture must be in the root textures node
-			layout.GetTex.Textures.Remove(treeView1.SelectedNode.Text);
+			layout.GetTex.Textures.Remove(((TextureTag)treeView1.SelectedNode.Tag).TexName);
 			UpdateView();
 		}
 
@@ -638,6 +640,10 @@ namespace BflytPreview
         }
     }
 
-	//Empty, used for tagging and root node
-	class TextureTag { }
+	//used for tagging and root node
+	class TextureTag
+	{
+		internal string TexName;
+		public TextureTag(string n = null) { TexName = n; }
+	}
 }

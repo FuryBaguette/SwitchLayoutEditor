@@ -12,6 +12,8 @@ using System.Windows.Forms;
 using SwitchThemes.Common;
 using SwitchThemes.Common.Custom;
 using SwitchThemes.Common.Serializers;
+using SwitchThemes.Common.Bntxx;
+using Syroot.BinaryData;
 
 namespace BflytPreview.EditorForms
 {
@@ -316,8 +318,40 @@ namespace BflytPreview.EditorForms
 			return true;
 		}
 
+		public static bool PatchBntxTextureAttribs(SARCExt.SarcData sarc, params Tuple<string, UInt32>[] patches)
+		{
+			QuickBntx q = new QuickBntx(new BinaryDataReader(new MemoryStream(sarc.Files[@"timg/__Combined.bntx"])));
+			if (q.Rlt.Length != 0x80)
+			{
+				return false;
+			}
+			try
+			{
+				foreach (var patch in patches)
+					q.FindTex(patch.Item1).ChannelTypes = (int)patch.Item2;
+				sarc.Files["timg/__Combined.bntx"] = q.Write();
+			}
+			catch (Exception ex)
+			{
+				return false;
+			}
+			return true;
+		}
+
 		public static bool PatchLayouts(SARCExt.SarcData sarc, LayoutPatch patch, bool AddAnimations, bool Support8)
         {
+			if (patch.PatchAppletColorAttrib)
+			{
+				var res = PatchBntxTextureAttribs(sarc,
+					new Tuple<string, uint>("RdtIcoPvr_00^s", 0x02000000), new Tuple<string, uint>("RdtIcoNews_00^s", 0x02000000),
+					new Tuple<string, uint>("RdtIcoNews_01^s", 0x02000000), new Tuple<string, uint>("RdtIcoSet^s", 0x02000000),
+					new Tuple<string, uint>("RdtIcoShop^s", 0x02000000), new Tuple<string, uint>("RdtIcoCtrl_00^s", 0x02000000),
+					new Tuple<string, uint>("RdtIcoCtrl_01^s", 0x02000000), new Tuple<string, uint>("RdtIcoCtrl_02^s", 0x02000000),
+					new Tuple<string, uint>("RdtIcoPwrForm^s", 0x02000000));
+				if (!res)
+					return res;
+			}
+
 			List<LayoutFilePatch> Files = new List<LayoutFilePatch>();
 			Files.AddRange(patch.Files);
 

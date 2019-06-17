@@ -47,10 +47,10 @@ namespace SwitchThemesCommon.Bflyt
 			}
 		}
 
+		public Color ForegroundColor { get; set; }
+		public Color BackgroundColor { get; set; }
+		
 		//TODO: finish the implementation
-		//public Color ForegroundColor { get; set; }
-		//public Color BackgroundColor { get; set; }
-
 		//public bool HasAlphaComparisonConditions { get; set; }
 		//public bool HasIndirectAdjustment { get; set; }
 		//public bool HasShadowBlending { get; set; }
@@ -66,12 +66,14 @@ namespace SwitchThemesCommon.Bflyt
 			if (version >= 0x08000000)
 			{
 				bitflags = bin.ReadInt32();
-				bin.ReadUInt64();
 				bin.ReadUInt32();
+				ForegroundColor = bin.ReadColorRGBA();
+				BackgroundColor = bin.ReadColorRGBA();
 			}
 			else
 			{
-				bin.ReadUInt64();
+				ForegroundColor = bin.ReadColorRGBA();
+				BackgroundColor = bin.ReadColorRGBA();
 				bitflags = bin.ReadInt32();
 			}
 			Textures = new TextureReference[bitflags & 3];
@@ -102,11 +104,14 @@ namespace SwitchThemesCommon.Bflyt
 			if (version >= 0x08000000)
 			{
 				bin.Write(bitflags);
-				bin.BaseStream.Position += 12;
+				bin.BaseStream.Position += 4;
+				bin.Write(ForegroundColor);
+				bin.Write(BackgroundColor);
 			}
 			else
 			{
-				bin.BaseStream.Position += 8;
+				bin.Write(ForegroundColor);
+				bin.Write(BackgroundColor);
 				bin.Write(bitflags);
 			}
 

@@ -38,6 +38,7 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
 			this.label4 = new System.Windows.Forms.Label();
+			this.cbTexFlagPatch = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// button1
@@ -113,7 +114,7 @@
 			// button3
 			// 
 			this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button3.Location = new System.Drawing.Point(286, 181);
+			this.button3.Location = new System.Drawing.Point(286, 207);
 			this.button3.Name = "button3";
 			this.button3.Size = new System.Drawing.Size(102, 23);
 			this.button3.TabIndex = 7;
@@ -124,17 +125,29 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(5, 155);
+			this.label4.Location = new System.Drawing.Point(5, 150);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(233, 13);
 			this.label4.TabIndex = 8;
 			this.label4.Text = "The Layout Differ does not support all properties";
 			// 
+			// cbTexFlagPatch
+			// 
+			this.cbTexFlagPatch.AutoSize = true;
+			this.cbTexFlagPatch.Location = new System.Drawing.Point(13, 171);
+			this.cbTexFlagPatch.Name = "cbTexFlagPatch";
+			this.cbTexFlagPatch.Size = new System.Drawing.Size(368, 30);
+			this.cbTexFlagPatch.TabIndex = 9;
+			this.cbTexFlagPatch.Text = "Patch the bntx textures of the applet icons to properly change their color.\r\nEnab" +
+    "le this only if you set a custom color.";
+			this.cbTexFlagPatch.UseVisualStyleBackColor = true;
+			// 
 			// LayoutDiffForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(400, 216);
+			this.ClientSize = new System.Drawing.Size(400, 238);
+			this.Controls.Add(this.cbTexFlagPatch);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.button3);
 			this.Controls.Add(this.label3);
@@ -166,5 +179,6 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label4;
-    }
+		private System.Windows.Forms.CheckBox cbTexFlagPatch;
+	}
 }

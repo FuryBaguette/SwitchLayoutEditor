@@ -92,8 +92,27 @@ namespace SwitchThemes
 				}
 				if (extraGroups.Count == 0) extraGroups = null;
 
-				if (curFile.Count > 0 || extraGroups?.Count > 0)
-					Patches.Add(new LayoutFilePatch() { FileName = f, Patches = curFile.ToArray(), AddGroups = extraGroups?.ToArray() });
+				List<MaterialPatch> materials = new List<MaterialPatch>();
+				if (ed.GetMat != null && or.GetMat != null)
+				{					
+					var edMat = ed.GetMat;
+					foreach (var orM in or.GetMat.Materials)
+					{
+						var edM = edMat.Materials.Where(x => x.Name == orM.Name).FirstOrDefault();
+						if (edM == null) continue;
+						if (edM.ForegroundColor == orM.ForegroundColor && edM.BackgroundColor == orM.BackgroundColor) continue;
+						MaterialPatch m = new MaterialPatch() { MaterialName = orM.Name };
+						if (edM.ForegroundColor != orM.ForegroundColor)
+							m.ForegroundColor = ColorToLEByte(edM.ForegroundColor);
+						if (edM.BackgroundColor != orM.BackgroundColor)
+							m.BackgroundColor = ColorToLEByte(edM.BackgroundColor);
+						materials.Add(m);
+					}
+				}
+				if (materials.Count == 0) materials = null;
+
+				if (curFile.Count > 0 || extraGroups?.Count > 0 || materials?.Count > 0)
+					Patches.Add(new LayoutFilePatch() { FileName = f, Patches = curFile.ToArray(), Materials = materials?.ToArray(), AddGroups = extraGroups?.ToArray() });
 			}
 			if (Patches.Count == 0) //animation edits depend on bflyt changes so this is relevant
 			{
@@ -155,7 +174,7 @@ namespace SwitchThemes
 		static bool VecEqual(Vector2 v, Vector2 v1) => v.X == v1.X && v.Y == v1.Y;
 		static NullableVector2 ToNullVec(Vector2 v) => new NullableVector2() { X = v.X, Y = v.Y };
 
-		static string ColorToLEByte(System.Drawing.Color col) => ((uint)(col.R | col.G << 8 | col.B << 16 | col.A << 24)).ToString("X");
+		static string ColorToLEByte(System.Drawing.Color col) => ((uint)(col.R | col.G << 8 | col.B << 16 | col.A << 24)).ToString("X8");
 
 		static string[] GetPaneNames(BFLYT layout)
 		{

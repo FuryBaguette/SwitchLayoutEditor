@@ -534,6 +534,30 @@ namespace SwitchThemes.Common.Custom
 			return true;
         }
 
+		public bool ApplyMaterialsPatch(MaterialPatch[] Patches)
+		{
+			if (Patches == null) return true;
+			var mats = GetMat;
+			if (mats == null) return false;
+			foreach (var p in Patches)
+			{
+				var target = mats.Materials.Where(x => x.Name == p.MaterialName).First();
+				if (target == null) continue; //Less strict patching
+				if (p.ForegroundColor != null)
+					target.ForegroundColor = ByteStringLEToColor(p.ForegroundColor);
+				if (p.BackgroundColor != null)
+					target.BackgroundColor = ByteStringLEToColor(p.BackgroundColor);
+			}
+			return true;
+		}
+
+		static Color ByteStringLEToColor(string col)
+		{
+			uint Col = Convert.ToUInt32(col, 16);
+			return Color.FromArgb((int)((Col >> 24) & 0xFF), (int)(Col & 0xFF), (int)((Col >> 8) & 0xFF), (int)((Col >> 16) & 0xFF));
+			//((uint)(col.R | col.G << 8 | col.B << 16 | col.A << 24))
+		}
+
 		public bool AddGroupNames(ExtraGroup[] Groups)
 		{
 			if (Groups == null || Groups.Length == 0) return true;
