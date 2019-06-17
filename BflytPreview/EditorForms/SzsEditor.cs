@@ -328,7 +328,10 @@ namespace BflytPreview.EditorForms
 			try
 			{
 				foreach (var patch in patches)
-					q.FindTex(patch.Item1).ChannelTypes = (int)patch.Item2;
+				{
+					var target = q.FindTex(patch.Item1);
+					if (target != null) target.ChannelTypes = (int)patch.Item2;
+				}
 				sarc.Files["timg/__Combined.bntx"] = q.Write();
 			}
 			catch (Exception ex)
@@ -340,17 +343,13 @@ namespace BflytPreview.EditorForms
 
 		public static bool PatchLayouts(SARCExt.SarcData sarc, LayoutPatch patch, bool AddAnimations, bool Support8)
         {
-			if (patch.PatchAppletColorAttrib)
-			{
-				var res = PatchBntxTextureAttribs(sarc,
+			if (patch.PatchAppletColorAttrib) //should check if the target is ResidentMenu for this 
+				PatchBntxTextureAttribs(sarc,
 					new Tuple<string, uint>("RdtIcoPvr_00^s", 0x02000000), new Tuple<string, uint>("RdtIcoNews_00^s", 0x02000000),
 					new Tuple<string, uint>("RdtIcoNews_01^s", 0x02000000), new Tuple<string, uint>("RdtIcoSet^s", 0x02000000),
 					new Tuple<string, uint>("RdtIcoShop^s", 0x02000000), new Tuple<string, uint>("RdtIcoCtrl_00^s", 0x02000000),
 					new Tuple<string, uint>("RdtIcoCtrl_01^s", 0x02000000), new Tuple<string, uint>("RdtIcoCtrl_02^s", 0x02000000),
 					new Tuple<string, uint>("RdtIcoPwrForm^s", 0x02000000));
-				if (!res)
-					return res;
-			}
 
 			List<LayoutFilePatch> Files = new List<LayoutFilePatch>();
 			Files.AddRange(patch.Files);

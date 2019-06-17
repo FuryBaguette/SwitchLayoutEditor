@@ -139,7 +139,7 @@
 			this.cbTexFlagPatch.Size = new System.Drawing.Size(368, 30);
 			this.cbTexFlagPatch.TabIndex = 9;
 			this.cbTexFlagPatch.Text = "Patch the bntx textures of the applet icons to properly change their color.\r\nEnab" +
-    "le this only if you set a custom color.";
+    "le this only if you set a custom color. (Only for home menu layouts)";
 			this.cbTexFlagPatch.UseVisualStyleBackColor = true;
 			// 
 			// LayoutDiffForm

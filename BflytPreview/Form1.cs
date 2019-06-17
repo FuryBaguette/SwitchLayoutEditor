@@ -15,7 +15,8 @@ namespace BflytPreview
 	{
 		//Increase this by one for each release on github
 		// 5 = v 1.0 beta 5
-		public const int AppRelease = 5;
+		// 6 = v 1.0 beta 6
+		public const int AppRelease = 6;
 
 		public static void CheckForUpdates(bool showErrors)
 		{
