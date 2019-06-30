@@ -261,24 +261,34 @@ namespace BflytPreview
 			GL.End();
 		}
 
-		public void UpdateView()
+		public void UpdateView(object focus = null)
 		{
 			treeView1.Nodes.Clear();
 			{
+				string target = focus as string;
 				var texNode = treeView1.Nodes.Add("Textures");
 				texNode.Tag = new TextureTag();
 				int index = 0;
 				foreach (var t in layout.GetTex.Textures)
-					texNode.Nodes.Add($"{index++} : {t}").Tag = new TextureTag(t);
+				{
+					var n = texNode.Nodes.Add($"{index++} : {t}");
+					n.Tag = new TextureTag(t);
+					if (target != null && t == target) n.Expand();
+				}
 			}
 			{
+				var target = focus as BflytMaterial;
 				var matNode = treeView1.Nodes.Add("Materials");
 				int index = 0;
 				foreach (var t in layout.GetMat.Materials)
-					matNode.Nodes.Add($"{index++} : {t}").Tag = t;
+				{
+					var n = matNode.Nodes.Add($"{index++} : {t}");
+					n.Tag = t;
+					if (target != null & t == target) n.Expand();
+				}
 			}
-			RecursiveAddNode(layout.RootPane, treeView1.Nodes);
-			RecursiveAddNode(layout.RootGroup, treeView1.Nodes);
+			RecursiveAddNode(layout.RootPane, treeView1.Nodes, focus as BasePane);
+			RecursiveAddNode(layout.RootGroup, treeView1.Nodes, focus as BasePane);
 			glControl.Invalidate();
 		}
 
@@ -326,12 +336,13 @@ namespace BflytPreview
             pictureBox1.Image = b;
         }*/
 
-		public static void RecursiveAddNode(BFLYT.BasePane p, TreeNodeCollection node)
+		public static void RecursiveAddNode(BFLYT.BasePane p, TreeNodeCollection node, BasePane focus)
 		{
 			var TargetNode = node.Add(p.ToString());
 			TargetNode.Tag = p;
+			if (focus == p) TargetNode.Expand();
 			foreach (var c in p.Children)
-				RecursiveAddNode(c, TargetNode.Nodes);
+				RecursiveAddNode(c, TargetNode.Nodes, focus);
 		}
 
 		private void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
@@ -563,23 +574,23 @@ namespace BflytPreview
 		private void clonePaneToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			EditablePane pane = treeView1.SelectedNode.Tag as EditablePane;
-			layout.AddPane(pane.Clone(), pane.Parent);
-			UpdateView();
+			layout.AddPane(-1, pane.Parent, pane.Clone());
+			UpdateView(pane);
 		}
 
 		void AddPane(BasePane p)
 		{
 			if (treeView1.SelectedNode.Tag as EditablePane == null) return;
-			layout.AddPane(p, treeView1.SelectedNode.Tag as EditablePane);
-			UpdateView();
+			layout.AddPane(-1, treeView1.SelectedNode.Tag as EditablePane, p);
+			UpdateView(p);
 		}
 
 		private void AddGroupToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Grp1Pane pane = new Grp1Pane(layout.version);
 			pane.GroupName = "New group";
-			layout.AddPane(pane, treeView1.SelectedNode.Tag as Grp1Pane);
-			UpdateView();
+			layout.AddPane(-1, treeView1.SelectedNode.Tag as Grp1Pane, pane);
+			UpdateView(pane);
 		}
 
 		private void TreeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -601,7 +612,7 @@ namespace BflytPreview
 			string name = "New_texture";
 			if (InputDialog.Show("Add new texture", "Enter a name for the new texture.", ref name) != DialogResult.OK) return;
 			layout.GetTex.Textures.Add(name);
-			UpdateView();
+			UpdateView(name);
 		}
 
 		private void RemoveTexture_Click(object sender, EventArgs e)
@@ -628,8 +639,55 @@ namespace BflytPreview
 			else
 				next.Name = next.Name.Substring(0,26) + "_";
 			layout.GetMat.Materials.Add(next);
-			UpdateView();
+			UpdateView(next);
 		}
+
+		private void MoveUpToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var p = treeView1.SelectedNode.Tag as BasePane;
+			if (p == null || p.Parent == null) return;
+			layout.MovePane(p, p.Parent, p.Parent.Children.IndexOf(p) - 1);
+			UpdateView(p);
+		}
+
+		private void MoveDownToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var p = treeView1.SelectedNode.Tag as BasePane;
+			if (p == null || p.Parent == null) return;
+			layout.MovePane(p, p.Parent, p.Parent.Children.IndexOf(p) + 1);
+			UpdateView(p);
+		}
+
+		//TODO
+		//private void TreeView1_ItemDrag(object sender, ItemDragEventArgs e)
+		//{
+		//	if (((TreeNode)e.Item).Tag is EditablePane && ((TreeNode)e.Item).Tag != layout.RootPane)
+		//	{
+		//		DoDragDrop(e.Item, DragDropEffects.Move);
+		//	}
+		//}
+
+		//private void TreeView1_DragEnter(object sender, DragEventArgs e)
+		//{
+		//	e.Effect = DragDropEffects.Move;
+		//}
+
+		//private void TreeView1_DragDrop(object sender, DragEventArgs e)
+		//{
+		//	if (!e.Data.GetDataPresent(typeof(TreeNode))) return;
+
+		//	TreeNode sourceNode = e.Data.GetData(typeof(TreeView)) as TreeNode;
+
+		//	var item = new TreeNode(sourceNode.Text);
+
+
+		//	System.Drawing.Point pt = ((TreeView)sender).PointToClient(new System.Drawing.Point(e.X, e.Y));
+		//	TreeNode DestinationNode = ((TreeView)sender).GetNodeAt(pt);
+
+		//	DestinationNode.Nodes.Add(item);
+		//	DestinationNode.Expand();
+
+		//}
 
 		private void EditorView_KeyDown(object sender, KeyEventArgs e)
         {
@@ -641,9 +699,20 @@ namespace BflytPreview
     }
 
 	//used for tagging and root node
-	class TextureTag
+	internal class TextureTag
 	{
 		internal string TexName;
 		public TextureTag(string n = null) { TexName = n; }
+		public override bool Equals(object obj)
+		{
+			if (obj is string)
+				return TexName == (string)obj;
+			else if (obj is TextureTag)
+				return ((TextureTag)obj).TexName == TexName;
+			return base.Equals(obj);
+		}
+
+		public static bool operator ==(TextureTag a, TextureTag b) => a.Equals(b);
+		public static bool operator !=(TextureTag a, TextureTag b) => !a.Equals(b);
 	}
 }

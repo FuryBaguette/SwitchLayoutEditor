@@ -300,21 +300,33 @@ namespace SwitchThemes.Common.Custom
 
 		public void RemovePane(BasePane pane)
 		{
+			int paneIndex = Panes.IndexOf(pane);
+			int end = FindPaneEnd(paneIndex);
+
+			Panes.RemoveRange(paneIndex, end - paneIndex + 1);
+
+			if (pane.Parent != null)
+				pane.Parent.Children.Remove(pane);
+			RebuildParentingData();
+		}
+
+		int FindPaneEnd(int paneIndex)
+		{
+			var pane = Panes[paneIndex];
+
 			string childStarter = pane is Grp1Pane ? "grs1" : "pas1";
 			string childCloser = pane is Grp1Pane ? "gre1" : "pae1";
 
-			int paneIndex = Panes.IndexOf(pane);
 			if (Panes[paneIndex + 1].name == childStarter)
 			{
 				int ChildLevel = 0;
-				int TargetDelete = -1;
-				for (int i = paneIndex + 2; i < Panes.Count; i++)
+				int i;
+				for (i = paneIndex + 2; i < Panes.Count; i++)
 				{
 					if (Panes[i].name == childCloser)
 					{
 						if (ChildLevel == 0)
 						{
-							TargetDelete = i;
 							break;
 						}
 						ChildLevel--;
@@ -322,35 +334,80 @@ namespace SwitchThemes.Common.Custom
 					if (Panes[i].name == childStarter)
 						ChildLevel++;
 				}
-				if (TargetDelete == -1)
-					throw new Exception("Couldn't find the children data");
-				Panes.RemoveRange(paneIndex, TargetDelete - paneIndex);
+				return i;
 			}
-			else Panes.Remove(pane);
-			if (pane.Parent != null)
-				pane.Parent.Children.Remove(pane);
-			RebuildParentingData();
+			return paneIndex;
 		}
 
-		public void AddPane(BasePane pane, BasePane Parent)
+		public void AddPane(int offsetInChilren, BasePane Parent, params BasePane[] pane)
 		{
-			string childStarter = pane is Grp1Pane ? "grs1" : "pas1";
-			string childCloser = pane is Grp1Pane ? "gre1" : "pae1";
+			string childStarter = pane[0] is Grp1Pane ? "grs1" : "pas1";
+			string childCloser = pane[0] is Grp1Pane ? "gre1" : "pae1";
+
+			if (pane.Length > 1 && (pane[1].name != childStarter || pane[0].Parent == pane[2].Parent))
+				throw new Exception("The BasePane array must be a single pane, optionally with children already in the proper structure");
 
 			if (Parent == null) Parent = RootPane;
 			int parentIndex = Panes.IndexOf(Parent);
-			if (Panes[parentIndex + 1].name != childStarter)
+			if (Panes.Count <= parentIndex + 1 || Panes[parentIndex + 1].name != childStarter)
 			{
 				if (Parent.Children.Count != 0) throw new Exception("Inconsistend data !");
 				Panes.Insert(parentIndex + 1, new BasePane(childStarter, 8));
 				Panes.Insert(parentIndex + 2, new BasePane(childCloser, 8));
 			}
-			Parent.Children.Add(pane);
-			pane.Parent = Parent;
-			Panes.Insert(parentIndex + 2, pane);
+
+			pane[0].Parent = Parent;
+			if (offsetInChilren <= 0 || offsetInChilren >= Parent.Children.Count)
+			{
+				Parent.Children.AddRange(pane);
+				Panes.InsertRange(parentIndex + 2, pane);
+			}
+			else
+			{
+				int actualInsertOffset = 0;
+				int childCount = 0;
+				for (int i = parentIndex + 2; ; i++)
+				{
+					i = FindPaneEnd(i) + 1;
+					childCount++;
+					if (childCount == offsetInChilren)
+					{
+						actualInsertOffset = i;
+						break;
+					}
+				}
+
+				Parent.Children.InsertRange(offsetInChilren, pane);
+				Panes.InsertRange(actualInsertOffset, pane);
+			}
 			RebuildParentingData();
 		}
 
+		public void MovePane(BasePane pane, BasePane NewParent, int childOffset)
+		{
+			if (childOffset < 0)
+				childOffset = 0;
+			if (childOffset > NewParent.Children.Count)
+				childOffset = NewParent.Children.Count;
+
+			int parentIndex = Panes.IndexOf(NewParent);
+			if (parentIndex == -1) throw new Exception("No parent !");
+
+			int paneIndex = Panes.IndexOf(pane);
+			
+			int paneCount = FindPaneEnd(paneIndex) - paneIndex + 1;
+
+			List<BasePane> tmpForCopy = new List<BasePane>();
+			for (int i = paneIndex; i < paneIndex + paneCount; i++)
+				tmpForCopy.Add(Panes[i]);
+
+			Panes.RemoveRange(paneIndex, paneCount);
+
+			AddPane(childOffset, NewParent, tmpForCopy.ToArray());
+
+			//RebuildParentingData(); called by AddPane
+		}
+		
 		void RebuildParentingData()
 		{
 			RebuildGroupingData();
@@ -376,7 +433,7 @@ namespace SwitchThemes.Common.Custom
 					CurrentRoot.Children.Clear();
 					continue;
 				}
-				else if (Panes[i].name == "pae1")
+				if (Panes[i].name == "pae1")
 				{
 					CurrentRoot = CurrentRoot.Parent;
 					if (CurrentRoot == null) return;

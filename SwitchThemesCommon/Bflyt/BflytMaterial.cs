@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using ExtensionMethods;
 using System.ComponentModel;
+using System.Linq;
 
 namespace SwitchThemesCommon.Bflyt
 {
@@ -31,6 +32,14 @@ namespace SwitchThemesCommon.Bflyt
 			public UInt16 TextureId { get; set; }
 			public WRAPS WrapS { get; set; }
 			public WRAPS WrapT { get; set; }
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj == null) return false;
+			if (obj is BflytMaterial)
+				return Data.SequenceEqual(((BflytMaterial)obj).Data);
+			return false;
 		}
 
 		byte[] Data;
