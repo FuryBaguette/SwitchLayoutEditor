@@ -18,7 +18,8 @@ namespace BflytPreview.EditorForms
 			bv.Dock = DockStyle.Fill;
 			f.Controls.Add(bv);
 			bv.SetBytes(data);
-			f.ShowDialog();
+			f.TopMost = true;
+			f.Show();
 		}
 	}
 }

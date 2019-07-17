@@ -369,9 +369,9 @@ namespace BflytPreview
 			}
 			else if (e.KeyCode == Keys.Q)
 			{
-				var target = treeView1.SelectedNode.Tag as BFLYT.BasePane;
+				var target = treeView1.SelectedNode.Tag as IInspectable;
 				if (target == null) return;
-				HexEditorForm.Show(target.data);
+				HexEditorForm.Show(target.GetData());
 			}
 		}
 

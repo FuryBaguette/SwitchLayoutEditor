@@ -7,10 +7,11 @@ using System.IO;
 using ExtensionMethods;
 using System.ComponentModel;
 using System.Linq;
+using SwitchThemes.Common.Custom;
 
 namespace SwitchThemesCommon.Bflyt
 {
-	public class BflytMaterial
+	public class BflytMaterial : IInspectable
 	{
 		[TypeConverter(typeof(ExpandableObjectConverter))]
 		public struct TextureReference
@@ -34,6 +35,18 @@ namespace SwitchThemesCommon.Bflyt
 			public WRAPS WrapT { get; set; }
 		}
 
+		[TypeConverter(typeof(ExpandableObjectConverter))]
+		public struct TextureTransofrm
+		{
+			public override string ToString() => $"transform ({X},{Y}) ({ScaleX}, {ScaleY}) {Rotation}";
+
+			public float X { get; set; }
+			public float Y { get; set; }
+			public float Rotation { get; set; }
+			public float ScaleX { get; set; }
+			public float ScaleY { get; set; }
+		}
+
 		public override bool Equals(object obj)
 		{
 			if (obj == null) return false;
@@ -43,6 +56,7 @@ namespace SwitchThemesCommon.Bflyt
 		}
 
 		byte[] Data;
+		public byte[] GetData() => Data;
 		Int32 bitflags;
 
 		string _name = "";
@@ -65,6 +79,7 @@ namespace SwitchThemesCommon.Bflyt
 		//public bool HasShadowBlending { get; set; }
 
 		public TextureReference[] Textures { get; set; }
+		public TextureTransofrm[] TextureTransformations { get; set; }
 
 		public BflytMaterial(byte[] data, ByteOrder bo, uint version)
 		{
@@ -95,13 +110,30 @@ namespace SwitchThemesCommon.Bflyt
 					WrapT = (TextureReference.WRAPS)bin.ReadByte()
 				};
 			}
+			TextureTransformations = new TextureTransofrm[(bitflags & 0xC) >> 2];
+			for (int i = 0; i < ((bitflags & 0xC) >> 2); i++)
+			{
+				TextureTransformations[i] = new TextureTransofrm()
+				{
+					X = bin.ReadSingle(),
+					Y = bin.ReadSingle(),
+					Rotation = bin.ReadSingle(),
+					ScaleX = bin.ReadSingle(),
+					ScaleY = bin.ReadSingle()
+				};
+			}
 		}
 
 		public byte[] Write(uint version, ByteOrder _bo)
 		{
 			if (Textures.Length > 3) throw new Exception($"[{Name}] A material can have no more than 3 texture references");
+			if (TextureTransformations.Length > 3) throw new Exception($"[{Name}] A material can have no more than 3 texture transformations");
+
 			bitflags &= ~3;
 			bitflags |= Textures.Length;
+
+			bitflags &= ~0xC;
+			bitflags |= TextureTransformations.Length << 2;
 
 			var mem = new MemoryStream();
 			BinaryDataWriter bin = new BinaryDataWriter(mem);
@@ -129,6 +161,16 @@ namespace SwitchThemesCommon.Bflyt
 				bin.Write(Textures[i].TextureId);
 				bin.Write((byte)Textures[i].WrapS);
 				bin.Write((byte)Textures[i].WrapT);
+			}
+
+			for (int i = 0; i < TextureTransformations.Length; i++)
+			{
+				var t = TextureTransformations[i];
+				bin.Write(t.X);
+				bin.Write(t.Y);
+				bin.Write(t.Rotation);
+				bin.Write(t.ScaleX);
+				bin.Write(t.ScaleY);
 			}
 
 			return mem.ToArray();

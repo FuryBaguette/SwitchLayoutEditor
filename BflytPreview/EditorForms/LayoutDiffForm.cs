@@ -62,9 +62,9 @@ namespace BflytPreview.EditorForms
 			if (Edited == null)
 				Edited = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(textBox2.Text)));
 			var res = SwitchThemes.LayoutDiff.Diff(Original, Edited);
-			res.PatchAppletColorAttrib = cbTexFlagPatch.Checked;
 			if (res != null)
 			{
+				res.PatchAppletColorAttrib = cbTexFlagPatch.Checked;
 				SaveFileDialog sav = new SaveFileDialog() { Filter = "json file|*.json" };
 				if (sav.ShowDialog() != DialogResult.OK) return;
 				File.WriteAllText(sav.FileName, res.AsJson());

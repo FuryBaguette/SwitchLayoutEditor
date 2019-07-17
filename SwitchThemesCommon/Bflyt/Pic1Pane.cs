@@ -3,6 +3,7 @@ using SwitchThemesCommon.Bflyt;
 using Syroot.BinaryData;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Text;
@@ -18,7 +19,16 @@ namespace SwitchThemes.Common.Custom
 		public Color ColorBottomLeft { get; set; } = Color.White;
 
 		public UInt16 MaterialIndex { get; set; } = 0;
-		public Vector2[] UVCoords { get; set; } = new Vector2[0];
+
+		[TypeConverter(typeof(ExpandableObjectConverter))]
+		public class UVCoord
+		{
+			public Vector2 TopLeft { get; set; }
+			public Vector2 TopRight { get; set; }
+			public Vector2 BottomLeft { get; set; }
+			public Vector2 BottomRight { get; set; }
+		}
+		public UVCoord[] UVCoords { get; set; }
 
 		public Pic1Pane(ByteOrder b) : base("pic1",b, 0x68) {	}
 
@@ -34,9 +44,17 @@ namespace SwitchThemes.Common.Custom
 			MaterialIndex = dataReader.ReadUInt16();
 			byte UVCount = dataReader.ReadByte();
 			dataReader.ReadByte(); //padding
-			UVCoords = new Vector2[UVCount];
+			UVCoords = new UVCoord[UVCount];
 			for (int i = 0; i < UVCount; i++)
-				UVCoords[i] = dataReader.ReadVector2();
+			{
+				UVCoords[i] = new UVCoord()
+				{
+					TopLeft = dataReader.ReadVector2(),
+					TopRight = dataReader.ReadVector2(),
+					BottomLeft = dataReader.ReadVector2(),
+					BottomRight = dataReader.ReadVector2()
+				};
+			}
 		}
 
 		protected override void ApplyChanges(BinaryDataWriter bin)
@@ -50,7 +68,12 @@ namespace SwitchThemes.Common.Custom
 			bin.Write((byte)UVCoords.Length);
 			bin.Write((byte)0);
 			for (int i = 0; i < UVCoords.Length; i++)
-				bin.Write(UVCoords[i]);
+			{
+				bin.Write(UVCoords[i].TopLeft);
+				bin.Write(UVCoords[i].TopRight);
+				bin.Write(UVCoords[i].BottomLeft);
+				bin.Write(UVCoords[i].BottomRight);
+			}
 		}
 
 		public override BasePane Clone()

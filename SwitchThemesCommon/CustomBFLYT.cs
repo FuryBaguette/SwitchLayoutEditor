@@ -13,6 +13,11 @@ using System.Threading.Tasks;
 
 namespace SwitchThemes.Common.Custom
 {
+	public interface IInspectable
+	{
+		byte[] GetData();
+	}
+
 	public class BFLYT
 	{
 		public BasePane this[int index]
@@ -22,7 +27,7 @@ namespace SwitchThemes.Common.Custom
 		}
 
 		public ByteOrder FileByteOrder;
-		public class BasePane
+		public class BasePane : IInspectable
 		{
 			public BasePane Parent;
 			public List<BasePane> Children = new List<BasePane>();
@@ -39,6 +44,8 @@ namespace SwitchThemes.Common.Custom
 			public readonly string name;
 			public Int32 length;
 			public byte[] data;
+
+			public byte[] GetData() => data;
 
 			public BasePane(string _name, int len)
 			{
