@@ -114,7 +114,7 @@
 			// button3
 			// 
 			this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button3.Location = new System.Drawing.Point(286, 207);
+			this.button3.Location = new System.Drawing.Point(286, 184);
 			this.button3.Name = "button3";
 			this.button3.Size = new System.Drawing.Size(102, 23);
 			this.button3.TabIndex = 7;
@@ -141,13 +141,13 @@
 			this.cbTexFlagPatch.Text = "Patch the bntx textures of the applet icons to properly change their color.\r\nEnab" +
     "le this only if you set a custom color. (Only for home menu layouts)";
 			this.cbTexFlagPatch.UseVisualStyleBackColor = true;
+			this.cbTexFlagPatch.Visible = false;
 			// 
 			// LayoutDiffForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(400, 238);
-			this.Controls.Add(this.cbTexFlagPatch);
+			this.ClientSize = new System.Drawing.Size(400, 215);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.button3);
 			this.Controls.Add(this.label3);
@@ -157,6 +157,7 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(this.button1);
+			this.Controls.Add(this.cbTexFlagPatch);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;

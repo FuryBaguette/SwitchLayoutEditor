@@ -64,7 +64,7 @@ namespace BflytPreview.EditorForms
 			var res = SwitchThemes.LayoutDiff.Diff(Original, Edited);
 			if (res != null)
 			{
-				res.PatchAppletColorAttrib = cbTexFlagPatch.Checked;
+				//res.PatchAppletColorAttrib = cbTexFlagPatch.Checked;
 				SaveFileDialog sav = new SaveFileDialog() { Filter = "json file|*.json" };
 				if (sav.ShowDialog() != DialogResult.OK) return;
 				File.WriteAllText(sav.FileName, res.AsJson());
