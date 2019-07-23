@@ -126,6 +126,11 @@ namespace SwitchThemes.Common
 		public string ColorBR = null;
 
 		public List<UsdPatch> UsdPatches = null;
+
+		public byte? OriginX;
+		public byte? OriginY;
+		public byte? ParentOriginX;
+		public byte? ParentOriginY;
 	}
 
 	public class UsdPatch

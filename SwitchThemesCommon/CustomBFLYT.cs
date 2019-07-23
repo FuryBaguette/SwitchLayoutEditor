@@ -566,6 +566,16 @@ namespace SwitchThemes.Common.Custom
                         p.Size.Value.Y ?? e.Size.Y);
                 }
 				#endregion
+				#region Change other prperties
+				if (p.OriginX != null)
+					e.originX = (EditablePane.OriginX)p.OriginX.Value;
+				if (p.OriginY != null)
+					e.originY = (EditablePane.OriginY)p.OriginY.Value;
+				if (p.ParentOriginX != null)
+					e.ParentOriginX = (EditablePane.OriginX)p.ParentOriginX.Value;
+				if (p.ParentOriginY != null)
+					e.ParentOriginY = (EditablePane.OriginY)p.ParentOriginY.Value;
+				#endregion
 				/*#region ColorDataForPic1
                 if (e.name == "pic1")
                 {
