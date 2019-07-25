@@ -1,5 +1,4 @@
 ﻿using ExtensionMethods;
-using SwitchThemesCommon.Bflyt;
 using Syroot.BinaryData;
 using System;
 using System.Collections.Generic;
@@ -8,12 +7,12 @@ using System.Drawing;
 using System.Dynamic;
 using System.IO;
 using System.Text;
-using static SwitchThemes.Common.Custom.BFLYT;
 using System.Linq;
 using System.Collections;
 using System.Windows.Forms;
+using static SwitchThemes.Common.Bflyt.BflytFile;
 
-namespace SwitchThemes.Common.Custom
+namespace SwitchThemes.Common.Bflyt
 {
 	public class Usd1Pane : BasePane
 	{

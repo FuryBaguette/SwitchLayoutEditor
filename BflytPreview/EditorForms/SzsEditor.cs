@@ -10,10 +10,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SwitchThemes.Common;
-using SwitchThemes.Common.Custom;
 using SwitchThemes.Common.Serializers;
 using SwitchThemes.Common.Bntxx;
 using Syroot.BinaryData;
+using SwitchThemes.Common.Bflyt;
 
 namespace BflytPreview.EditorForms
 {
@@ -306,7 +306,7 @@ namespace BflytPreview.EditorForms
 
 				if (TargetVersion == 0)
 				{
-					Bflan b = new Bflan(sarc.Files[p.FileName]);
+					BflytFile b = new BflytFile(sarc.Files[p.FileName]);
 					TargetVersion = b.Version;
 				}
 
@@ -365,7 +365,7 @@ namespace BflytPreview.EditorForms
             {
                 if (!sarc.Files.ContainsKey(p.FileName))
                     return false;
-                var target = new BFLYT(sarc.Files[p.FileName]);
+                var target = new BflytFile(sarc.Files[p.FileName]);
                 var res = target.ApplyLayoutPatch(p.Patches);
                 if (res != true)
                     return res;

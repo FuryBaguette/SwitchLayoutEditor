@@ -1,5 +1,4 @@
 ﻿using ExtensionMethods;
-using SwitchThemesCommon.Bflyt;
 using Syroot.BinaryData;
 using System;
 using System.Collections.Generic;
@@ -7,9 +6,9 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Text;
-using static SwitchThemes.Common.Custom.BFLYT;
+using static SwitchThemes.Common.Bflyt.BflytFile;
 
-namespace SwitchThemes.Common.Custom
+namespace SwitchThemes.Common.Bflyt
 {
 	public class Pic1Pane : EditablePane
 	{
@@ -28,9 +27,17 @@ namespace SwitchThemes.Common.Custom
 			public Vector2 BottomLeft { get; set; }
 			public Vector2 BottomRight { get; set; }
 		}
-		public UVCoord[] UVCoords { get; set; }
+		public UVCoord[] UVCoords { get; set; } = new UVCoord[1] { new UVCoord{
+				TopLeft = new Vector2(0,0),
+				TopRight = new Vector2(1,0),
+				BottomLeft = new Vector2(0,1),
+				BottomRight = new Vector2(1,1)
+			} };
 
-		public Pic1Pane(ByteOrder b) : base("pic1",b, 0x68) {	}
+		public Pic1Pane(ByteOrder b) : base("pic1",b, 0x68)
+		{
+
+		}
 
 		public Pic1Pane(BasePane p, ByteOrder b) : base(p, b)
 		{

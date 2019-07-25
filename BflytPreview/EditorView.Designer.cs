@@ -49,6 +49,9 @@
 			this.pic1PaneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.txtPaneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.zoomSlider = new System.Windows.Forms.TrackBar();
 			this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
 			this.panel1 = new System.Windows.Forms.Panel();
@@ -61,9 +64,6 @@
 			this.TextureMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.newTextureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -109,7 +109,7 @@
             | System.Windows.Forms.Keys.S)));
 			this.saveBFLYTToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
 			this.saveBFLYTToolStripMenuItem.Text = "Save as...";
-			this.saveBFLYTToolStripMenuItem.Click += new System.EventHandler(this.saveBFLYTToolStripMenuItem_Click);
+			this.saveBFLYTToolStripMenuItem.Click += new System.EventHandler(this.saveBflytFileToolStripMenuItem_Click);
 			// 
 			// saveToSZSToolStripMenuItem
 			// 
@@ -223,12 +223,12 @@
             this.moveUpToolStripMenuItem,
             this.moveDownToolStripMenuItem});
 			this.PaneMenuStrip.Name = "contextMenuStrip1";
-			this.PaneMenuStrip.Size = new System.Drawing.Size(181, 142);
+			this.PaneMenuStrip.Size = new System.Drawing.Size(138, 120);
 			// 
 			// clonePaneToolStripMenuItem
 			// 
 			this.clonePaneToolStripMenuItem.Name = "clonePaneToolStripMenuItem";
-			this.clonePaneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.clonePaneToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
 			this.clonePaneToolStripMenuItem.Text = "Clone Pane";
 			this.clonePaneToolStripMenuItem.Click += new System.EventHandler(this.clonePaneToolStripMenuItem_Click);
 			// 
@@ -239,7 +239,7 @@
             this.pic1PaneToolStripMenuItem,
             this.txtPaneToolStripMenuItem});
 			this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-			this.addToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.addToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
 			this.addToolStripMenuItem.Text = "Add";
 			// 
 			// nullPaneToolStripMenuItem
@@ -266,9 +266,28 @@
 			// removeToolStripMenuItem
 			// 
 			this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-			this.removeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.removeToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
 			this.removeToolStripMenuItem.Text = "Remove";
 			this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(134, 6);
+			// 
+			// moveUpToolStripMenuItem
+			// 
+			this.moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
+			this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+			this.moveUpToolStripMenuItem.Text = "Move up";
+			this.moveUpToolStripMenuItem.Click += new System.EventHandler(this.MoveUpToolStripMenuItem_Click);
+			// 
+			// moveDownToolStripMenuItem
+			// 
+			this.moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
+			this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+			this.moveDownToolStripMenuItem.Text = "Move down";
+			this.moveDownToolStripMenuItem.Click += new System.EventHandler(this.MoveDownToolStripMenuItem_Click);
 			// 
 			// zoomSlider
 			// 
@@ -371,25 +390,6 @@
 			this.toolStripMenuItem2.Size = new System.Drawing.Size(137, 22);
 			this.toolStripMenuItem2.Text = "Remove";
 			this.toolStripMenuItem2.Click += new System.EventHandler(this.RemoveTexture_Click);
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
-			// 
-			// moveUpToolStripMenuItem
-			// 
-			this.moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
-			this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.moveUpToolStripMenuItem.Text = "Move up";
-			this.moveUpToolStripMenuItem.Click += new System.EventHandler(this.MoveUpToolStripMenuItem_Click);
-			// 
-			// moveDownToolStripMenuItem
-			// 
-			this.moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
-			this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.moveDownToolStripMenuItem.Text = "Move down";
-			this.moveDownToolStripMenuItem.Click += new System.EventHandler(this.MoveDownToolStripMenuItem_Click);
 			// 
 			// EditorView
 			// 

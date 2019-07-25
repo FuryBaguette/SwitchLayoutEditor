@@ -1,16 +1,15 @@
 ﻿//TODO: not complete, before release this has to be implemented in the differ and in SwitchThemes injector and installer
 
 using ExtensionMethods;
-using SwitchThemesCommon.Bflyt;
 using Syroot.BinaryData;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Text;
-using static SwitchThemes.Common.Custom.BFLYT;
+using static SwitchThemes.Common.Bflyt.BflytFile;
 
-namespace SwitchThemes.Common.Custom
+namespace SwitchThemes.Common.Bflyt
 {
 	public class Txt1Pane : EditablePane
 	{

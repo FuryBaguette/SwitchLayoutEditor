@@ -21,7 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\BntxxFormats.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\DDSEncoder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\Texture.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CustomBFLYT.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bflyt.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exten.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LayoutPatches.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NewFirmFixes.cs" />

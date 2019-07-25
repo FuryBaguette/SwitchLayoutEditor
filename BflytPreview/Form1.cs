@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
-using SwitchThemes.Common.Custom;
 using Syroot.BinaryData;
-using SwitchThemesCommon;
 using System.Threading.Tasks;
+using SwitchThemes.Common.Bflyt;
+using SwitchThemes.Common.Bflan;
 
 namespace BflytPreview
 {
@@ -98,14 +98,14 @@ namespace BflytPreview
 			}
 			else if (Magic == "FLYT")
 			{
-				EditorView editorView = new EditorView(new BFLYT(File));
+				EditorView editorView = new EditorView(new BflytFile(File));
 				editorView.Text = name;
 				OpenForm(editorView);
 				return editorView;
 			}
 			else if (Magic == "FLAN")
 			{
-				var editor = new BflanEditor(new Bflan(File));
+				var editor = new BflanEditor(new BflanFile(File));
 				OpenForm(editor);
 				return editor;
 			}

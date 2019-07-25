@@ -8,11 +8,11 @@ using System.Windows.Forms;
 using ExtensionMethods;
 using SARCExt;
 using SwitchThemes.Common;
-using SwitchThemes.Common.Custom;
+using SwitchThemes.Common.Bflan;
+using SwitchThemes.Common.Bflyt;
 using SwitchThemes.Common.Serializers;
-using SwitchThemesCommon.Bflyt;
 using Syroot.BinaryData;
-using static SwitchThemes.Common.Custom.BFLYT;
+using static SwitchThemes.Common.Bflyt.BflytFile;
 
 namespace SwitchThemes
 {
@@ -33,8 +33,8 @@ namespace SwitchThemes
 			foreach (var f in original.Files.Keys.Where(x => x.EndsWith(".bflyt")))
 			{
 				if (original.Files[f].SequenceEqual(edited.Files[f])) continue;
-				BFLYT or = new BFLYT(original.Files[f]);
-				BFLYT ed = new BFLYT(edited.Files[f]);
+				BflytFile or = new BflytFile(original.Files[f]);
+				BflytFile ed = new BflytFile(edited.Files[f]);
 				string[] orPaneNames = GetPaneNames(or);
 				string[] edPaneNames = GetPaneNames(ed);
 				List<PanePatch> curFile = new List<PanePatch>();
@@ -134,7 +134,7 @@ namespace SwitchThemes
 			foreach (var f in original.Files.Keys.Where(x => x.EndsWith(".bflan")))
 			{
 				if (original.Files[f].SequenceEqual(edited.Files[f])) continue;
-				Bflan anim = new Bflan(edited.Files[f]);
+				BflanFile anim = new BflanFile(edited.Files[f]);
 				AnimPatches.Add(new AnimFilePatch() { FileName = f, AnimJson = BflanSerializer.ToJson(anim) });
 			}
 			if (AnimPatches.Count == 0) AnimPatches = null;
@@ -186,7 +186,7 @@ namespace SwitchThemes
 
 		static string ColorToLEByte(System.Drawing.Color col) => ((uint)(col.R | col.G << 8 | col.B << 16 | col.A << 24)).ToString("X8");
 
-		static string[] GetPaneNames(BFLYT layout)
+		static string[] GetPaneNames(BflytFile layout)
 		{
 			string TryGetPaneName(BasePane p)
 			{

@@ -8,20 +8,19 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using SwitchThemes.Common.Custom;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Platform;
 using BflytPreview.EditorForms;
 using System.Threading.Tasks;
-using static SwitchThemes.Common.Custom.BFLYT;
-using SwitchThemesCommon.Bflyt;
+using SwitchThemes.Common.Bflyt;
+using static SwitchThemes.Common.Bflyt.BflytFile;
 
 namespace BflytPreview
 {
 	public partial class EditorView : Form, IFormSaveToArchive
 	{
-		BFLYT layout;
+		BflytFile layout;
 		IFileProvider _parentArch;
 		public IFileProvider ParentArchive { get => _parentArch; set { _parentArch = value; saveToSZSToolStripMenuItem.Visible = _parentArch != null; } }
 
@@ -36,7 +35,7 @@ namespace BflytPreview
 
 		public static int texture;
 
-		public EditorView(BFLYT _layout)
+		public EditorView(BflytFile _layout)
 		{
 			TypeDescriptor.AddAttributes(typeof(SwitchThemes.Common.Vector3), new TypeConverterAttribute(typeof(Vector3Converter)));
 			TypeDescriptor.AddAttributes(typeof(SwitchThemes.Common.Vector2), new TypeConverterAttribute(typeof(Vector2Converter)));
@@ -221,7 +220,7 @@ namespace BflytPreview
 			GL.Translate(x, y, 0);
 
 			RecursiveRenderPane((EditablePane)layout.RootPane);
-			DrawPane(new BFLYT.CusRectangle(-1280 / 2, -720 / 2, 1280, 720), Settings.Default.OutlineColor);
+			DrawPane(new BflytFile.CusRectangle(-1280 / 2, -720 / 2, 1280, 720), Settings.Default.OutlineColor);
 
 			if (DrawOnTop != null)
 			{
@@ -231,7 +230,7 @@ namespace BflytPreview
             }
 		}
 
-        void DrawPaneMiddlePoint(BFLYT.CusRectangle rect, Color color)
+        void DrawPaneMiddlePoint(BflytFile.CusRectangle rect, Color color)
         {
             GL.Color3(color);
             GL.Begin(PrimitiveType.Lines);
@@ -246,7 +245,7 @@ namespace BflytPreview
             GL.End();
         }
 
-		void DrawPane(BFLYT.CusRectangle rect, Color color)
+		void DrawPane(BflytFile.CusRectangle rect, Color color)
 		{
 			GL.Color3(color);
 			GL.Begin(PrimitiveType.Lines);
@@ -302,7 +301,7 @@ namespace BflytPreview
 
                 Stack<Matrix> CurMatrix = new Stack<Matrix>();
                 Random r = new Random();
-                void RecursiveRenderPane(BFLYT.EditablePane p)
+                void RecursiveRenderPane(BflytFile.EditablePane p)
                 {
                     if (!p.ParentVisibility)
                         return;
@@ -318,25 +317,25 @@ namespace BflytPreview
 
                     if (p.ViewInEditor)
                     {
-                        if (treeView1.SelectedNode != null && p == treeView1.SelectedNode.Tag as BFLYT.EditablePane)
+                        if (treeView1.SelectedNode != null && p == treeView1.SelectedNode.Tag as BflytFile.EditablePane)
                             pen = HighlightedPen;
                         gfx.DrawRectangle(pen, transformedRect);
                     }
 
-                    foreach (var c in p.Children.Where(x => x is BFLYT.EditablePane))
-                        RecursiveRenderPane((BFLYT.EditablePane)c);
+                    foreach (var c in p.Children.Where(x => x is BflytFile.EditablePane))
+                        RecursiveRenderPane((BflytFile.EditablePane)c);
                     gfx.Transform = CurMatrix.Pop();
                 }
 
                 gfx.ScaleTransform(1, -1);
                 gfx.TranslateTransform(640, -360);
-                RecursiveRenderPane((BFLYT.EditablePane)layout.RootPane);
+                RecursiveRenderPane((BflytFile.EditablePane)layout.RootPane);
 
             }
             pictureBox1.Image = b;
         }*/
 
-		public static void RecursiveAddNode(BFLYT.BasePane p, TreeNodeCollection node, BasePane focus)
+		public static void RecursiveAddNode(BflytFile.BasePane p, TreeNodeCollection node, BasePane focus)
 		{
 			var TargetNode = node.Add(p.ToString());
 			TargetNode.Tag = p;
@@ -383,7 +382,7 @@ namespace BflytPreview
 			File.WriteAllBytes(sav.FileName, layout.SaveFile());
 		}
 
-		private void saveBFLYTToolStripMenuItem_Click(object sender, EventArgs e)
+		private void saveBflytFileToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveBflyt();
 		}
@@ -587,7 +586,7 @@ namespace BflytPreview
 
 		private void AddGroupToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Grp1Pane pane = new Grp1Pane(layout.version);
+			Grp1Pane pane = new Grp1Pane(layout.Version);
 			pane.GroupName = "New group";
 			layout.AddPane(-1, treeView1.SelectedNode.Tag as Grp1Pane, pane);
 			UpdateView(pane);
@@ -633,7 +632,7 @@ namespace BflytPreview
 		{
 			if (treeView1.SelectedNode.Parent == null) return;
 			var selected = (BflytMaterial)treeView1.SelectedNode.Tag;
-			var next = new BflytMaterial(selected.Write(layout.version, layout.FileByteOrder), layout.FileByteOrder, layout.version);
+			var next = new BflytMaterial(selected.Write(layout.Version, layout.FileByteOrder), layout.FileByteOrder, layout.Version);
 			if (next.Name.Length < 27)
 				next.Name += "_";
 			else

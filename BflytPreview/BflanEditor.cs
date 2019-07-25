@@ -12,16 +12,17 @@ using SwitchThemes.Common;
 using BflytPreview.EditorForms;
 using Newtonsoft.Json;
 using SwitchThemes.Common.Serializers;
+using SwitchThemes.Common.Bflan;
 
 namespace BflytPreview
 {
 	public partial class BflanEditor : Form, IFormSaveToArchive
 	{
-		Bflan file = null;
+		BflanFile file = null;
 		IFileProvider _parentArch;
 		public IFileProvider ParentArchive { get => _parentArch; set { _parentArch = value; saveToArchiveToolStripMenuItem.Visible = _parentArch != null; } }
 
-		public BflanEditor(Bflan _file)
+		public BflanEditor(BflanFile _file)
 		{
 			InitializeComponent();
 			file = _file;

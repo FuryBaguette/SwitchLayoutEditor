@@ -7,9 +7,8 @@ using System.IO;
 using ExtensionMethods;
 using System.ComponentModel;
 using System.Linq;
-using SwitchThemes.Common.Custom;
 
-namespace SwitchThemesCommon.Bflyt
+namespace SwitchThemes.Common.Bflyt
 {
 	public class BflytMaterial : IInspectable
 	{

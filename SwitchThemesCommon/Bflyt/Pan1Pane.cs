@@ -1,14 +1,13 @@
 ﻿using ExtensionMethods;
 using SwitchThemes.Common;
-using SwitchThemes.Common.Custom;
 using Syroot.BinaryData;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using static SwitchThemes.Common.Custom.BFLYT;
+using static SwitchThemes.Common.Bflyt.BflytFile;
 
-namespace SwitchThemesCommon.Bflyt
+namespace SwitchThemes.Common.Bflyt
 {
 	public class EditablePane : BasePane
 	{
