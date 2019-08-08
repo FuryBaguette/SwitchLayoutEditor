@@ -21,6 +21,7 @@ namespace BflytPreview.EditorForms
 			if (_Original != null)
 			{
 				textBox1.Text = "<From file>";
+				ClearOriginal = false;
 				button1.Enabled = false;
 				textBox1.Enabled = false;
 				Original = _Original;
@@ -28,13 +29,16 @@ namespace BflytPreview.EditorForms
 			if (_Edited != null)
 			{
 				textBox2.Text = "<From file>";
+				ClearEdited = false;
 				button2.Enabled = false;
 				textBox2.Enabled = false;
 				Edited = _Edited;
 			}
 		}
 
+		bool ClearOriginal = true;
 		SarcData Original = null;
+		bool ClearEdited = true;
 		SarcData Edited = null;
 
 		private void button1_Click(object sender, EventArgs e)
@@ -69,6 +73,10 @@ namespace BflytPreview.EditorForms
 				if (sav.ShowDialog() != DialogResult.OK) return;
 				File.WriteAllText(sav.FileName, res.AsJson());
 			}
+			if (ClearEdited)
+				Edited = null;
+			if (ClearOriginal)
+				Original = null;
 		}
 	}
 }

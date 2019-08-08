@@ -104,7 +104,7 @@ namespace SwitchThemes
 
 				List<MaterialPatch> materials = new List<MaterialPatch>();
 				if (ed.GetMat != null && or.GetMat != null)
-				{					
+				{
 					var edMat = ed.GetMat;
 					foreach (var orM in or.GetMat.Materials)
 					{
@@ -127,7 +127,7 @@ namespace SwitchThemes
 			if (Patches.Count == 0) //animation edits depend on bflyt changes so this is relevant
 			{
 				MessageBox.Show("Couldn't find any difference");
-				return null; 
+				return null;
 			}
 
 			List<AnimFilePatch> AnimPatches = new List<AnimFilePatch>();
@@ -217,30 +217,11 @@ namespace SwitchThemes
 
 		public static bool ScrambledEquals<T>(IEnumerable<T> list1, IEnumerable<T> list2)
 		{
-			var cnt = new Dictionary<T, int>();
-			foreach (T s in list1)
-			{
-				if (cnt.ContainsKey(s))
-				{
-					cnt[s]++;
-				}
-				else
-				{
-					cnt.Add(s, 1);
-				}
-			}
-			foreach (T s in list2)
-			{
-				if (cnt.ContainsKey(s))
-				{
-					cnt[s]--;
-				}
-				else
-				{
-					return false;
-				}
-			}
-			return cnt.Values.All(c => c == 0);
+			var common = list1.Intersect(list2);
+			var filesOnlyIn1 = list1.Except(common);
+			var filesOnlyIn2 = list2.Except(common);
+			return (filesOnlyIn1.Count() == 0 && filesOnlyIn2.Count() == 0);
 		}
+
 	}
 }

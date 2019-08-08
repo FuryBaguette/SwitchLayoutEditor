@@ -6,6 +6,7 @@ using ExtensionMethods;
 using Syroot.BinaryData;
 using System.Linq;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace SwitchThemes.Common.Bflan
 {
@@ -67,7 +68,8 @@ namespace SwitchThemes.Common.Bflan
 			bin.ByteOrder = bo;
 			AnimationOrder = bin.ReadUInt16();
 			var groupCount = bin.ReadUInt16();
-			if (groupCount != 1) throw new Exception("File with unexpected group count");
+			if (groupCount != 1)
+				Debug.WriteLine("File with unexpected group count");
 			var animName = bin.ReadUInt32() - 8; //all offsets are shifted by 8 cause this byte block doesn't include the section name and size
 			var groupNames = bin.ReadUInt32() - 8;
 			Unk_StartOfFile = bin.ReadUInt16();

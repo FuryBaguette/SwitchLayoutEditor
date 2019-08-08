@@ -493,10 +493,12 @@ namespace SwitchThemes.Common.Bflyt
                     return new Txt1Pane(pane, FileByteOrder);
 				case "grp1":
 					return new Grp1Pane(pane, FileByteOrder, Version);
-                default:
-					if (pane.data.Length < 0x4C || pane.name == "grp1" || pane.name == "cnt1")
-						return pane;
+				case "pan1":
+				case "prt1":
+				case "wnd1":
 					return new EditablePane(pane, FileByteOrder);
+				default:
+					return pane;
 			}
 		}
 
