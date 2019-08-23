@@ -42,9 +42,6 @@ namespace BflytPreview
 
 		public Form1(string[] args = null)
 		{
-			TypeDescriptor.AddAttributes(typeof(Vector3), new TypeConverterAttribute(typeof(Vector3Converter)));
-			TypeDescriptor.AddAttributes(typeof(Vector2), new TypeConverterAttribute(typeof(Vector2Converter)));
-
 			InitializeComponent();
 
 			foreach (string s in args)
