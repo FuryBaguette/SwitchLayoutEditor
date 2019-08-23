@@ -65,7 +65,7 @@ namespace BflytPreview.EditorForms
 				Original = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(textBox1.Text)));
 			if (Edited == null)
 				Edited = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(textBox2.Text)));
-			var res = SwitchThemes.LayoutDiff.Diff(Original, Edited);
+			var res = SwitchThemes.Common.LayoutDiff.Diff(Original, Edited);
 			if (res != null)
 			{
 				//res.PatchAppletColorAttrib = cbTexFlagPatch.Checked;
