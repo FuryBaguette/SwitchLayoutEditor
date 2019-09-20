@@ -61,12 +61,14 @@
 			// 
 			// menuStrip1
 			// 
+			this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.toolsToolStripMenuItem,
             this.checkUpdateToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
+			this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
 			this.menuStrip1.Size = new System.Drawing.Size(672, 24);
 			this.menuStrip1.TabIndex = 1;
 			this.menuStrip1.Text = "menuStrip1";
@@ -107,7 +109,7 @@
 			this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.layoutDiffToolStripMenuItem});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
 			this.toolsToolStripMenuItem.Text = "Tools";
 			// 
 			// layoutDiffToolStripMenuItem
@@ -139,7 +141,7 @@
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.panel1);
 			this.splitContainer1.Size = new System.Drawing.Size(672, 424);
-			this.splitContainer1.SplitterDistance = 224;
+			this.splitContainer1.SplitterDistance = 223;
 			this.splitContainer1.TabIndex = 4;
 			// 
 			// splitContainer2
@@ -158,8 +160,8 @@
 			this.splitContainer2.Panel2.BackColor = System.Drawing.SystemColors.Control;
 			this.splitContainer2.Panel2.Controls.Add(this.zoomSlider);
 			this.splitContainer2.Panel2.Controls.Add(this.propertyGrid1);
-			this.splitContainer2.Size = new System.Drawing.Size(224, 424);
-			this.splitContainer2.SplitterDistance = 212;
+			this.splitContainer2.Size = new System.Drawing.Size(223, 424);
+			this.splitContainer2.SplitterDistance = 211;
 			this.splitContainer2.TabIndex = 4;
 			// 
 			// treeView1
@@ -168,7 +170,7 @@
 			this.treeView1.Enabled = false;
 			this.treeView1.Location = new System.Drawing.Point(0, 0);
 			this.treeView1.Name = "treeView1";
-			this.treeView1.Size = new System.Drawing.Size(224, 212);
+			this.treeView1.Size = new System.Drawing.Size(223, 211);
 			this.treeView1.TabIndex = 3;
 			this.treeView1.Visible = false;
 			// 
@@ -177,7 +179,7 @@
 			this.zoomSlider.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.zoomSlider.Enabled = false;
 			this.zoomSlider.LargeChange = 1;
-			this.zoomSlider.Location = new System.Drawing.Point(117, 154);
+			this.zoomSlider.Location = new System.Drawing.Point(115, 155);
 			this.zoomSlider.Name = "zoomSlider";
 			this.zoomSlider.Size = new System.Drawing.Size(104, 45);
 			this.zoomSlider.TabIndex = 1;
@@ -192,7 +194,7 @@
 			this.propertyGrid1.Enabled = false;
 			this.propertyGrid1.Location = new System.Drawing.Point(3, 3);
 			this.propertyGrid1.Name = "propertyGrid1";
-			this.propertyGrid1.Size = new System.Drawing.Size(221, 203);
+			this.propertyGrid1.Size = new System.Drawing.Size(219, 203);
 			this.propertyGrid1.TabIndex = 0;
 			this.propertyGrid1.Visible = false;
 			// 
@@ -204,7 +206,7 @@
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(0, 0);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(444, 424);
+			this.panel1.Size = new System.Drawing.Size(445, 424);
 			this.panel1.TabIndex = 0;
 			// 
 			// pictureBox1
@@ -242,7 +244,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "Form1";
-			this.Text = "Switch Layout Editor - v1.0 Beta 7";
+			this.Text = "Switch Layout Editor - v1.0 Beta 8";
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();

@@ -219,8 +219,8 @@ namespace BflytPreview
 			GL.Scale(1 * zoomFactor, -1 * zoomFactor, 1);
 			GL.Translate(x, y, 0);
 
-			RecursiveRenderPane((Pan1Pane)layout.RootPane);
-			DrawPane(new BflytFile.CusRectangle(-1280 / 2, -720 / 2, 1280, 720), Settings.Default.OutlineColor);
+			RecursiveRenderPane(layout.ElementsRoot);
+			DrawPane(new CusRectangle(-1280 / 2, -720 / 2, 1280, 720), Settings.Default.OutlineColor);
 
 			if (DrawOnTop != null)
 			{
@@ -230,7 +230,7 @@ namespace BflytPreview
             }
 		}
 
-        void DrawPaneMiddlePoint(BflytFile.CusRectangle rect, Color color)
+        void DrawPaneMiddlePoint(CusRectangle rect, Color color)
         {
             GL.Color3(color);
             GL.Begin(PrimitiveType.Lines);
@@ -245,7 +245,7 @@ namespace BflytPreview
             GL.End();
         }
 
-		void DrawPane(BflytFile.CusRectangle rect, Color color)
+		void DrawPane(CusRectangle rect, Color color)
 		{
 			GL.Color3(color);
 			GL.Begin(PrimitiveType.Lines);
@@ -268,26 +268,32 @@ namespace BflytPreview
 				var texNode = treeView1.Nodes.Add("Textures");
 				texNode.Tag = new TextureTag();
 				int index = 0;
-				foreach (var t in layout.GetTex.Textures)
-				{
-					var n = texNode.Nodes.Add($"{index++} : {t}");
-					n.Tag = new TextureTag(t);
-					if (target != null && t == target) n.Expand();
-				}
+				if (layout.GetTex != null)
+					foreach (var t in layout.GetTex.Textures)
+					{
+						var n = texNode.Nodes.Add($"{index++} : {t}");
+						n.Tag = new TextureTag(t);
+						if (target != null && t == target) n.Expand();
+					}
 			}
 			{
 				var target = focus as BflytMaterial;
 				var matNode = treeView1.Nodes.Add("Materials");
 				int index = 0;
-				foreach (var t in layout.GetMat.Materials)
-				{
-					var n = matNode.Nodes.Add($"{index++} : {t}");
-					n.Tag = t;
-					if (target != null & t == target) n.Expand();
-				}
+				if (layout.GetMat != null)
+					foreach (var t in layout.GetMat.Materials)
+					{
+						var n = matNode.Nodes.Add($"{index++} : {t}");
+						n.Tag = t;
+						if (target != null & t == target) n.Expand();
+					}
 			}
-			RecursiveAddNode(layout.RootPane, treeView1.Nodes, focus as BasePane);
-			RecursiveAddNode(layout.RootGroup, treeView1.Nodes, focus as BasePane);
+			RecursiveAddNode(layout.ElementsRoot, treeView1.Nodes, focus as BasePane);
+#if DEBUG
+			var FullInfoNode = treeView1.Nodes.Add("Full hierarchy");
+			foreach (var r in layout.RootPanes)
+				RecursiveAddNode(r, FullInfoNode.Nodes, focus as BasePane);
+#endif
 			glControl.Invalidate();
 		}
 
@@ -329,7 +335,7 @@ namespace BflytPreview
 
                 gfx.ScaleTransform(1, -1);
                 gfx.TranslateTransform(640, -360);
-                RecursiveRenderPane((BflytFile.Pan1Pane)layout.RootPane);
+                RecursiveRenderPane(ElementsRoot);
 
             }
             pictureBox1.Image = b;
@@ -610,7 +616,7 @@ namespace BflytPreview
 		{
 			string name = "New_texture";
 			if (InputDialog.Show("Add new texture", "Enter a name for the new texture.", ref name) != DialogResult.OK) return;
-			layout.GetTex.Textures.Add(name);
+			layout.GetTexturesSection().Textures.Add(name);
 			UpdateView(name);
 		}
 
@@ -637,7 +643,7 @@ namespace BflytPreview
 				next.Name += "_";
 			else
 				next.Name = next.Name.Substring(0,26) + "_";
-			layout.GetMat.Materials.Add(next);
+			layout.GetMaterialsSection().Materials.Add(next);
 			UpdateView(next);
 		}
 
