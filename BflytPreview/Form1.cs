@@ -17,7 +17,8 @@ namespace BflytPreview
 		// 5 = v 1.0 beta 5
 		// 6 = v 1.0 beta 6
 		// 7 = v 1.0 beta 7
-		public const int AppRelease = 7;
+		// 8 = v 1.0 beta 8
+		public const int AppRelease = 8;
 
 		public static void CheckForUpdates(bool showErrors)
 		{
@@ -42,9 +43,6 @@ namespace BflytPreview
 
 		public Form1(string[] args = null)
 		{
-			TypeDescriptor.AddAttributes(typeof(Vector3), new TypeConverterAttribute(typeof(Vector3Converter)));
-			TypeDescriptor.AddAttributes(typeof(Vector2), new TypeConverterAttribute(typeof(Vector2Converter)));
-
 			InitializeComponent();
 
 			foreach (string s in args)

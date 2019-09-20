@@ -167,7 +167,7 @@
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
 			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
 			this.saveAsToolStripMenuItem.Text = "Save as..";
 			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
 			// 
@@ -175,7 +175,7 @@
 			// 
 			this.saveToSzsToolStripMenuItem.Name = "saveToSzsToolStripMenuItem";
 			this.saveToSzsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.saveToSzsToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+			this.saveToSzsToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
 			this.saveToSzsToolStripMenuItem.Text = "Save to Szs";
 			this.saveToSzsToolStripMenuItem.Visible = false;
 			this.saveToSzsToolStripMenuItem.Click += new System.EventHandler(this.saveToSzsToolStripMenuItem_Click);
@@ -190,7 +190,7 @@
 			// extractAllFilesToolStripMenuItem
 			// 
 			this.extractAllFilesToolStripMenuItem.Name = "extractAllFilesToolStripMenuItem";
-			this.extractAllFilesToolStripMenuItem.Size = new System.Drawing.Size(93, 20);
+			this.extractAllFilesToolStripMenuItem.Size = new System.Drawing.Size(94, 20);
 			this.extractAllFilesToolStripMenuItem.Text = "Extract all files";
 			this.extractAllFilesToolStripMenuItem.Click += new System.EventHandler(this.extractAllFilesToolStripMenuItem_Click);
 			// 
@@ -213,7 +213,7 @@
             this.layoutDiffToolStripMenuItem,
             this.loadJSONPatchToolStripMenuItem});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
 			this.toolsToolStripMenuItem.Text = "Tools";
 			// 
 			// layoutDiffToolStripMenuItem
@@ -222,27 +222,27 @@
             this.thisFileIsTheOriginalSzsToolStripMenuItem,
             this.thisFileIsTheEditedSzsToolStripMenuItem});
 			this.layoutDiffToolStripMenuItem.Name = "layoutDiffToolStripMenuItem";
-			this.layoutDiffToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+			this.layoutDiffToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.layoutDiffToolStripMenuItem.Text = "Layout diff";
 			// 
 			// thisFileIsTheOriginalSzsToolStripMenuItem
 			// 
 			this.thisFileIsTheOriginalSzsToolStripMenuItem.Name = "thisFileIsTheOriginalSzsToolStripMenuItem";
-			this.thisFileIsTheOriginalSzsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+			this.thisFileIsTheOriginalSzsToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.thisFileIsTheOriginalSzsToolStripMenuItem.Text = "This file is the original szs";
 			this.thisFileIsTheOriginalSzsToolStripMenuItem.Click += new System.EventHandler(this.thisFileIsTheOriginalSzsToolStripMenuItem_Click);
 			// 
 			// thisFileIsTheEditedSzsToolStripMenuItem
 			// 
 			this.thisFileIsTheEditedSzsToolStripMenuItem.Name = "thisFileIsTheEditedSzsToolStripMenuItem";
-			this.thisFileIsTheEditedSzsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+			this.thisFileIsTheEditedSzsToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.thisFileIsTheEditedSzsToolStripMenuItem.Text = "This file is the edited szs";
 			this.thisFileIsTheEditedSzsToolStripMenuItem.Click += new System.EventHandler(this.thisFileIsTheEditedSzsToolStripMenuItem_Click);
 			// 
 			// loadJSONPatchToolStripMenuItem
 			// 
 			this.loadJSONPatchToolStripMenuItem.Name = "loadJSONPatchToolStripMenuItem";
-			this.loadJSONPatchToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+			this.loadJSONPatchToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.loadJSONPatchToolStripMenuItem.Text = "Load JSON patch";
 			this.loadJSONPatchToolStripMenuItem.Click += new System.EventHandler(this.loadJSONPatchToolStripMenuItem_Click);
 			// 

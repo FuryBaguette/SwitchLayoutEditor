@@ -279,105 +279,23 @@ namespace BflytPreview.EditorForms
             if (opn.ShowDialog() != DialogResult.OK) return;
 			bool useAnimation = MessageBox.Show("Do you want to patch animations as well ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes;
 			bool use8Fixes = MessageBox.Show("Enable 8.x default layout fixes ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes;
+
+			SzsPatcher P = new SzsPatcher(loadedSarc, new List<PatchTemplate>());
 			LayoutPatch JSONLayout = LayoutPatch.LoadTemplate(File.ReadAllText(opn.FileName));
-            if (JSONLayout.IsCompatible(loadedSarc))
+
+			if (JSONLayout.IsCompatible(loadedSarc))
             {
-                var layoutRes = PatchLayouts(loadedSarc, JSONLayout, useAnimation, use8Fixes);
-                if (layoutRes)
-                    MessageBox.Show("Loaded JSON patch");
-                else
-                    MessageBox.Show("Something is wrong with your layout patch.");
-				if (useAnimation)
+                var layoutRes = P.PatchLayouts(JSONLayout,"", use8Fixes);
+				var AnimRes = !useAnimation || P.PatchAnimations(JSONLayout.Anims);
+				if (layoutRes && AnimRes)
 				{
-					layoutRes = PatchAnimations(loadedSarc, JSONLayout.Anims); //this always returns true for now
+					loadedSarc = P.GetFinalSarc();
+					MessageBox.Show("Loaded JSON patch");
 				}
+				else
+					MessageBox.Show("Something is wrong with your layout patch.");
             }
 
-        }
-
-		public static bool PatchAnimations(SARCExt.SarcData sarc, AnimFilePatch[] files)
-		{
-			if (files == null) return true;
-			uint TargetVersion = 0;
-			foreach (var p in files)
-			{
-				if (!sarc.Files.ContainsKey(p.FileName))
-					continue; //return BflytFile.PatchResult.Fail; Don't be so strict as older firmwares may not have all the animations (?)
-
-				if (TargetVersion == 0)
-				{
-					BflytFile b = new BflytFile(sarc.Files[p.FileName]);
-					TargetVersion = b.Version;
-				}
-
-				var n = BflanSerializer.FromJson(p.AnimJson);
-				n.Version = TargetVersion;
-				n.byteOrder = Syroot.BinaryData.ByteOrder.LittleEndian;
-				sarc.Files[p.FileName] = n.WriteFile();
-			}
-			return true;
-		}
-
-		public static bool PatchBntxTextureAttribs(SARCExt.SarcData sarc, params Tuple<string, UInt32>[] patches)
-		{
-			QuickBntx q = new QuickBntx(new BinaryDataReader(new MemoryStream(sarc.Files[@"timg/__Combined.bntx"])));
-			if (q.Rlt.Length != 0x80)
-			{
-				return false;
-			}
-			try
-			{
-				foreach (var patch in patches)
-				{
-					var target = q.FindTex(patch.Item1);
-					if (target != null) target.ChannelTypes = (int)patch.Item2;
-				}
-				sarc.Files["timg/__Combined.bntx"] = q.Write();
-			}
-			catch (Exception ex)
-			{
-				return false;
-			}
-			return true;
-		}
-
-		public static bool PatchLayouts(SARCExt.SarcData sarc, LayoutPatch patch, bool AddAnimations, bool Support8)
-        {
-			if (patch.PatchAppletColorAttrib) //should check if the target is ResidentMenu for this 
-				PatchBntxTextureAttribs(sarc,
-					new Tuple<string, uint>("RdtIcoPvr_00^s", 0x02000000), new Tuple<string, uint>("RdtIcoNews_00^s", 0x02000000),
-					new Tuple<string, uint>("RdtIcoNews_01^s", 0x02000000), new Tuple<string, uint>("RdtIcoSet^s", 0x02000000),
-					new Tuple<string, uint>("RdtIcoShop^s", 0x02000000), new Tuple<string, uint>("RdtIcoCtrl_00^s", 0x02000000),
-					new Tuple<string, uint>("RdtIcoCtrl_01^s", 0x02000000), new Tuple<string, uint>("RdtIcoCtrl_02^s", 0x02000000),
-					new Tuple<string, uint>("RdtIcoPwrForm^s", 0x02000000));
-
-			List<LayoutFilePatch> Files = new List<LayoutFilePatch>();
-			Files.AddRange(patch.Files);
-
-			if (Support8 && !patch.Ready8X)
-			{
-				var extra = NewFirmFixes.GetFix(patch.PatchName);
-				if (extra != null)
-					Files.AddRange(extra);
-			}
-
-            foreach (var p in Files)
-            {
-                if (!sarc.Files.ContainsKey(p.FileName))
-                    return false;
-                var target = new BflytFile(sarc.Files[p.FileName]);
-                var res = target.ApplyLayoutPatch(p.Patches);
-                if (res != true)
-                    return res;
-				if (AddAnimations)
-				{
-					res = target.AddGroupNames(p.AddGroups);
-					if (!res)
-						return res;
-				}
-				sarc.Files[p.FileName] = target.SaveFile();
-            }
-            return true;
         }
 
 		private void listBox1_KeyDown(object sender, KeyEventArgs e)

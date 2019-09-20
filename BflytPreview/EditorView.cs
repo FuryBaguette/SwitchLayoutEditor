@@ -186,9 +186,9 @@ namespace BflytPreview
 		void RenderPanes()
 		{
 			float[] DrawOnTopTransform = new float[16];
-			EditablePane DrawOnTop = null;
+			Pan1Pane DrawOnTop = null;
 
-			void RecursiveRenderPane(EditablePane p)
+			void RecursiveRenderPane(Pan1Pane p)
 			{
 				if (!p.ParentVisibility)
 					return;
@@ -202,7 +202,7 @@ namespace BflytPreview
 
 				if (p.ViewInEditor)
 				{
-					if (treeView1.SelectedNode != null && (p == treeView1.SelectedNode.Tag as EditablePane))
+					if (treeView1.SelectedNode != null && (p == treeView1.SelectedNode.Tag as Pan1Pane))
 					{
 						DrawOnTop = p;
 						GL.GetFloat(GetPName.ModelviewMatrix, DrawOnTopTransform);
@@ -211,16 +211,16 @@ namespace BflytPreview
 						DrawPane(p.transformedRect, color);
 				}
 
-				foreach (var c in p.Children.Where(x => x is EditablePane))
-					RecursiveRenderPane((EditablePane)c);
+				foreach (var c in p.Children.Where(x => x is Pan1Pane))
+					RecursiveRenderPane((Pan1Pane)c);
 				GL.PopMatrix();
 			}
 
 			GL.Scale(1 * zoomFactor, -1 * zoomFactor, 1);
 			GL.Translate(x, y, 0);
 
-			RecursiveRenderPane((EditablePane)layout.RootPane);
-			DrawPane(new BflytFile.CusRectangle(-1280 / 2, -720 / 2, 1280, 720), Settings.Default.OutlineColor);
+			RecursiveRenderPane(layout.ElementsRoot);
+			DrawPane(new CusRectangle(-1280 / 2, -720 / 2, 1280, 720), Settings.Default.OutlineColor);
 
 			if (DrawOnTop != null)
 			{
@@ -230,7 +230,7 @@ namespace BflytPreview
             }
 		}
 
-        void DrawPaneMiddlePoint(BflytFile.CusRectangle rect, Color color)
+        void DrawPaneMiddlePoint(CusRectangle rect, Color color)
         {
             GL.Color3(color);
             GL.Begin(PrimitiveType.Lines);
@@ -245,7 +245,7 @@ namespace BflytPreview
             GL.End();
         }
 
-		void DrawPane(BflytFile.CusRectangle rect, Color color)
+		void DrawPane(CusRectangle rect, Color color)
 		{
 			GL.Color3(color);
 			GL.Begin(PrimitiveType.Lines);
@@ -268,26 +268,32 @@ namespace BflytPreview
 				var texNode = treeView1.Nodes.Add("Textures");
 				texNode.Tag = new TextureTag();
 				int index = 0;
-				foreach (var t in layout.GetTex.Textures)
-				{
-					var n = texNode.Nodes.Add($"{index++} : {t}");
-					n.Tag = new TextureTag(t);
-					if (target != null && t == target) n.Expand();
-				}
+				if (layout.GetTex != null)
+					foreach (var t in layout.GetTex.Textures)
+					{
+						var n = texNode.Nodes.Add($"{index++} : {t}");
+						n.Tag = new TextureTag(t);
+						if (target != null && t == target) n.Expand();
+					}
 			}
 			{
 				var target = focus as BflytMaterial;
 				var matNode = treeView1.Nodes.Add("Materials");
 				int index = 0;
-				foreach (var t in layout.GetMat.Materials)
-				{
-					var n = matNode.Nodes.Add($"{index++} : {t}");
-					n.Tag = t;
-					if (target != null & t == target) n.Expand();
-				}
+				if (layout.GetMat != null)
+					foreach (var t in layout.GetMat.Materials)
+					{
+						var n = matNode.Nodes.Add($"{index++} : {t}");
+						n.Tag = t;
+						if (target != null & t == target) n.Expand();
+					}
 			}
-			RecursiveAddNode(layout.RootPane, treeView1.Nodes, focus as BasePane);
-			RecursiveAddNode(layout.RootGroup, treeView1.Nodes, focus as BasePane);
+			RecursiveAddNode(layout.ElementsRoot, treeView1.Nodes, focus as BasePane);
+#if DEBUG
+			var FullInfoNode = treeView1.Nodes.Add("Full hierarchy");
+			foreach (var r in layout.RootPanes)
+				RecursiveAddNode(r, FullInfoNode.Nodes, focus as BasePane);
+#endif
 			glControl.Invalidate();
 		}
 
@@ -301,7 +307,7 @@ namespace BflytPreview
 
                 Stack<Matrix> CurMatrix = new Stack<Matrix>();
                 Random r = new Random();
-                void RecursiveRenderPane(BflytFile.EditablePane p)
+                void RecursiveRenderPane(BflytFile.Pan1Pane p)
                 {
                     if (!p.ParentVisibility)
                         return;
@@ -317,19 +323,19 @@ namespace BflytPreview
 
                     if (p.ViewInEditor)
                     {
-                        if (treeView1.SelectedNode != null && p == treeView1.SelectedNode.Tag as BflytFile.EditablePane)
+                        if (treeView1.SelectedNode != null && p == treeView1.SelectedNode.Tag as BflytFile.Pan1Pane)
                             pen = HighlightedPen;
                         gfx.DrawRectangle(pen, transformedRect);
                     }
 
-                    foreach (var c in p.Children.Where(x => x is BflytFile.EditablePane))
-                        RecursiveRenderPane((BflytFile.EditablePane)c);
+                    foreach (var c in p.Children.Where(x => x is BflytFile.Pan1Pane))
+                        RecursiveRenderPane((BflytFile.Pan1Pane)c);
                     gfx.Transform = CurMatrix.Pop();
                 }
 
                 gfx.ScaleTransform(1, -1);
                 gfx.TranslateTransform(640, -360);
-                RecursiveRenderPane((BflytFile.EditablePane)layout.RootPane);
+                RecursiveRenderPane(ElementsRoot);
 
             }
             pictureBox1.Image = b;
@@ -361,7 +367,7 @@ namespace BflytPreview
 		{
 			if (e.KeyCode == Keys.H)
 			{
-				var target = treeView1.SelectedNode.Tag as EditablePane;
+				var target = treeView1.SelectedNode.Tag as Pan1Pane;
 				if (target == null) return;
 				target.ViewInEditor = !target.ViewInEditor;
 				glControl.Invalidate();
@@ -420,7 +426,7 @@ namespace BflytPreview
 			y += res.Y;
 		}
 
-		private void SetupObjectXYZ(EditablePane p, Point res)
+		private void SetupObjectXYZ(Pan1Pane p, Point res)
 		{
 			p.Position = new SwitchThemes.Common.Vector3(p.Position.X - res.X, p.Position.Y + res.Y, 0);
 		}
@@ -460,9 +466,9 @@ namespace BflytPreview
 		{
 			if (e.Button != MouseButtons.Left || !canMoveView)
 				return;
-			EditablePane target = null;
+			Pan1Pane target = null;
 			if (treeView1.SelectedNode != null)
-				target = treeView1.SelectedNode.Tag as EditablePane;
+				target = treeView1.SelectedNode.Tag as Pan1Pane;
 
 			if (ModifierKeys.HasFlag(Keys.Control) && target != null)
 			{
@@ -562,7 +568,7 @@ namespace BflytPreview
 		}
 
 		private void nullPaneToolStripMenuItem_Click(object sender, EventArgs e) =>
-			AddPane(new EditablePane("pan1", layout.FileByteOrder));
+			AddPane(new Pan1Pane("pan1", layout.FileByteOrder));
 
 		private void pic1PaneToolStripMenuItem_Click(object sender, EventArgs e) =>
 			AddPane(new Pic1Pane(layout.FileByteOrder));
@@ -572,15 +578,15 @@ namespace BflytPreview
 
 		private void clonePaneToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			EditablePane pane = treeView1.SelectedNode.Tag as EditablePane;
+			Pan1Pane pane = treeView1.SelectedNode.Tag as Pan1Pane;
 			layout.AddPane(-1, pane.Parent, pane.Clone());
 			UpdateView(pane);
 		}
 
 		void AddPane(BasePane p)
 		{
-			if (treeView1.SelectedNode.Tag as EditablePane == null) return;
-			layout.AddPane(-1, treeView1.SelectedNode.Tag as EditablePane, p);
+			if (treeView1.SelectedNode.Tag as Pan1Pane == null) return;
+			layout.AddPane(-1, treeView1.SelectedNode.Tag as Pan1Pane, p);
 			UpdateView(p);
 		}
 
@@ -596,7 +602,7 @@ namespace BflytPreview
 		{
 			if (e.Node.Tag is Grp1Pane)
 				treeView1.ContextMenuStrip = GroupMenuStrip;
-			else if (e.Node.Tag is EditablePane)
+			else if (e.Node.Tag is Pan1Pane)
 				treeView1.ContextMenuStrip = PaneMenuStrip;
 			else if (e.Node.Tag is TextureTag)
 				treeView1.ContextMenuStrip = TextureMenuStrip;
@@ -610,7 +616,7 @@ namespace BflytPreview
 		{
 			string name = "New_texture";
 			if (InputDialog.Show("Add new texture", "Enter a name for the new texture.", ref name) != DialogResult.OK) return;
-			layout.GetTex.Textures.Add(name);
+			layout.GetTexturesSection().Textures.Add(name);
 			UpdateView(name);
 		}
 
@@ -637,7 +643,7 @@ namespace BflytPreview
 				next.Name += "_";
 			else
 				next.Name = next.Name.Substring(0,26) + "_";
-			layout.GetMat.Materials.Add(next);
+			layout.GetMaterialsSection().Materials.Add(next);
 			UpdateView(next);
 		}
 
@@ -660,7 +666,7 @@ namespace BflytPreview
 		//TODO
 		//private void TreeView1_ItemDrag(object sender, ItemDragEventArgs e)
 		//{
-		//	if (((TreeNode)e.Item).Tag is EditablePane && ((TreeNode)e.Item).Tag != layout.RootPane)
+		//	if (((TreeNode)e.Item).Tag is Pan1Pane && ((TreeNode)e.Item).Tag != layout.RootPane)
 		//	{
 		//		DoDragDrop(e.Item, DragDropEffects.Move);
 		//	}

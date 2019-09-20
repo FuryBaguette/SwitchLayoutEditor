@@ -26,6 +26,10 @@ This is using the original from the Switch's home menu:
 Example of a custom layout:
 ![](https://github.com/FuryBaguette/SwitchLayoutEditor/blob/master/Screenshots/Example.png)
 
+## Building
+To build you need the SwitchThemesCommon shared project from [this repo](https://github.com/exelix11/SwitchThemeInjector).
+In case of issues try using a version from commit from the same day as the last commit on this repo.
+
 ## Credits
 - [FuryBaguette](https://github.com/FuryBaguette) - Development
 - [exelix](https://github.com/exelix11) - Base of the editor & Continuous development

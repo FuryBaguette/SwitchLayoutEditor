@@ -65,13 +65,21 @@ namespace BflytPreview.EditorForms
 				Original = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(textBox1.Text)));
 			if (Edited == null)
 				Edited = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(textBox2.Text)));
-			var res = SwitchThemes.LayoutDiff.Diff(Original, Edited);
-			if (res != null)
+			try
 			{
-				//res.PatchAppletColorAttrib = cbTexFlagPatch.Checked;
-				SaveFileDialog sav = new SaveFileDialog() { Filter = "json file|*.json" };
-				if (sav.ShowDialog() != DialogResult.OK) return;
-				File.WriteAllText(sav.FileName, res.AsJson());
+				var (res,msg) = SwitchThemes.Common.LayoutDiff.Diff(Original, Edited);
+				if (msg != null)
+					MessageBox.Show(msg);
+				if (res != null)
+				{
+					SaveFileDialog sav = new SaveFileDialog() { Filter = "json file|*.json" };
+					if (sav.ShowDialog() != DialogResult.OK) return;
+					File.WriteAllText(sav.FileName, res.AsJson());
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message);
 			}
 			if (ClearEdited)
 				Edited = null;
