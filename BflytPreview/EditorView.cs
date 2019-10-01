@@ -289,11 +289,12 @@ namespace BflytPreview
 					}
 			}
 			RecursiveAddNode(layout.ElementsRoot, treeView1.Nodes, focus as BasePane);
-#if DEBUG
+			RecursiveAddNode(layout.RootGroup, treeView1.Nodes, focus as BasePane);
+
 			var FullInfoNode = treeView1.Nodes.Add("Full hierarchy");
 			foreach (var r in layout.RootPanes)
 				RecursiveAddNode(r, FullInfoNode.Nodes, focus as BasePane);
-#endif
+
 			glControl.Invalidate();
 		}
 
