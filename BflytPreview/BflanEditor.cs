@@ -62,15 +62,15 @@ namespace BflytPreview
 		{
 			foreach (var entry in sect.Entries)
 			{
-				var subnode = node.Nodes.Add(entry.Name);
+				var subnode = node.Nodes.Add(entry.ToString());
 				subnode.Tag = entry;
 				foreach (var tag in entry.Tags)
 				{
-					var _subnode = subnode.Nodes.Add(tag.TagType);
+					var _subnode = subnode.Nodes.Add(tag.ToString());
 					_subnode.Tag = tag;
 					foreach (var TagEntry in tag.Entries)
 					{
-						var __subnode = _subnode.Nodes.Add("[TagEntry]");
+						var __subnode = _subnode.Nodes.Add(TagEntry.ToString());
 						__subnode.Tag = TagEntry;
 					}
 				}
@@ -114,27 +114,34 @@ namespace BflytPreview
 		private void AddEntryToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			var selected = treeView1.SelectedNode.Tag;
+			dynamic added = null;
+
 			if (selected is Pai1Section)
 			{
 				var sect = (Pai1Section)selected;
-				sect.Entries.Add(new Pai1Section.PaiEntry() { Name = "NEW-" });
+				added = new Pai1Section.PaiEntry() { Name = "NEW-" };
+				sect.Entries.Add(added);
 			}
 			else if (selected is Pai1Section.PaiEntry)
 			{
 				var entry = (Pai1Section.PaiEntry)selected;
-				entry.Tags.Add(new Pai1Section.PaiTag() { TagType = "NEW-" });
+				added = new Pai1Section.PaiTag() { TagType = "NEW-" };
+				entry.Tags.Add(added);
 			}
 			else if (selected is Pai1Section.PaiTag)
 			{
 				var tag = (Pai1Section.PaiTag)selected;
-				tag.Entries.Add(new Pai1Section.PaiTagEntry());
+				added = new Pai1Section.PaiTagEntry() { FLEUEntryName = tag.IsFLEU ? "New FLEU entry" : null };
+				tag.Entries.Add(added);
 			}
 			else
 			{
 				MessageBox.Show("Can't add an entry to the selected object");
 				return;
 			}
-			UpdateTreeview();
+
+			if (added != null)
+				treeView1.SelectedNode.Nodes.Add(added.ToString()).Tag = added;
 		}
 
 		private void DeleteToolStripMenuItem_Click(object sender, EventArgs e)
@@ -196,6 +203,7 @@ namespace BflytPreview
 
 		private void PropertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
 		{
+			treeView1.SelectedNode.Text = treeView1.SelectedNode.Tag.ToString();
 			treeView1.Invalidate();
 		}
 

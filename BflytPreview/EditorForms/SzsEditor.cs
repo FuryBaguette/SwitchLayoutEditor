@@ -278,14 +278,13 @@ namespace BflytPreview.EditorForms
             var opn = new OpenFileDialog();
             if (opn.ShowDialog() != DialogResult.OK) return;
 			bool useAnimation = MessageBox.Show("Do you want to patch animations as well ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes;
-			bool use8Fixes = MessageBox.Show("Enable 8.x default layout fixes ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes;
-
+			
 			SzsPatcher P = new SzsPatcher(loadedSarc, new List<PatchTemplate>());
 			LayoutPatch JSONLayout = LayoutPatch.LoadTemplate(File.ReadAllText(opn.FileName));
 
 			if (JSONLayout.IsCompatible(loadedSarc))
-            {
-                var layoutRes = P.PatchLayouts(JSONLayout,"", use8Fixes);
+			{
+				var layoutRes = P.PatchLayouts(JSONLayout, null);
 				var AnimRes = !useAnimation || P.PatchAnimations(JSONLayout.Anims);
 				if (layoutRes && AnimRes)
 				{
@@ -317,5 +316,12 @@ namespace BflytPreview.EditorForms
 					if (k.IndexOf(tb_search.Text, StringComparison.InvariantCultureIgnoreCase) != -1)
 						listBox1.Items.Add(k);
 		}
+
+		//private void openAllBflanToolStripMenuItem_Click(object sender, EventArgs e)
+		//{
+		//	foreach (var k in loadedSarc.Files.Keys)
+		//		if (k.EndsWith("bflan"))
+		//			MainForm.OpenFile(loadedSarc.Files[k], k);
+		//}
 	}
 }

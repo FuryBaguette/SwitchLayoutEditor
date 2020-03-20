@@ -43,27 +43,31 @@
 			this.importFromJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ByteOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SwitchByteOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+			this.splitContainer1.Panel1.SuspendLayout();
+			this.splitContainer1.Panel2.SuspendLayout();
+			this.splitContainer1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// propertyGrid1
 			// 
-			this.propertyGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.propertyGrid1.Location = new System.Drawing.Point(179, 24);
+			this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.propertyGrid1.Location = new System.Drawing.Point(0, 0);
 			this.propertyGrid1.Name = "propertyGrid1";
-			this.propertyGrid1.Size = new System.Drawing.Size(360, 387);
+			this.propertyGrid1.Size = new System.Drawing.Size(356, 391);
 			this.propertyGrid1.TabIndex = 0;
 			this.propertyGrid1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.PropertyGrid1_PropertyValueChanged);
 			// 
 			// treeView1
 			// 
 			this.treeView1.ContextMenuStrip = this.contextMenuStrip1;
-			this.treeView1.Location = new System.Drawing.Point(0, 24);
+			this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.treeView1.Location = new System.Drawing.Point(0, 0);
 			this.treeView1.Name = "treeView1";
-			this.treeView1.Size = new System.Drawing.Size(173, 387);
+			this.treeView1.Size = new System.Drawing.Size(180, 391);
 			this.treeView1.TabIndex = 1;
 			this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeView1_AfterSelect);
 			// 
@@ -115,14 +119,14 @@
 			// saveToolStripMenuItem
 			// 
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
 			this.saveToolStripMenuItem.Text = "Save...";
 			this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItem_Click);
 			// 
 			// saveToArchiveToolStripMenuItem
 			// 
 			this.saveToArchiveToolStripMenuItem.Name = "saveToArchiveToolStripMenuItem";
-			this.saveToArchiveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.saveToArchiveToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
 			this.saveToArchiveToolStripMenuItem.Text = "Save to SZS";
 			this.saveToArchiveToolStripMenuItem.Visible = false;
 			this.saveToArchiveToolStripMenuItem.Click += new System.EventHandler(this.SaveToArchiveToolStripMenuItem_Click);
@@ -130,19 +134,19 @@
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(167, 6);
 			// 
 			// exportToJSONToolStripMenuItem
 			// 
 			this.exportToJSONToolStripMenuItem.Name = "exportToJSONToolStripMenuItem";
-			this.exportToJSONToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.exportToJSONToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
 			this.exportToJSONToolStripMenuItem.Text = "Export to JSON";
 			this.exportToJSONToolStripMenuItem.Click += new System.EventHandler(this.ExportToJSONToolStripMenuItem_Click);
 			// 
 			// importFromJSONToolStripMenuItem
 			// 
 			this.importFromJSONToolStripMenuItem.Name = "importFromJSONToolStripMenuItem";
-			this.importFromJSONToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.importFromJSONToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
 			this.importFromJSONToolStripMenuItem.Text = "Import from JSON";
 			this.importFromJSONToolStripMenuItem.Click += new System.EventHandler(this.ImportFromJSONToolStripMenuItem_Click);
 			// 
@@ -161,13 +165,29 @@
 			this.SwitchByteOrderToolStripMenuItem.Text = "Switch to little endian (Switch)";
 			this.SwitchByteOrderToolStripMenuItem.Click += new System.EventHandler(this.SwitchByteOrderToolStripMenuItem_Click);
 			// 
+			// splitContainer1
+			// 
+			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer1.Location = new System.Drawing.Point(0, 24);
+			this.splitContainer1.Name = "splitContainer1";
+			// 
+			// splitContainer1.Panel1
+			// 
+			this.splitContainer1.Panel1.Controls.Add(this.treeView1);
+			// 
+			// splitContainer1.Panel2
+			// 
+			this.splitContainer1.Panel2.Controls.Add(this.propertyGrid1);
+			this.splitContainer1.Size = new System.Drawing.Size(540, 391);
+			this.splitContainer1.SplitterDistance = 180;
+			this.splitContainer1.TabIndex = 3;
+			// 
 			// BflanEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(540, 415);
-			this.Controls.Add(this.treeView1);
-			this.Controls.Add(this.propertyGrid1);
+			this.Controls.Add(this.splitContainer1);
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "BflanEditor";
@@ -179,6 +199,10 @@
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
+			this.splitContainer1.Panel1.ResumeLayout(false);
+			this.splitContainer1.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+			this.splitContainer1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -200,5 +224,6 @@
 		private System.Windows.Forms.ToolStripMenuItem importFromJSONToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ByteOrderToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SwitchByteOrderToolStripMenuItem;
+		private System.Windows.Forms.SplitContainer splitContainer1;
 	}
 }
