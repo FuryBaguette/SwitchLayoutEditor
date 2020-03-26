@@ -222,7 +222,7 @@
             this.thisFileIsTheOriginalSzsToolStripMenuItem,
             this.thisFileIsTheEditedSzsToolStripMenuItem});
 			this.layoutDiffToolStripMenuItem.Name = "layoutDiffToolStripMenuItem";
-			this.layoutDiffToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.layoutDiffToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
 			this.layoutDiffToolStripMenuItem.Text = "Layout diff";
 			// 
 			// thisFileIsTheOriginalSzsToolStripMenuItem
@@ -242,7 +242,7 @@
 			// loadJSONPatchToolStripMenuItem
 			// 
 			this.loadJSONPatchToolStripMenuItem.Name = "loadJSONPatchToolStripMenuItem";
-			this.loadJSONPatchToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.loadJSONPatchToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
 			this.loadJSONPatchToolStripMenuItem.Text = "Load JSON patch";
 			this.loadJSONPatchToolStripMenuItem.Click += new System.EventHandler(this.loadJSONPatchToolStripMenuItem_Click);
 			// 
@@ -268,6 +268,7 @@
 			this.Controls.Add(this.numericUpDown1);
 			this.Controls.Add(this.label1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.KeyPreview = true;
 			this.Name = "SzsEditor";
 			this.Text = "Szs editor";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SzsEditor_FormClosing);

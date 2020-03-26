@@ -186,7 +186,6 @@ namespace BflytPreview.EditorForms
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
             SaveSzsAs();
-
         }
 
 		private void listBox1_DoubleClick(object sender, EventArgs e)
@@ -241,7 +240,7 @@ namespace BflytPreview.EditorForms
 		}
 
 		private void saveToSzsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
+		{		
 			_parentArch.SaveToArchive(PackArchive(), this);
 		}
 
@@ -269,9 +268,13 @@ namespace BflytPreview.EditorForms
 
         private void SzsEditor_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Control && e.Shift && e.KeyCode == Keys.S) SaveSzsAs();
-            else if (e.Control && e.KeyCode == Keys.S && _parentArch != null) _parentArch.SaveToArchive(PackArchive(), this);
-        }
+			e.SuppressKeyPress = true;
+			if ((e.Shift || _parentArch == null) && e.Control && e.KeyCode == Keys.S) //Use ctrl S as save as if no parent archive
+				saveAsToolStripMenuItem.PerformClick();
+			else if (e.Control && e.KeyCode == Keys.S)
+				saveToSzsToolStripMenuItem.PerformClick();
+			else e.SuppressKeyPress = false;
+		}
 
         private void loadJSONPatchToolStripMenuItem_Click(object sender, EventArgs e)
         {

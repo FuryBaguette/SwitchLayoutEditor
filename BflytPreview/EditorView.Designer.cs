@@ -107,7 +107,7 @@
 			this.saveBFLYTToolStripMenuItem.Name = "saveBFLYTToolStripMenuItem";
 			this.saveBFLYTToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-			this.saveBFLYTToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+			this.saveBFLYTToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			this.saveBFLYTToolStripMenuItem.Text = "Save as...";
 			this.saveBFLYTToolStripMenuItem.Click += new System.EventHandler(this.saveBflytFileToolStripMenuItem_Click);
 			// 
@@ -115,7 +115,7 @@
 			// 
 			this.saveToSZSToolStripMenuItem.Name = "saveToSZSToolStripMenuItem";
 			this.saveToSZSToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.saveToSZSToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+			this.saveToSZSToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			this.saveToSZSToolStripMenuItem.Text = "Save to SZS";
 			this.saveToSZSToolStripMenuItem.Visible = false;
 			this.saveToSZSToolStripMenuItem.Click += new System.EventHandler(this.saveToSZSToolStripMenuItem_Click);
@@ -133,7 +133,7 @@
 			// 
 			this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
 			this.expandAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
-			this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+			this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
 			this.expandAllToolStripMenuItem.Text = "Expand All";
 			this.expandAllToolStripMenuItem.ToolTipText = "Expand all nodes in the tree view";
 			this.expandAllToolStripMenuItem.Click += new System.EventHandler(this.expandAllToolStripMenuItem_Click);
@@ -142,7 +142,7 @@
 			// 
 			this.collapseAllToolStripMenuItem.Name = "collapseAllToolStripMenuItem";
 			this.collapseAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.K)));
-			this.collapseAllToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+			this.collapseAllToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
 			this.collapseAllToolStripMenuItem.Text = "Collapse All";
 			this.collapseAllToolStripMenuItem.ToolTipText = "Collapse all nodes in the tree view";
 			this.collapseAllToolStripMenuItem.Click += new System.EventHandler(this.collapseAllToolStripMenuItem_Click);
@@ -375,19 +375,19 @@
             this.newTextureToolStripMenuItem,
             this.toolStripMenuItem2});
 			this.TextureMenuStrip.Name = "MaterialMenuStrip";
-			this.TextureMenuStrip.Size = new System.Drawing.Size(138, 48);
+			this.TextureMenuStrip.Size = new System.Drawing.Size(139, 48);
 			// 
 			// newTextureToolStripMenuItem
 			// 
 			this.newTextureToolStripMenuItem.Name = "newTextureToolStripMenuItem";
-			this.newTextureToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+			this.newTextureToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
 			this.newTextureToolStripMenuItem.Text = "New texture";
 			this.newTextureToolStripMenuItem.Click += new System.EventHandler(this.NewTextureToolStripMenuItem_Click);
 			// 
 			// toolStripMenuItem2
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(137, 22);
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(138, 22);
 			this.toolStripMenuItem2.Text = "Remove";
 			this.toolStripMenuItem2.Click += new System.EventHandler(this.RemoveTexture_Click);
 			// 
@@ -399,6 +399,7 @@
 			this.Controls.Add(this.menuStrip1);
 			this.Controls.Add(this.splitContainer1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.KeyPreview = true;
 			this.Name = "EditorView";
 			this.Text = "EditorView";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.EditorView_FormClosed);

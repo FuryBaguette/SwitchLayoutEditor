@@ -213,5 +213,22 @@ namespace BflytPreview
 				Syroot.BinaryData.ByteOrder.LittleEndian : Syroot.BinaryData.ByteOrder.BigEndian;
 			UpdateByteOrder();
 		}
+
+		private void BflanEditor_KeyDown(object sender, KeyEventArgs e)
+		{
+			e.SuppressKeyPress = true;
+			if ((e.Shift || _parentArch == null) && e.Control && e.KeyCode == Keys.S)
+				saveToolStripMenuItem.PerformClick();
+			else if (e.Control && e.KeyCode == Keys.S)
+				saveToArchiveToolStripMenuItem.PerformClick();
+			else if (e.Control && e.KeyCode == Keys.L)
+				treeView1.ExpandAll();
+			else if (e.Control && e.KeyCode == Keys.K)
+				treeView1.CollapseAll();
+			else e.SuppressKeyPress = false;
+		}
+
+		private void expandAllToolStripMenuItem_Click(object sender, EventArgs e) =>
+			treeView1.ExpandAll();
 	}
 }

@@ -44,6 +44,8 @@
 			this.ByteOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SwitchByteOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -75,9 +77,11 @@
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addEntryToolStripMenuItem,
-            this.deleteToolStripMenuItem});
+            this.deleteToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.expandAllToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(127, 48);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(181, 98);
 			// 
 			// addEntryToolStripMenuItem
 			// 
@@ -119,14 +123,17 @@
 			// saveToolStripMenuItem
 			// 
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
 			this.saveToolStripMenuItem.Text = "Save...";
 			this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItem_Click);
 			// 
 			// saveToArchiveToolStripMenuItem
 			// 
 			this.saveToArchiveToolStripMenuItem.Name = "saveToArchiveToolStripMenuItem";
-			this.saveToArchiveToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.saveToArchiveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+			this.saveToArchiveToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
 			this.saveToArchiveToolStripMenuItem.Text = "Save to SZS";
 			this.saveToArchiveToolStripMenuItem.Visible = false;
 			this.saveToArchiveToolStripMenuItem.Click += new System.EventHandler(this.SaveToArchiveToolStripMenuItem_Click);
@@ -134,19 +141,19 @@
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(167, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(204, 6);
 			// 
 			// exportToJSONToolStripMenuItem
 			// 
 			this.exportToJSONToolStripMenuItem.Name = "exportToJSONToolStripMenuItem";
-			this.exportToJSONToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.exportToJSONToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
 			this.exportToJSONToolStripMenuItem.Text = "Export to JSON";
 			this.exportToJSONToolStripMenuItem.Click += new System.EventHandler(this.ExportToJSONToolStripMenuItem_Click);
 			// 
 			// importFromJSONToolStripMenuItem
 			// 
 			this.importFromJSONToolStripMenuItem.Name = "importFromJSONToolStripMenuItem";
-			this.importFromJSONToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.importFromJSONToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
 			this.importFromJSONToolStripMenuItem.Text = "Import from JSON";
 			this.importFromJSONToolStripMenuItem.Click += new System.EventHandler(this.ImportFromJSONToolStripMenuItem_Click);
 			// 
@@ -182,6 +189,19 @@
 			this.splitContainer1.SplitterDistance = 180;
 			this.splitContainer1.TabIndex = 3;
 			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(173, 6);
+			// 
+			// expandAllToolStripMenuItem
+			// 
+			this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
+			this.expandAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
+			this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.expandAllToolStripMenuItem.Text = "Expand all";
+			this.expandAllToolStripMenuItem.Click += new System.EventHandler(this.expandAllToolStripMenuItem_Click);
+			// 
 			// BflanEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -189,6 +209,7 @@
 			this.ClientSize = new System.Drawing.Size(540, 415);
 			this.Controls.Add(this.splitContainer1);
 			this.Controls.Add(this.menuStrip1);
+			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "BflanEditor";
 			this.Text = "BflanEditor";
@@ -196,6 +217,7 @@
 			this.Load += new System.EventHandler(this.BflanEditor_Load);
 			this.LocationChanged += new System.EventHandler(this.BflanEditor_LocationChanged);
 			this.Click += new System.EventHandler(this.BflanEditor_Click);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BflanEditor_KeyDown);
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
@@ -225,5 +247,7 @@
 		private System.Windows.Forms.ToolStripMenuItem ByteOrderToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SwitchByteOrderToolStripMenuItem;
 		private System.Windows.Forms.SplitContainer splitContainer1;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripMenuItem expandAllToolStripMenuItem;
 	}
 }

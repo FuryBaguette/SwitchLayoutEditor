@@ -697,11 +697,13 @@ namespace BflytPreview
 
 		private void EditorView_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Control && e.Shift && e.KeyCode == Keys.S) SaveBflyt();
-            else if (e.Control && e.KeyCode == Keys.S && _parentArch != null) _parentArch.SaveToArchive(layout.SaveFile(), this);
-            else if (e.Control && e.KeyCode == Keys.L) treeView1.ExpandAll();
-            else if (e.Control && e.KeyCode == Keys.K) treeView1.CollapseAll();
-        }
+			e.SuppressKeyPress = true;
+			if ((e.Shift || _parentArch == null) && e.Control && e.KeyCode == Keys.S) saveBFLYTToolStripMenuItem.PerformClick();
+			else if (e.Control && e.KeyCode == Keys.S) saveToSZSToolStripMenuItem.PerformClick();
+			else if (e.Control && e.KeyCode == Keys.L) treeView1.ExpandAll();
+			else if (e.Control && e.KeyCode == Keys.K) treeView1.CollapseAll();
+			else e.SuppressKeyPress = false;
+		}
     }
 
 	//used for tagging and root node
