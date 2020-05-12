@@ -34,18 +34,18 @@
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.addEntryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveToArchiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exportToJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.importFromJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ByteOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SwitchByteOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -81,21 +81,34 @@
             this.toolStripSeparator2,
             this.expandAllToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(181, 98);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(177, 76);
 			// 
 			// addEntryToolStripMenuItem
 			// 
 			this.addEntryToolStripMenuItem.Name = "addEntryToolStripMenuItem";
-			this.addEntryToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+			this.addEntryToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
 			this.addEntryToolStripMenuItem.Text = "Add entry";
 			this.addEntryToolStripMenuItem.Click += new System.EventHandler(this.AddEntryToolStripMenuItem_Click);
 			// 
 			// deleteToolStripMenuItem
 			// 
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
 			this.deleteToolStripMenuItem.Text = "Delete";
 			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.DeleteToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(173, 6);
+			// 
+			// expandAllToolStripMenuItem
+			// 
+			this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
+			this.expandAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
+			this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+			this.expandAllToolStripMenuItem.Text = "Expand all";
+			this.expandAllToolStripMenuItem.Click += new System.EventHandler(this.expandAllToolStripMenuItem_Click);
 			// 
 			// menuStrip1
 			// 
@@ -111,8 +124,8 @@
 			// fileToolStripMenuItem
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveAsToolStripMenuItem,
             this.saveToolStripMenuItem,
-            this.saveToArchiveToolStripMenuItem,
             this.toolStripSeparator1,
             this.exportToJSONToolStripMenuItem,
             this.importFromJSONToolStripMenuItem});
@@ -120,40 +133,40 @@
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "File";
 			// 
+			// saveAsToolStripMenuItem
+			// 
+			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
+			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.saveAsToolStripMenuItem.Text = "Save as";
+			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItem_Click);
+			// 
 			// saveToolStripMenuItem
 			// 
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.S)));
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
-			this.saveToolStripMenuItem.Text = "Save...";
-			this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItem_Click);
-			// 
-			// saveToArchiveToolStripMenuItem
-			// 
-			this.saveToArchiveToolStripMenuItem.Name = "saveToArchiveToolStripMenuItem";
-			this.saveToArchiveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.saveToArchiveToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
-			this.saveToArchiveToolStripMenuItem.Text = "Save to SZS";
-			this.saveToArchiveToolStripMenuItem.Visible = false;
-			this.saveToArchiveToolStripMenuItem.Click += new System.EventHandler(this.SaveToArchiveToolStripMenuItem_Click);
+			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.saveToolStripMenuItem.Text = "Save";
+			this.saveToolStripMenuItem.Visible = false;
+			this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToArchiveToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(204, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(209, 6);
 			// 
 			// exportToJSONToolStripMenuItem
 			// 
 			this.exportToJSONToolStripMenuItem.Name = "exportToJSONToolStripMenuItem";
-			this.exportToJSONToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+			this.exportToJSONToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
 			this.exportToJSONToolStripMenuItem.Text = "Export to JSON";
 			this.exportToJSONToolStripMenuItem.Click += new System.EventHandler(this.ExportToJSONToolStripMenuItem_Click);
 			// 
 			// importFromJSONToolStripMenuItem
 			// 
 			this.importFromJSONToolStripMenuItem.Name = "importFromJSONToolStripMenuItem";
-			this.importFromJSONToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+			this.importFromJSONToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
 			this.importFromJSONToolStripMenuItem.Text = "Import from JSON";
 			this.importFromJSONToolStripMenuItem.Click += new System.EventHandler(this.ImportFromJSONToolStripMenuItem_Click);
 			// 
@@ -189,19 +202,6 @@
 			this.splitContainer1.SplitterDistance = 180;
 			this.splitContainer1.TabIndex = 3;
 			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(173, 6);
-			// 
-			// expandAllToolStripMenuItem
-			// 
-			this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
-			this.expandAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
-			this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.expandAllToolStripMenuItem.Text = "Expand all";
-			this.expandAllToolStripMenuItem.Click += new System.EventHandler(this.expandAllToolStripMenuItem_Click);
-			// 
 			// BflanEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -236,8 +236,8 @@
 		private System.Windows.Forms.TreeView treeView1;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem saveToArchiveToolStripMenuItem;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem addEntryToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;

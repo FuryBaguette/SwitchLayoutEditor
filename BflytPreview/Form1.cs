@@ -8,6 +8,7 @@ using Syroot.BinaryData;
 using System.Threading.Tasks;
 using SwitchThemes.Common.Bflyt;
 using SwitchThemes.Common.Bflan;
+using System.Text;
 
 namespace BflytPreview
 {
@@ -49,14 +50,14 @@ namespace BflytPreview
 
 			foreach (string s in args)
 				if (File.Exists(s))
-					OpenFile(File.ReadAllBytes(s), Path.GetFileName(s));
+					OpenFileFromDisk(s);
 		}
 
         private void openBFLYTToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog opn = new OpenFileDialog() { Filter = "Supported files (bflyt,szs,bflan)|*.bflyt;*.szs;*.bflan|All files|*.*" };
 			if (opn.ShowDialog() != DialogResult.OK) return;
-			OpenFile(File.ReadAllBytes(opn.FileName), opn.FileName);
+			OpenFileFromDisk(opn.FileName);
 		}
 
 		private void Form1_Load(object sender, System.EventArgs e)
@@ -81,35 +82,26 @@ namespace BflytPreview
 			f.Show();
 		}
 
-		public Form OpenFile(byte[] File, string name)
+		public Form OpenFileFromDisk(string path) =>
+			OpenFile(File.ReadAllBytes(path), new DiskFileProvider(path));
+
+		public Form OpenFile(byte[] File, IFileWriter saveTo)
 		{
-			BinaryDataReader bin = new BinaryDataReader(new MemoryStream(File));
-			string Magic = bin.ReadString(4);
+			string Magic = Encoding.ASCII.GetString(File, 0, 4);
+			Form result = null;
 			if (Magic == "Yaz0")
-			{
-				return OpenFile(ManagedYaz0.Decompress(File), name);
-			}
+				return OpenFile(ManagedYaz0.Decompress(File), saveTo);
 			else if (Magic == "SARC")
-			{
-				var f = new EditorForms.SzsEditor(SARCExt.SARC.UnpackRamN(File), this);
-				f.Text = name;
-				OpenForm(f);
-				return f;
-			}
+				result = new EditorForms.SzsEditor(SARCExt.SARC.UnpackRamN(File), saveTo, this);
 			else if (Magic == "FLYT")
-			{
-				EditorView editorView = new EditorView(new BflytFile(File));
-				editorView.Text = name;
-				OpenForm(editorView);
-				return editorView;
-			}
+				result = new EditorView(new BflytFile(File), saveTo);
 			else if (Magic == "FLAN")
-			{
-				var editor = new BflanEditor(new BflanFile(File));
-				OpenForm(editor);
-				return editor;
-			}
-			return null;
+				result = new BflanEditor(new BflanFile(File), saveTo);
+			
+			if (result != null)
+				OpenForm(result);
+
+			return result;
 		}
 
 		private void pnlSubSystem_DragEnter(object sender, DragEventArgs e) 
@@ -119,9 +111,7 @@ namespace BflytPreview
 		{
 			string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 			foreach (string file in files)
-			{
-				OpenFile(File.ReadAllBytes(file), file);
-			}
+				OpenFileFromDisk(file);
 		}
 
 		private void layoutDiffToolStripMenuItem_Click(object sender, EventArgs e)

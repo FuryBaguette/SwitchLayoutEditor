@@ -18,11 +18,21 @@ using static SwitchThemes.Common.Bflyt.BflytFile;
 
 namespace BflytPreview
 {
-	public partial class EditorView : Form, IFormSaveToArchive
+	public partial class EditorView : Form
 	{
 		BflytFile layout;
-		IFileProvider _parentArch;
-		public IFileProvider ParentArchive { get => _parentArch; set { _parentArch = value; saveToSZSToolStripMenuItem.Visible = _parentArch != null; } }
+		IFileWriter _saveTo;
+		public IFileWriter SaveTo
+		{
+			get => _saveTo;
+			set
+			{
+				_saveTo?.EditorClosed();
+				_saveTo = value;
+				saveToolStripMenuItem.Visible = _saveTo != null;
+				this.Text = value?.ToString() ?? "";
+			}
+		}
 
 		double zoomFactor => zoomSlider.Value / 10f;
 
@@ -35,7 +45,7 @@ namespace BflytPreview
 
 		public static int texture;
 
-		public EditorView(BflytFile _layout)
+		public EditorView(BflytFile _layout, IFileWriter saveTo)
 		{
 			TypeDescriptor.AddAttributes(typeof(SwitchThemes.Common.Vector3), new TypeConverterAttribute(typeof(Vector3Converter)));
 			TypeDescriptor.AddAttributes(typeof(SwitchThemes.Common.Vector2), new TypeConverterAttribute(typeof(Vector2Converter)));
@@ -56,7 +66,9 @@ namespace BflytPreview
 			glControl.MouseDown += glControl_MouseDown;
 			glControl.MouseMove += glControl_MouseMove;
 			glControl.MouseUp += GlControl_MouseUp;
-        }
+
+			SaveTo = saveTo;
+		}
 
         #region OnLoad
 
@@ -381,18 +393,16 @@ namespace BflytPreview
 			}
 		}
 
-        void SaveBflyt()
+        void SaveAs()
 		{
 			SaveFileDialog sav = new SaveFileDialog() { Filter = "Binary cafe layout (*.bflyt)|*.bflyt" };
 			if (sav.ShowDialog() != DialogResult.OK) return;
-
-			File.WriteAllBytes(sav.FileName, layout.SaveFile());
+			SaveTo = new DiskFileProvider(sav.FileName);
+			SaveTo.Save(layout.SaveFile());
 		}
 
-		private void saveBflytFileToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveBflyt();
-		}
+		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e) =>
+			SaveAs();
 
 		private void bringToFront()
 		{
@@ -452,13 +462,14 @@ namespace BflytPreview
 
 		private void saveToSZSToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			_parentArch.SaveToArchive(layout.SaveFile(), this);
+			if (_saveTo != null)
+				_saveTo.Save(layout.SaveFile());
+			else SaveAs();
 		}
 
 		private void EditorView_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (ParentArchive != null)
-				ParentArchive.EditorClosed(this);
+			SaveTo?.EditorClosed();
 			Settings.Default.ShowImage = false;
 		}
 
@@ -698,8 +709,8 @@ namespace BflytPreview
 		private void EditorView_KeyDown(object sender, KeyEventArgs e)
         {
 			e.SuppressKeyPress = true;
-			if ((e.Shift || _parentArch == null) && e.Control && e.KeyCode == Keys.S) saveBFLYTToolStripMenuItem.PerformClick();
-			else if (e.Control && e.KeyCode == Keys.S) saveToSZSToolStripMenuItem.PerformClick();
+			if (e.Shift && e.Control && e.KeyCode == Keys.S) saveBFLYTToolStripMenuItem.PerformClick();
+			else if (e.Control && e.KeyCode == Keys.S) saveToolStripMenuItem.PerformClick();
 			else if (e.Control && e.KeyCode == Keys.L) treeView1.ExpandAll();
 			else if (e.Control && e.KeyCode == Keys.K) treeView1.CollapseAll();
 			else e.SuppressKeyPress = false;

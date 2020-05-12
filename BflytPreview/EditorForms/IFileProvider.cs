@@ -4,16 +4,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BflytPreview.EditorForms
+namespace BflytPreview
 {
-	public interface IFileProvider
+	public interface IFileWriter
 	{
-		void SaveToArchive(byte[] Data, IFormSaveToArchive ChildForm);
-		void EditorClosed(IFormSaveToArchive ChildForm);
+		void Save(byte[] Data);
+		void EditorClosed();
+
+		string Path { get; }
 	}
 
-	public interface IFormSaveToArchive
+	public class DiskFileProvider : IFileWriter
 	{
-		IFileProvider ParentArchive { get; set; }
+		public DiskFileProvider(string path) =>
+			Path = path;
+
+		public string Path { get; set; }
+
+		public void EditorClosed() { }
+
+		public void Save(byte[] Data) =>
+			System.IO.File.WriteAllBytes(Path, Data);
+
+		public override string ToString() => Path;
 	}
 }

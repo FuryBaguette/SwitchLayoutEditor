@@ -17,19 +17,59 @@ using SwitchThemes.Common.Bflyt;
 
 namespace BflytPreview.EditorForms
 {
-	public partial class SzsEditor : Form, IFileProvider, IFormSaveToArchive
+	public partial class SzsEditor : Form
 	{
-		IFileProvider _parentArch;
-		public IFileProvider ParentArchive { get => _parentArch; set { _parentArch = value; saveToSzsToolStripMenuItem.Visible = _parentArch != null; } }
+		public class SzsFileProvider : IFileWriter
+		{
+			private SzsEditor Parent;
+			internal Form EditorForm;
+			public string Path { get; internal set; }
 
-		SARCExt.SarcData loadedSarc;
+			public SzsFileProvider(SzsEditor parent, string path) =>
+				(Parent, Path) = (parent, path);
+
+			public void EditorClosed() =>
+				Parent.CloseFileProvider(this);
+
+			public void Save(byte[] Data) =>
+				Parent.SaveFromProvider(this, Data);
+
+			public override string ToString() => $"Szs file : {Path}";
+		}
+
+		internal List<SzsFileProvider> FileProviders = new List<SzsFileProvider>();
+
+		internal void CloseFileProvider(SzsFileProvider file) =>
+			FileProviders.Remove(file);
+
+		internal void SaveFromProvider(SzsFileProvider file, byte[] Data)
+		{
+			if (!FileProviders.Contains(file)) throw new Exception("file is not a registered IFileWriter");
+			loadedSarc.Files[file.Path] = Data;
+		}
+
+		IFileWriter _saveTo;
+		public IFileWriter SaveTo 
+		{
+			get => _saveTo; 
+			set 
+			{
+				_saveTo?.EditorClosed();
+				_saveTo = value;
+				saveToSzsToolStripMenuItem.Visible = _saveTo != null;
+				this.Text = value?.ToString() ?? "";
+			}
+		}
+
+		SarcData loadedSarc;
         Form1 MainForm;
 
-        public SzsEditor(SARCExt.SarcData _sarc, Form1 _parentForm)
+		public SzsEditor(SARCExt.SarcData _sarc, IFileWriter saveTo, Form1 _parentForm)
 		{
 			InitializeComponent();
 			loadedSarc = _sarc;
 			MainForm = _parentForm;
+			SaveTo = saveTo;
 		}
 
 		private void SzsEditor_Load(object sender, EventArgs e)
@@ -46,44 +86,19 @@ namespace BflytPreview.EditorForms
 			}
 		}
 
-		Dictionary<Form, string> SaveToArchiveList = new Dictionary<Form, string>();
-		public void SaveToArchive(byte[] Data, IFormSaveToArchive ChildForm)
-		{
-			var form = ChildForm as Form;
-			if (!SaveToArchiveList.ContainsKey(form))
-			{
-				MessageBox.Show("Internal error: Wrong argument");
-				return;
-			}
-			if (!loadedSarc.Files.ContainsKey(SaveToArchiveList[form]))
-			{
-				MessageBox.Show("The file has been removed from the archive !");
-				return;
-			}
-			loadedSarc.Files[SaveToArchiveList[form]] = Data;
-		}
-
-		public void EditorClosed(IFormSaveToArchive ChildForm)
-		{
-			var form = ChildForm as Form;
-			if (SaveToArchiveList.ContainsKey(form))
-				SaveToArchiveList.Remove(form);
-		}
-
 		private void SzsEditor_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (SaveToArchiveList.Count != 0)
+			if (FileProviders.Count != 0)
 			{
 				if (MessageBox.Show("There are some files of this SZS opened, this will close all of them and all the unsaved edits will be lost, do you want to continue ?", this.Text, MessageBoxButtons.YesNo) == DialogResult.No)
 					e.Cancel = true;
 				else
 				{
-					var toClose = SaveToArchiveList.Keys.ToArray();
-					foreach (var k in toClose)
-						k.Close();
-					if (SaveToArchiveList.Count != 0)
+					foreach (var k in FileProviders.ToArray())
+						k.EditorForm?.Close();
+					if (FileProviders.Count != 0) 
 					{
-						MessageBox.Show("Some child forms have not been closed");
+						MessageBox.Show($"Failed to close {FileProviders.Count} editors");
 						e.Cancel = true;
 					}
 				}
@@ -180,29 +195,32 @@ namespace BflytPreview.EditorForms
             var sav = new SaveFileDialog() { Filter = "szs file|*.szs|sarc file|*.sarc" };
             if (sav.ShowDialog() != DialogResult.OK)
                 return;
-            File.WriteAllBytes(sav.FileName, PackArchive());
+			SaveTo = new DiskFileProvider(sav.FileName);
+			SaveTo.Save(PackArchive());
         }
 
-		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
+		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e) =>
             SaveSzsAs();
-        }
 
 		private void listBox1_DoubleClick(object sender, EventArgs e)
 		{
 			if (listBox1.SelectedItem == null)
 				return;
 			var Fname = listBox1.SelectedItem.ToString();
-			if (SaveToArchiveList.Values.Contains(Fname))
+
+			var alreadyOpened = FileProviders.Where(x => x.Path == Fname);
+			if (alreadyOpened.FirstOrDefault() != null)
 			{
-				MessageBox.Show("This file is already opened in another editor");
+				alreadyOpened.FirstOrDefault().EditorForm.Focus();
 				return;
 			}
-			var form = MainForm.OpenFile(loadedSarc.Files[Fname], Fname);
-			if (form is IFormSaveToArchive)
+
+			var provider = new SzsFileProvider(this, Fname);
+			var form = MainForm.OpenFile(loadedSarc.Files[Fname], provider);
+			if (form != null)
 			{
-				((IFormSaveToArchive)form).ParentArchive = this;
-				SaveToArchiveList.Add(form, Fname);
+				provider.EditorForm = form;
+				FileProviders.Add(provider);
 			}
 		}
 
@@ -240,8 +258,10 @@ namespace BflytPreview.EditorForms
 		}
 
 		private void saveToSzsToolStripMenuItem_Click(object sender, EventArgs e)
-		{		
-			_parentArch.SaveToArchive(PackArchive(), this);
+		{
+			if (SaveTo == null)
+				SaveSzsAs();
+			else SaveTo.Save(PackArchive());
 		}
 
 		void FormBringToFront()
@@ -254,11 +274,8 @@ namespace BflytPreview.EditorForms
 		private void SzsEditor_Click(object sender, EventArgs e) => FormBringToFront();
 		private void SzsEditor_LocationChanged(object sender, EventArgs e) => FormBringToFront();
 
-		private void SzsEditor_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			if (ParentArchive != null)
-				ParentArchive.EditorClosed(this);
-		}
+		private void SzsEditor_FormClosed(object sender, FormClosedEventArgs e) =>
+			SaveTo?.EditorClosed();
 
 		private void thisFileIsTheOriginalSzsToolStripMenuItem_Click(object sender, EventArgs e)
 			=> new LayoutDiffForm(loadedSarc, null).ShowDialog();
@@ -269,7 +286,7 @@ namespace BflytPreview.EditorForms
         private void SzsEditor_KeyDown(object sender, KeyEventArgs e)
         {
 			e.SuppressKeyPress = true;
-			if ((e.Shift || _parentArch == null) && e.Control && e.KeyCode == Keys.S) //Use ctrl S as save as if no parent archive
+			if (e.Shift && e.Control && e.KeyCode == Keys.S)
 				saveAsToolStripMenuItem.PerformClick();
 			else if (e.Control && e.KeyCode == Keys.S)
 				saveToSzsToolStripMenuItem.PerformClick();

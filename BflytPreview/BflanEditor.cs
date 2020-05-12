@@ -16,16 +16,28 @@ using SwitchThemes.Common.Bflan;
 
 namespace BflytPreview
 {
-	public partial class BflanEditor : Form, IFormSaveToArchive
+	public partial class BflanEditor : Form
 	{
 		BflanFile file = null;
-		IFileProvider _parentArch;
-		public IFileProvider ParentArchive { get => _parentArch; set { _parentArch = value; saveToArchiveToolStripMenuItem.Visible = _parentArch != null; } }
 
-		public BflanEditor(BflanFile _file)
+		IFileWriter _saveTo;
+		public IFileWriter SaveTo 
+		{
+			get => _saveTo; 
+			set
+			{
+				_saveTo?.EditorClosed();
+				_saveTo = value; 
+				saveToolStripMenuItem.Visible = _saveTo != null;
+				this.Text = value?.ToString() ?? "";
+			}
+		}
+
+		public BflanEditor(BflanFile _file, IFileWriter saveTo)
 		{
 			InitializeComponent();
 			file = _file;
+			SaveTo = saveTo;
 		}
 
 		private void BflanEditor_Load(object sender, EventArgs e)
@@ -77,27 +89,27 @@ namespace BflytPreview
 			}
 		}
 
-		private void TreeView1_AfterSelect(object sender, TreeViewEventArgs e)
-		{
+		private void TreeView1_AfterSelect(object sender, TreeViewEventArgs e) =>
 			propertyGrid1.SelectedObject = e.Node.Tag;
-		}
 
 		private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveFileDialog sav = new SaveFileDialog() { Filter = "Bflan file|*.bflan" };
 			if (sav.ShowDialog() != DialogResult.OK) return;
-			File.WriteAllBytes(sav.FileName,file.WriteFile());
+			SaveTo = new DiskFileProvider(sav.FileName);
+			SaveTo.Save(file.WriteFile());
 		}
 
-		private void SaveToArchiveToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SaveAsToArchiveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			_parentArch.SaveToArchive(file.WriteFile(), this);
+			if (_saveTo != null)
+				_saveTo.Save(file.WriteFile());
+			else saveAsToolStripMenuItem.PerformClick();
 		}
 
 		private void BflanEditor_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (ParentArchive != null)
-				ParentArchive.EditorClosed(this);
+			SaveTo?.EditorClosed();
 			Settings.Default.ShowImage = false;
 		}
 
@@ -195,7 +207,7 @@ namespace BflytPreview
 
 		public static Form OpenFromJson()
 		{
-			var b = new BflanEditor(null);
+			var b = new BflanEditor(null, null);
 			b.ImportFromJSONToolStripMenuItem_Click(null,null);
 			if (b.file == null) return null;
 			return b;
@@ -217,10 +229,10 @@ namespace BflytPreview
 		private void BflanEditor_KeyDown(object sender, KeyEventArgs e)
 		{
 			e.SuppressKeyPress = true;
-			if ((e.Shift || _parentArch == null) && e.Control && e.KeyCode == Keys.S)
-				saveToolStripMenuItem.PerformClick();
+			if (e.Shift && e.Control && e.KeyCode == Keys.S)
+				saveAsToolStripMenuItem.PerformClick();
 			else if (e.Control && e.KeyCode == Keys.S)
-				saveToArchiveToolStripMenuItem.PerformClick();
+				saveToolStripMenuItem.PerformClick();
 			else if (e.Control && e.KeyCode == Keys.L)
 				treeView1.ExpandAll();
 			else if (e.Control && e.KeyCode == Keys.K)
