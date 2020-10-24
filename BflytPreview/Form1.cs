@@ -93,7 +93,7 @@ namespace BflytPreview
 			if (Magic == "Yaz0")
 				return OpenFile(ManagedYaz0.Decompress(File), saveTo);
 			else if (Magic == "SARC")
-				result = new EditorForms.SzsEditor(SARCExt.SARC.UnpackRamN(File), saveTo, this);
+				result = new EditorForms.SzsEditor(SARCExt.SARC.Unpack(File), saveTo, this);
 			else if (Magic == "FLYT")
 				result = new EditorView(new BflytFile(File), saveTo);
 			else if (Magic == "FLAN")
@@ -125,8 +125,19 @@ namespace BflytPreview
 
 		private void BFLANToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var f = BflanEditor.OpenFromJson();
-			if (f != null) OpenForm(f);
+			try
+			{
+				var f = BflanEditor.OpenFromJson();
+				if (f != null) OpenForm(f);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(
+					"Error while opening the provided file: " + ex.Message + "\r\n" +
+					"This often happens when trying to open a json file that doesn't contain animations. " +
+					"If you want to open a json layout open the target szs first and then load it from the window that appears.\r\n\r\n" +
+					"More details: " + ex.ToString());
+			}
 		}
 	}
 

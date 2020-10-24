@@ -62,9 +62,9 @@ namespace BflytPreview.EditorForms
 		private void button3_Click(object sender, EventArgs e)
 		{
 			if (Original == null)
-				Original = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(textBox1.Text)));
+				Original = SARCExt.SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(textBox1.Text)));
 			if (Edited == null)
-				Edited = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(textBox2.Text)));
+				Edited = SARCExt.SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(textBox2.Text)));
 			try
 			{
 				var (res,msg) = SwitchThemes.Common.LayoutDiff.Diff(Original, Edited);

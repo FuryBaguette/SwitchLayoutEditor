@@ -280,8 +280,8 @@ namespace BflytPreview
 				var texNode = treeView1.Nodes.Add("Textures");
 				texNode.Tag = new TextureTag();
 				int index = 0;
-				if (layout.GetTex != null)
-					foreach (var t in layout.GetTex.Textures)
+				if (layout.Tex1 != null)
+					foreach (var t in layout.Tex1.Textures)
 					{
 						var n = texNode.Nodes.Add($"{index++} : {t}");
 						n.Tag = new TextureTag(t);
@@ -292,8 +292,8 @@ namespace BflytPreview
 				var target = focus as BflytMaterial;
 				var matNode = treeView1.Nodes.Add("Materials");
 				int index = 0;
-				if (layout.GetMat != null)
-					foreach (var t in layout.GetMat.Materials)
+				if (layout.Mat1 != null)
+					foreach (var t in layout.Mat1.Materials)
 					{
 						var n = matNode.Nodes.Add($"{index++} : {t}");
 						n.Tag = t;
@@ -635,14 +635,14 @@ namespace BflytPreview
 		private void RemoveTexture_Click(object sender, EventArgs e)
 		{
 			if (treeView1.SelectedNode.Parent == null) return; //the texture must be in the root textures node
-			layout.GetTex.Textures.Remove(((TextureTag)treeView1.SelectedNode.Tag).TexName);
+			layout.Tex1.Textures.Remove(((TextureTag)treeView1.SelectedNode.Tag).TexName);
 			UpdateView();
 		}
 
 		private void RemoveMaterial_Click(object sender, EventArgs e)
 		{
 			if (treeView1.SelectedNode.Parent == null) return;
-			layout.GetMat.Materials.Remove((BflytMaterial)treeView1.SelectedNode.Tag);
+			layout.Mat1.Materials.Remove((BflytMaterial)treeView1.SelectedNode.Tag);
 			UpdateView();
 		}
 

@@ -182,10 +182,10 @@ namespace BflytPreview.EditorForms
 		byte[] PackArchive()
 		{
 			if (numericUpDown1.Value == 0)
-				return SARC.PackN(loadedSarc).Item2;
+				return SARC.Pack(loadedSarc).Item2;
 			else
 			{
-				var s = SARC.PackN(loadedSarc);
+				var s = SARC.Pack(loadedSarc);
 				return ManagedYaz0.Compress(s.Item2, (int)numericUpDown1.Value, s.Item1);
 			}
 		}
