@@ -21,7 +21,6 @@ namespace BflytPreview.EditorForms
 			if (_Original != null)
 			{
 				textBox1.Text = "<From file>";
-				ClearOriginal = false;
 				button1.Enabled = false;
 				textBox1.Enabled = false;
 				Original = _Original;
@@ -29,29 +28,40 @@ namespace BflytPreview.EditorForms
 			if (_Edited != null)
 			{
 				textBox2.Text = "<From file>";
-				ClearEdited = false;
 				button2.Enabled = false;
 				textBox2.Enabled = false;
 				Edited = _Edited;
 			}
+
+			EnableResidentMenuCheckbox(_Original ?? _Edited);
 		}
 
-		bool ClearOriginal = true;
+		void EnableResidentMenuCheckbox(SarcData sarc)
+		{
+			if (cb11Compat.Tag != null) return;
+			if (sarc == null) return;		
+			cb11Compat.Visible = (DefaultTemplates.GetFor(sarc)?.NXThemeName ?? "home") == "home";
+			cb11Compat.Checked = true;
+			cb11Compat.Tag = "checked";
+		}
+
 		SarcData Original = null;
-		bool ClearEdited = true;
 		SarcData Edited = null;
 
 		private void button1_Click(object sender, EventArgs e)
-			=> SelectFile(ref textBox1);
+			=> Original = SelectFile(ref textBox1) ?? Original;
 
 		private void button2_Click(object sender, EventArgs e)
-			=> SelectFile(ref textBox2);
+			=> Edited = SelectFile(ref textBox2) ?? Edited;
 
-		void SelectFile(ref TextBox target)
+		SarcData SelectFile(ref TextBox target)
 		{
 			OpenFileDialog opn = new OpenFileDialog() { Filter = "szs files|*.szs" };
-			if (opn.ShowDialog() != DialogResult.OK) return;
+			if (opn.ShowDialog() != DialogResult.OK) return null;
 			target.Text = opn.FileName;
+			var sarc = SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(target.Text)));
+			EnableResidentMenuCheckbox(sarc);
+			return sarc;
 		}
 
 		private void LayoutDiffForm_Load(object sender, EventArgs e)
@@ -61,13 +71,13 @@ namespace BflytPreview.EditorForms
 
 		private void button3_Click(object sender, EventArgs e)
 		{
-			if (Original == null)
-				Original = SARCExt.SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(textBox1.Text)));
-			if (Edited == null)
-				Edited = SARCExt.SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(textBox2.Text)));
 			try
 			{
-				var (res,msg) = SwitchThemes.Common.LayoutDiff.Diff(Original, Edited);
+				bool? HideOnlineButton = null;
+				if (cb11Compat.Visible)
+					HideOnlineButton = cb11Compat.Checked;
+
+				var (res,msg) = LayoutDiff.Diff(Original, Edited, new LayoutDiff.DiffOptions { HideOnlineButton = HideOnlineButton });
 				if (msg != null)
 					MessageBox.Show(msg);
 				if (res != null)
@@ -81,10 +91,6 @@ namespace BflytPreview.EditorForms
 			{
 				MessageBox.Show(ex.Message);
 			}
-			if (ClearEdited)
-				Edited = null;
-			if (ClearOriginal)
-				Original = null;
 		}
 	}
 }

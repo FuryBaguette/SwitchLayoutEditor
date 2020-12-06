@@ -38,7 +38,7 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
 			this.label4 = new System.Windows.Forms.Label();
-			this.cbTexFlagPatch = new System.Windows.Forms.CheckBox();
+			this.cb11Compat = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// button1
@@ -114,7 +114,7 @@
 			// button3
 			// 
 			this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button3.Location = new System.Drawing.Point(286, 184);
+			this.button3.Location = new System.Drawing.Point(286, 229);
 			this.button3.Name = "button3";
 			this.button3.Size = new System.Drawing.Size(102, 23);
 			this.button3.TabIndex = 7;
@@ -131,23 +131,25 @@
 			this.label4.TabIndex = 8;
 			this.label4.Text = "The Layout Differ does not support all properties";
 			// 
-			// cbTexFlagPatch
+			// cb11Compat
 			// 
-			this.cbTexFlagPatch.AutoSize = true;
-			this.cbTexFlagPatch.Location = new System.Drawing.Point(13, 171);
-			this.cbTexFlagPatch.Name = "cbTexFlagPatch";
-			this.cbTexFlagPatch.Size = new System.Drawing.Size(368, 30);
-			this.cbTexFlagPatch.TabIndex = 9;
-			this.cbTexFlagPatch.Text = "Patch the bntx textures of the applet icons to properly change their color.\r\nEnab" +
-    "le this only if you set a custom color. (Only for home menu layouts)";
-			this.cbTexFlagPatch.UseVisualStyleBackColor = true;
-			this.cbTexFlagPatch.Visible = false;
+			this.cb11Compat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.cb11Compat.Location = new System.Drawing.Point(13, 169);
+			this.cb11Compat.Name = "cb11Compat";
+			this.cb11Compat.Size = new System.Drawing.Size(368, 49);
+			this.cb11Compat.TabIndex = 9;
+			this.cb11Compat.Text = "Emulate 10.X layout on 11.0\r\nThis options removes the \"Switch online\" button and " +
+    "positions from the home menu, enabling this will make old layouts work on 11.0.\r" +
+    "\n";
+			this.cb11Compat.UseVisualStyleBackColor = true;
+			this.cb11Compat.Visible = false;
 			// 
 			// LayoutDiffForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(400, 215);
+			this.ClientSize = new System.Drawing.Size(400, 257);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.button3);
 			this.Controls.Add(this.label3);
@@ -157,7 +159,7 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(this.button1);
-			this.Controls.Add(this.cbTexFlagPatch);
+			this.Controls.Add(this.cb11Compat);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -180,6 +182,6 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.CheckBox cbTexFlagPatch;
+		private System.Windows.Forms.CheckBox cb11Compat;
 	}
 }

@@ -297,16 +297,14 @@ namespace BflytPreview.EditorForms
         {
             var opn = new OpenFileDialog();
             if (opn.ShowDialog() != DialogResult.OK) return;
-			bool useAnimation = MessageBox.Show("Do you want to patch animations as well ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes;
 			
-			SzsPatcher P = new SzsPatcher(loadedSarc, new List<PatchTemplate>());
+			SzsPatcher P = new SzsPatcher(loadedSarc);
 			LayoutPatch JSONLayout = LayoutPatch.LoadTemplate(File.ReadAllText(opn.FileName));
 
 			if (JSONLayout.IsCompatible(loadedSarc))
 			{
 				var layoutRes = P.PatchLayouts(JSONLayout, null);
-				var AnimRes = !useAnimation || P.PatchAnimations(JSONLayout.Anims);
-				if (layoutRes && AnimRes)
+				if (layoutRes)
 				{
 					loadedSarc = P.GetFinalSarc();
 					MessageBox.Show("Loaded JSON patch");
