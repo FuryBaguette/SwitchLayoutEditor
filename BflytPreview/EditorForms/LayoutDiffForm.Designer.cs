@@ -83,21 +83,29 @@
 			// 
 			// textBox1
 			// 
+			this.textBox1.AllowDrop = true;
 			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBox1.Location = new System.Drawing.Point(15, 67);
 			this.textBox1.Name = "textBox1";
+			this.textBox1.ReadOnly = true;
 			this.textBox1.Size = new System.Drawing.Size(335, 20);
 			this.textBox1.TabIndex = 4;
+			this.textBox1.DragDrop += new System.Windows.Forms.DragEventHandler(this.textBox1_DragDrop);
+			this.textBox1.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbDragEnter);
 			// 
 			// textBox2
 			// 
+			this.textBox2.AllowDrop = true;
 			this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBox2.Location = new System.Drawing.Point(15, 115);
 			this.textBox2.Name = "textBox2";
+			this.textBox2.ReadOnly = true;
 			this.textBox2.Size = new System.Drawing.Size(335, 20);
 			this.textBox2.TabIndex = 5;
+			this.textBox2.DragDrop += new System.Windows.Forms.DragEventHandler(this.textBox2_DragDrop);
+			this.textBox2.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbDragEnter);
 			// 
 			// label3
 			// 
