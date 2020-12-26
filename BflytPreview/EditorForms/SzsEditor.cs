@@ -299,7 +299,7 @@ namespace BflytPreview.EditorForms
             if (opn.ShowDialog() != DialogResult.OK) return;
 			
 			SzsPatcher P = new SzsPatcher(loadedSarc);
-			LayoutPatch JSONLayout = LayoutPatch.LoadTemplate(File.ReadAllText(opn.FileName));
+			LayoutPatch JSONLayout = LayoutPatch.Load(File.ReadAllText(opn.FileName));
 
 			if (JSONLayout.IsCompatible(loadedSarc))
 			{

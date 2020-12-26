@@ -47,9 +47,6 @@ namespace BflytPreview
 
 		public EditorView(BflytFile _layout, IFileWriter saveTo)
 		{
-			TypeDescriptor.AddAttributes(typeof(SwitchThemes.Common.Vector3), new TypeConverterAttribute(typeof(Vector3Converter)));
-			TypeDescriptor.AddAttributes(typeof(SwitchThemes.Common.Vector2), new TypeConverterAttribute(typeof(Vector2Converter)));
-
 			KeyPreview = true;
 
 			InitializeComponent();
