@@ -303,14 +303,12 @@ namespace BflytPreview.EditorForms
 
 			if (JSONLayout.IsCompatible(loadedSarc))
 			{
-				var layoutRes = P.PatchLayouts(JSONLayout, null);
-				if (layoutRes)
+				if (P.PatchLayouts(JSONLayout))
 				{
 					loadedSarc = P.GetFinalSarc();
 					MessageBox.Show("Loaded JSON patch");
 				}
-				else
-					MessageBox.Show("Something is wrong with your layout patch.");
+				else MessageBox.Show("Failed to load the JSON patch.");
             }
 
         }
