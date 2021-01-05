@@ -23,7 +23,8 @@ namespace BflytPreview
 		// 10 = v 1.0 beta 10
 		// 11 = v 1.0 beta 11
 		// 12 = v 1.0 beta 12
-		public const int AppRelease = 12;
+		// 13 = v 1.0 beta 13
+		public const int AppRelease = 13;
 
 		public static void CheckForUpdates(bool showErrors)
 		{
