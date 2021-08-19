@@ -122,7 +122,7 @@
 			// button3
 			// 
 			this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button3.Location = new System.Drawing.Point(286, 229);
+			this.button3.Location = new System.Drawing.Point(286, 277);
 			this.button3.Name = "button3";
 			this.button3.Size = new System.Drawing.Size(102, 23);
 			this.button3.TabIndex = 7;
@@ -132,18 +132,20 @@
 			// 
 			// label4
 			// 
-			this.label4.AutoSize = true;
+			this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.label4.AutoEllipsis = true;
 			this.label4.Location = new System.Drawing.Point(5, 150);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(233, 13);
+			this.label4.Size = new System.Drawing.Size(383, 69);
 			this.label4.TabIndex = 8;
-			this.label4.Text = "The Layout Differ does not support all properties";
+			this.label4.Text = resources.GetString("label4.Text");
 			// 
 			// cb11Compat
 			// 
-			this.cb11Compat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.cb11Compat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.cb11Compat.Location = new System.Drawing.Point(13, 169);
+			this.cb11Compat.Location = new System.Drawing.Point(12, 222);
 			this.cb11Compat.Name = "cb11Compat";
 			this.cb11Compat.Size = new System.Drawing.Size(368, 49);
 			this.cb11Compat.TabIndex = 9;
@@ -157,7 +159,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(400, 257);
+			this.ClientSize = new System.Drawing.Size(400, 305);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.button3);
 			this.Controls.Add(this.label3);
