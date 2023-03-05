@@ -32,5 +32,5 @@ jobs:
       shell: cmd
     - uses: actions/upload-artifact@v2
       with:
-        name: InjectorBuild
+        name: LayoutEditor
         path: ${{ github.workspace }}/SwitchLayoutEditor/BflytPreview/bin/Release/
