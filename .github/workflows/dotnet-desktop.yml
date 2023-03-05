@@ -1,0 +1,36 @@
+name: LayoutEditor
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+jobs:
+  Build:
+    runs-on: windows-latest
+    steps:
+    - name: Setup msbuild
+      uses: microsoft/setup-msbuild@v1.0.2
+    # Needs switchThemesCommon to build
+    - uses: actions/checkout@v3
+      with:
+        repository: 'exelix11/SwitchThemeInjector'
+        path: 'SwitchThemeInjector'
+    - uses: actions/checkout@v3
+      with:
+        path: 'SwitchLayoutEditor'
+    - name: Restore packages
+      run: |
+        cd %GITHUB_WORKSPACE%/SwitchLayoutEditor
+        mkdir packages
+        cd packages
+        nuget install %GITHUB_WORKSPACE%/SwitchLayoutEditor/BflytPreview/packages.config
+      shell: cmd
+    - name: Build project
+      run: |
+        cd %GITHUB_WORKSPACE%\SwitchLayoutEditor\
+        msbuild -p:Configuration=Release
+        del bin\Release\*.xml
+      shell: cmd
+    - uses: actions/upload-artifact@v2
+      with:
+        name: InjectorBuild
+        path: ${{ github.workspace }}/SwitchLayoutEditor/BflytPreview/bin/Release
