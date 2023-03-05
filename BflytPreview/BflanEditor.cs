@@ -13,6 +13,7 @@ using BflytPreview.EditorForms;
 using Newtonsoft.Json;
 using SwitchThemes.Common.Serializers;
 using SwitchThemes.Common.Bflan;
+using System.Diagnostics;
 
 namespace BflytPreview
 {
@@ -62,30 +63,27 @@ namespace BflytPreview
 			UpdateByteOrder();
 			treeView1.Nodes.Clear();
 			foreach (var section in file.Sections)
-			{
-				var node = treeView1.Nodes.Add(section.ToString());
-				node.Tag = section;
-				if (section is Pai1Section)
-					PaiSectionToNode((Pai1Section)section, node);
-			}
+				BflanObjectTonode(section, treeView1.Nodes);
 		}
 
-		void PaiSectionToNode(Pai1Section sect, TreeNode node)
+		void BflanObjectTonode(object obj, TreeNodeCollection parent)
 		{
-			foreach (var entry in sect.Entries)
+            var subnode = parent.Add(obj.ToString());
+			subnode.Tag = obj;
+			if (obj is Pai1Section paisection)
 			{
-				var subnode = node.Nodes.Add(entry.ToString());
-				subnode.Tag = entry;
-				foreach (var tag in entry.Tags)
-				{
-					var _subnode = subnode.Nodes.Add(tag.ToString());
-					_subnode.Tag = tag;
-					foreach (var TagEntry in tag.Entries)
-					{
-						var __subnode = _subnode.Nodes.Add(TagEntry.ToString());
-						__subnode.Tag = TagEntry;
-					}
-				}
+				foreach (var entry in paisection.Entries)
+					BflanObjectTonode(entry, subnode.Nodes);
+			}
+			else if (obj is Pai1Section.PaiEntry paientry)
+			{
+				foreach (var tag in paientry.Tags)
+					BflanObjectTonode(tag, subnode.Nodes);
+			}
+			else if (obj is Pai1Section.PaiTag paitag)
+			{
+				foreach (var entry in paitag.Entries)
+					BflanObjectTonode(entry, subnode.Nodes);
 			}
 		}
 
@@ -123,64 +121,81 @@ namespace BflytPreview
 		private void BflanEditor_Click(object sender, EventArgs e) => FormBringToFront();
 		private void BflanEditor_LocationChanged(object sender, EventArgs e) => FormBringToFront();
 
+		private void InsertEntry(object target, object entry, TreeNode viewNode)
+		{
+            if (target is Pai1Section sect && entry is Pai1Section.PaiEntry paiEntry)
+                sect.Entries.Add(paiEntry);
+            else if (target is Pai1Section.PaiEntry targetPai && entry is Pai1Section.PaiTag paiTag)
+                targetPai.Tags.Add(paiTag);
+            else if (target is Pai1Section.PaiTag targetPaiTag && entry is Pai1Section.PaiTagEntry paiTagEntry)
+                targetPaiTag.Entries.Add(paiTagEntry);
+            else
+			{
+                MessageBox.Show("Can't insert the parent object here");
+                return;
+            }
+
+			BflanObjectTonode(entry, viewNode.Nodes);
+        }
+
 		private void AddEntryToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var selected = treeView1.SelectedNode.Tag;
-			dynamic added = null;
+			var parent = treeView1.SelectedNode.Tag;
+			object entry = null;
 
-			if (selected is Pai1Section)
-			{
-				var sect = (Pai1Section)selected;
-				added = new Pai1Section.PaiEntry() { Name = "NEW-" };
-				sect.Entries.Add(added);
-			}
-			else if (selected is Pai1Section.PaiEntry)
-			{
-				var entry = (Pai1Section.PaiEntry)selected;
-				added = new Pai1Section.PaiTag() { TagType = "NEW-" };
-				entry.Tags.Add(added);
-			}
-			else if (selected is Pai1Section.PaiTag)
-			{
-				var tag = (Pai1Section.PaiTag)selected;
-				added = new Pai1Section.PaiTagEntry() { FLEUEntryName = tag.IsFLEU ? "New FLEU entry" : null };
-				tag.Entries.Add(added);
-			}
+			if (parent is Pai1Section)
+				entry = new Pai1Section.PaiEntry() { Name = "NEW-" };
+			else if (parent is Pai1Section.PaiEntry)
+				entry = new Pai1Section.PaiTag() { TagType = "NEW-" };
+			else if (parent is Pai1Section.PaiTag paiTag)
+				entry = new Pai1Section.PaiTagEntry() { FLEUEntryName = paiTag.IsFLEU ? "New FLEU entry" : null };
 			else
 			{
-				MessageBox.Show("Can't add an entry to the selected object");
+				MessageBox.Show("Can't add an entry to the parent object");
 				return;
 			}
 
-			if (added != null)
-				treeView1.SelectedNode.Nodes.Add(added.ToString()).Tag = added;
+			if (entry != null)
+				InsertEntry(parent, entry, treeView1.SelectedNode);
 		}
 
-		private void DeleteToolStripMenuItem_Click(object sender, EventArgs e)
+        private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (treeView1.SelectedNode == null || treeView1.SelectedNode.Parent == null) return;
+			
+			var clone = ((ICloneable)treeView1.SelectedNode.Tag).Clone();
+
+			// Can names be duplicate ?
+			var parent = treeView1.SelectedNode.Parent;
+			InsertEntry(parent.Tag, clone, parent);
+        }
+
+        private void DeleteToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var selected = treeView1.SelectedNode?.Tag;
-			var parent = treeView1.SelectedNode?.Parent?.Tag;
-			if (selected is Pai1Section.PaiEntry)
+			var selected = treeView1.SelectedNode;
+			var parent = treeView1.SelectedNode?.Parent;
+			if (selected.Tag is Pai1Section.PaiEntry entry)
 			{
-				var par = (Pai1Section)parent;
-				par.Entries.Remove((Pai1Section.PaiEntry)selected);
+				var par = (Pai1Section)parent.Tag;
+				par.Entries.Remove(entry);
 			}
-			else if (selected is Pai1Section.PaiTag)
+			else if (selected.Tag is Pai1Section.PaiTag tag)
 			{
-				var par = (Pai1Section.PaiEntry)parent;
-				par.Tags.Remove((Pai1Section.PaiTag)selected);
+				var par = (Pai1Section.PaiEntry)parent.Tag;
+				par.Tags.Remove(tag);
 			}
-			else if (selected is Pai1Section.PaiTagEntry)
+			else if (selected.Tag is Pai1Section.PaiTagEntry tagEntry)
 			{
-				var par = (Pai1Section.PaiTag)parent;
-				par.Entries.Remove((Pai1Section.PaiTagEntry)selected);
+				var par = (Pai1Section.PaiTag)parent.Tag;
+				par.Entries.Remove(tagEntry);
 			}
 			else
 			{
 				MessageBox.Show("Can't remove this element");
 				return;
 			}
-			UpdateTreeview();
+
+			parent.Nodes.Remove(selected);
 		}
 
 		private void ExportToJSONToolStripMenuItem_Click(object sender, EventArgs e)
@@ -242,5 +257,5 @@ namespace BflytPreview
 
 		private void expandAllToolStripMenuItem_Click(object sender, EventArgs e) =>
 			treeView1.ExpandAll();
-	}
+    }
 }
