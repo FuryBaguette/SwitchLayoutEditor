@@ -28,9 +28,9 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%\SwitchLayoutEditor\
         msbuild -p:Configuration=Release
-        del %GITHUB_WORKSPACE%/SwitchLayoutEditor/BflytPreview/bin/Release/*.xml
+        del %GITHUB_WORKSPACE%\SwitchLayoutEditor\BflytPreview\bin\Release\*.xml
       shell: cmd
     - uses: actions/upload-artifact@v2
       with:
         name: InjectorBuild
-        path: ${{ github.workspace }}/SwitchLayoutEditor/BflytPreview/bin/Release
+        path: ${{ github.workspace }}/SwitchLayoutEditor/BflytPreview/bin/Release/
