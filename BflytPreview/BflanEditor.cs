@@ -202,7 +202,7 @@ namespace BflytPreview
 		{
 			SaveFileDialog sav = new SaveFileDialog() { Filter = "JSON file|*.json" };
 			if (sav.ShowDialog() != DialogResult.OK) return;
-			File.WriteAllText(sav.FileName, JsonConvert.SerializeObject(BflanSerializer.Serialize(file)));
+			File.WriteAllText(sav.FileName, JsonConvert.SerializeObject(BflanSerializer.Serialize(file), Formatting.Indented));
 		}
 
 		private void ImportFromJSONToolStripMenuItem_Click(object sender, EventArgs e)
