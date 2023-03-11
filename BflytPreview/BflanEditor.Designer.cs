@@ -33,6 +33,7 @@
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addEntryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.duplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,7 +47,9 @@
             this.ByteOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SwitchByteOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.duplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.templatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.noTemplatesAvailableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -80,10 +83,12 @@
             this.addEntryToolStripMenuItem,
             this.duplicateToolStripMenuItem,
             this.deleteToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.templatesToolStripMenuItem,
             this.toolStripSeparator2,
             this.expandAllToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 120);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 148);
             // 
             // addEntryToolStripMenuItem
             // 
@@ -91,6 +96,13 @@
             this.addEntryToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.addEntryToolStripMenuItem.Text = "Add entry";
             this.addEntryToolStripMenuItem.Click += new System.EventHandler(this.AddEntryToolStripMenuItem_Click);
+            // 
+            // duplicateToolStripMenuItem
+            // 
+            this.duplicateToolStripMenuItem.Name = "duplicateToolStripMenuItem";
+            this.duplicateToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.duplicateToolStripMenuItem.Text = "Duplicate";
+            this.duplicateToolStripMenuItem.Click += new System.EventHandler(this.duplicateToolStripMenuItem_Click);
             // 
             // deleteToolStripMenuItem
             // 
@@ -204,12 +216,25 @@
             this.splitContainer1.SplitterDistance = 180;
             this.splitContainer1.TabIndex = 3;
             // 
-            // duplicateToolStripMenuItem
+            // templatesToolStripMenuItem
             // 
-            this.duplicateToolStripMenuItem.Name = "duplicateToolStripMenuItem";
-            this.duplicateToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.duplicateToolStripMenuItem.Text = "Duplicate";
-            this.duplicateToolStripMenuItem.Click += new System.EventHandler(this.duplicateToolStripMenuItem_Click);
+            this.templatesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.noTemplatesAvailableToolStripMenuItem});
+            this.templatesToolStripMenuItem.Name = "templatesToolStripMenuItem";
+            this.templatesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.templatesToolStripMenuItem.Text = "Insert template";
+            this.templatesToolStripMenuItem.DropDownOpening += new System.EventHandler(this.templatesToolStripMenuItem_DropDownOpening);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            // 
+            // noTemplatesAvailableToolStripMenuItem
+            // 
+            this.noTemplatesAvailableToolStripMenuItem.Name = "noTemplatesAvailableToolStripMenuItem";
+            this.noTemplatesAvailableToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.noTemplatesAvailableToolStripMenuItem.Text = "No templates available";
             // 
             // BflanEditor
             // 
@@ -259,5 +284,8 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem expandAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem duplicateToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem templatesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem noTemplatesAvailableToolStripMenuItem;
     }
 }

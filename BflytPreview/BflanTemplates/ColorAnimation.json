@@ -1,0 +1,67 @@
+{
+  "Name": "Animate color RGBA",
+  "FileName": "ColorAnimation.template",
+  "Target": "PaiEntry",
+  "Parameters": [
+    {
+      "Kind": "Int",
+      "Name": "Start frame",
+      "Default": "0",
+      "Keyword": "%START_FRAME%"
+    },
+    {
+      "Kind": "Int",
+      "Name": "End frame",
+      "Default": "20",
+      "Keyword": "%END_FRAME%"
+    },
+    {
+      "Kind": "Int",
+      "Name": "Red start value",
+      "Default": "255",
+      "Keyword": "%RED_START_VAL%"
+    },
+    {
+      "Kind": "Int",
+      "Name": "Red end value",
+      "Default": "0",
+      "Keyword": "%RED_END_VAL%"
+    },
+    {
+      "Kind": "Int",
+      "Name": "Green start value",
+      "Default": "255",
+      "Keyword": "%GREEN_START_VAL%"
+    },
+    {
+      "Kind": "Int",
+      "Name": "Green end value",
+      "Default": "0",
+      "Keyword": "%GREEN_END_VAL%"
+    },
+    {
+      "Kind": "Int",
+      "Name": "Blue start value",
+      "Default": "255",
+      "Keyword": "%BLUE_START_VAL%"
+    },
+    {
+      "Kind": "Int",
+      "Name": "Blue end value",
+      "Default": "0",
+      "Keyword": "%BLUE_END_VAL%"
+    },
+    {
+      "Kind": "Int",
+      "Name": "Alpha start value",
+      "Default": "255",
+      "Keyword": "%ALPHA_START_VAL%"
+    },
+    {
+      "Kind": "Int",
+      "Name": "Alpha end value",
+      "Default": "0",
+      "Keyword": "%ALPHA_END_VAL%"
+    }
+  ]
+}
