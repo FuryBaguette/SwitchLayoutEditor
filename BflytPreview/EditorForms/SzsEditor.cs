@@ -62,9 +62,9 @@ namespace BflytPreview.EditorForms
 		}
 
 		SarcData loadedSarc;
-        Form1 MainForm;
+        MainForm MainForm;
 
-		public SzsEditor(SARCExt.SarcData _sarc, IFileWriter saveTo, Form1 _parentForm)
+		public SzsEditor(SARCExt.SarcData _sarc, IFileWriter saveTo, MainForm _parentForm)
 		{
 			InitializeComponent();
 			loadedSarc = _sarc;
