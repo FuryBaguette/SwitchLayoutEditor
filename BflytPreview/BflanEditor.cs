@@ -14,11 +14,14 @@ using Newtonsoft.Json;
 using SwitchThemes.Common.Serializers;
 using SwitchThemes.Common.Bflan;
 using System.Diagnostics;
+using BflytPreview.Automation;
 
 namespace BflytPreview
 {
 	public partial class BflanEditor : Form
 	{
+		readonly Automation.BflanTemplate[] BflanTemplates;
+		
 		BflanFile file = null;
 
 		IFileWriter _saveTo;
@@ -39,7 +42,15 @@ namespace BflytPreview
 			InitializeComponent();
 			file = _file;
 			SaveTo = saveTo;
-		}
+
+
+			if (Directory.Exists("BflanTemplates"))
+				BflanTemplates = Directory.EnumerateFiles("BflanTemplates", "*.json")
+					.Select(x => JsonConvert.DeserializeObject<Automation.BflanTemplate>(File.ReadAllText(x)))
+					.ToArray();
+			else
+				BflanTemplates = new Automation.BflanTemplate[0];
+        }
 
 		private void BflanEditor_Load(object sender, EventArgs e)
 		{
@@ -70,22 +81,27 @@ namespace BflytPreview
 		{
             var subnode = parent.Add(obj.ToString());
 			subnode.Tag = obj;
-			if (obj is Pai1Section paisection)
-			{
-				foreach (var entry in paisection.Entries)
-					BflanObjectTonode(entry, subnode.Nodes);
-			}
-			else if (obj is Pai1Section.PaiEntry paientry)
-			{
-				foreach (var tag in paientry.Tags)
-					BflanObjectTonode(tag, subnode.Nodes);
-			}
-			else if (obj is Pai1Section.PaiTag paitag)
-			{
-				foreach (var entry in paitag.Entries)
-					BflanObjectTonode(entry, subnode.Nodes);
-			}
+			BflanObjectChildrenToNode(obj, subnode);
 		}
+
+		void BflanObjectChildrenToNode(object obj, TreeNode node)
+		{
+            if (obj is Pai1Section paisection)
+            {
+                foreach (var entry in paisection.Entries)
+                    BflanObjectTonode(entry, node.Nodes);
+            }
+            else if (obj is Pai1Section.PaiEntry paientry)
+            {
+                foreach (var tag in paientry.Tags)
+                    BflanObjectTonode(tag, node.Nodes);
+            }
+            else if (obj is Pai1Section.PaiTag paitag)
+            {
+                foreach (var entry in paitag.Entries)
+                    BflanObjectTonode(entry, node.Nodes);
+            }
+        }
 
 		private void TreeView1_AfterSelect(object sender, TreeViewEventArgs e) =>
 			propertyGrid1.SelectedObject = e.Node.Tag;
@@ -257,5 +273,72 @@ namespace BflytPreview
 
 		private void expandAllToolStripMenuItem_Click(object sender, EventArgs e) =>
 			treeView1.ExpandAll();
+
+        private void templatesToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+			templatesToolStripMenuItem.DropDownItems.Clear();
+
+			var currentItem = treeView1.SelectedNode?.Tag;
+			Automation.BflanTemplate[] templates = null;
+
+            if (currentItem != null) 
+			{
+				if (!(currentItem is IBflanGenericCollection))
+					return;
+
+				if (currentItem is Pai1Section) // Contains PaiEntry[]
+                    templates = BflanTemplates.Where(x => x.Target == Automation.BflanTemplateKind.Pai1).ToArray();
+				else if (currentItem is Pai1Section.PaiEntry) // contains PaiTag[]
+					templates = BflanTemplates.Where(x => x.Target == Automation.BflanTemplateKind.PaiEntry).ToArray();
+                else if (currentItem is Pai1Section.PaiTag) // contains PaiTagEntry[]
+                    templates = BflanTemplates.Where(x => x.Target == Automation.BflanTemplateKind.PaiTag).ToArray();
+				else if (currentItem is Pai1Section.PaiTagEntry) // contains Keyframe[]
+                    templates = BflanTemplates.Where(x => x.Target == Automation.BflanTemplateKind.PaiTagEntry).ToArray();
+            }
+
+			if (templates != null && templates.Length != 0)
+			{
+				foreach (var t in templates)
+				{
+					var item = templatesToolStripMenuItem.DropDownItems.Add(t.Name);
+					item.Tag = t;
+                    item.Click += templateDynamicItem_Click;
+                }
+            }
+			else 
+			{
+				templatesToolStripMenuItem.DropDownItems.Add("No templates available for this item");
+            }
+        }
+
+        private void templateDynamicItem_Click(object sender, EventArgs e)
+        {
+			if (!(treeView1.SelectedNode?.Tag is IBflanGenericCollection bflanItem))
+				return;
+
+            var template = ((ToolStripItem)sender).Tag as Automation.BflanTemplate;
+			if (template == null) return;
+
+			if (!File.Exists(template.FileName))
+			{
+				MessageBox.Show($"The file {template.FileName} associated with this template was not found");
+				return;
+			}
+
+			var content = File.ReadAllText(template.FileName);
+			using var importer = new ValueImportForm(template, content);
+			importer.ShowDialog();
+
+			if (importer.Result == null)
+				return;
+
+			object[] deserialized = template.DeserializeContent(importer.Result);
+
+			foreach (var obj in deserialized)
+                bflanItem.InsertElement(obj);
+
+			treeView1.SelectedNode.Nodes.Clear();
+			BflanObjectChildrenToNode(bflanItem, treeView1.SelectedNode);
+        }
     }
 }

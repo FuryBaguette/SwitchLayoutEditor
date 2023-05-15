@@ -162,6 +162,13 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Automation\BflanTemplates.cs" />
+    <Compile Include="Automation\ValueImportForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Automation\ValueImportForm.Designer.cs">
+      <DependentUpon>ValueImportForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="BflanEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -214,6 +221,9 @@
     <Compile Include="UpdateForm.Designer.cs">
       <DependentUpon>UpdateForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Automation\ValueImportForm.resx">
+      <DependentUpon>ValueImportForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="BflanEditor.resx">
       <DependentUpon>BflanEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -245,6 +255,12 @@
     <EmbeddedResource Include="UpdateForm.resx">
       <DependentUpon>UpdateForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="BflanTemplates\ColorAnimation.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="BflanTemplates\ColorAnimation.template">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

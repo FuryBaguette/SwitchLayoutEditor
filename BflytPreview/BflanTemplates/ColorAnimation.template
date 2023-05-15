@@ -1,0 +1,52 @@
+[
+  {
+    "Unknown": 0,
+    "TagType": "FLVC",
+    "Entries": [
+      {
+        "Index": 0,
+        "AnimationTarget": 0,
+        "DataType": 2,
+        "KeyFrames": [
+          { "Frame": %START_FRAME%, "Value": %RED_START_VAL%, "Blend": 0 },
+          { "Frame": %END_FRAME%, "Value": %RED_END_VAL%, "Blend": 0 }
+        ],
+        "FLEUUnknownInt": 0,
+        "FLEUEntryName": ""
+      },
+	  {
+        "Index": 0,
+        "AnimationTarget": 4,
+        "DataType": 2,
+        "KeyFrames": [
+          { "Frame": %START_FRAME%, "Value": %RED_START_VAL%, "Blend": 0 },
+          { "Frame": %END_FRAME%, "Value": %RED_END_VAL%, "Blend": 0 }
+        ],
+        "FLEUUnknownInt": 0,
+        "FLEUEntryName": ""
+      },
+	  {
+        "Index": 0,
+        "AnimationTarget": 8,
+        "DataType": 2,
+        "KeyFrames": [
+          { "Frame": %START_FRAME%, "Value": %RED_START_VAL%, "Blend": 0 },
+          { "Frame": %END_FRAME%, "Value": %RED_END_VAL%, "Blend": 0 }
+        ],
+        "FLEUUnknownInt": 0,
+        "FLEUEntryName": ""
+      },
+	  {
+        "Index": 0,
+        "AnimationTarget": 12,
+        "DataType": 2,
+        "KeyFrames": [
+          { "Frame": %START_FRAME%, "Value": %RED_START_VAL%, "Blend": 0 },
+          { "Frame": %END_FRAME%, "Value": %RED_END_VAL%, "Blend": 0 }
+        ],
+        "FLEUUnknownInt": 0,
+        "FLEUEntryName": ""
+      }
+    ]
+  }
+]
