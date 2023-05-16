@@ -14,27 +14,13 @@ namespace BflytPreview
 {
 	public partial class MainForm : Form
 	{
-		//Increase this by one for each release on github
-		// 5 = v 1.0 beta 5
-		// 6 = v 1.0 beta 6
-		// 7 = v 1.0 beta 7
-		// 8 = v 1.0 beta 8
-		// 9 = v 1.0 beta 9
-		// 10 = v 1.0 beta 10
-		// 11 = v 1.0 beta 11
-		// 12 = v 1.0 beta 12
-		// 13 = v 1.0 beta 13
-		// 14 = v 1.0 beta 14
-		// 15 = Release 15
-		public const int AppRelease = 15;
-
 		public static void CheckForUpdates(bool showErrors)
 		{
 			try
 			{
 				var githubClient = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("SwitchLayoutEditor"));
 				var ver = githubClient.Repository.Release.GetAll("FuryBaguette", "SwitchLayoutEditor").GetAwaiter().GetResult();
-				if (ver.Count > AppRelease)
+				if (ver.Count > Program.AppRelease)
 				{
 					if (MessageBox.Show($"A new version has been found: {ver[0].Name}\r\n{ver[0].Body}\r\nOpen the github page ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
 						System.Diagnostics.Process.Start("https://github.com/FuryBaguette/SwitchLayoutEditor/releases/latest");
@@ -67,6 +53,7 @@ namespace BflytPreview
 
 		private void Form1_Load(object sender, System.EventArgs e)
 		{
+			this.Text += $" - Release {Program.AppRelease}";
 #if DEBUG
 			this.Text += " - This is a debug build, auto updates are disabled.";
 #else
