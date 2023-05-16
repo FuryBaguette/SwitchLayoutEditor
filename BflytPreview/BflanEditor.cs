@@ -20,7 +20,7 @@ namespace BflytPreview
 {
 	public partial class BflanEditor : Form
 	{
-		readonly Automation.BflanTemplate[] BflanTemplates;
+		readonly LoadedTemplate[] BflanTemplates;
 		
 		BflanFile file = null;
 
@@ -37,19 +37,59 @@ namespace BflytPreview
 			}
 		}
 
+		class LoadedTemplate 
+		{
+			public BflanTemplate Manifest;
+			public string FullPathToTemplate;
+
+			public static LoadedTemplate FromJsonManifest(string path) 
+			{
+				path = Path.GetFullPath(path);
+				var res = new LoadedTemplate
+				{
+					Manifest = JsonConvert.DeserializeObject<Automation.BflanTemplate>(File.ReadAllText(path))
+                };
+
+				if (res.Manifest == null)
+					throw new Exception("Couldn't load the json for " + path);
+
+				if (Path.IsPathRooted(res.Manifest.FileName))
+				{
+					res.FullPathToTemplate = res.Manifest.FileName;
+				}
+				else 
+				{
+                    var root = Path.GetDirectoryName(path);
+					res.FullPathToTemplate = Path.Combine(root, res.Manifest.FileName);
+                }
+
+				if (!File.Exists(res.FullPathToTemplate))
+					throw new Exception($"Couldn't find the template file for {path}, tried searchingi n {res.FullPathToTemplate}");
+				
+				return res;
+			}
+        }
+
 		public BflanEditor(BflanFile _file, IFileWriter saveTo)
 		{
 			InitializeComponent();
 			file = _file;
 			SaveTo = saveTo;
 
-
-			if (Directory.Exists("BflanTemplates"))
-				BflanTemplates = Directory.EnumerateFiles("BflanTemplates", "*.json")
-					.Select(x => JsonConvert.DeserializeObject<Automation.BflanTemplate>(File.ReadAllText(x)))
-					.ToArray();
-			else
-				BflanTemplates = new Automation.BflanTemplate[0];
+			try
+			{
+				if (Directory.Exists("BflanTemplates"))
+					BflanTemplates = Directory.EnumerateFiles("BflanTemplates", "*.json")
+						.Select(x => LoadedTemplate.FromJsonManifest(x))
+						.ToArray();
+				else
+					BflanTemplates = new LoadedTemplate[0];
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Error while loading BFLAn template: " + ex.Message + "\r\n\r\nFix the issue then close and reopen this editor to reload the files");
+                BflanTemplates = new LoadedTemplate[0];
+            }
         }
 
 		private void BflanEditor_Load(object sender, EventArgs e)
@@ -279,7 +319,7 @@ namespace BflytPreview
 			templatesToolStripMenuItem.DropDownItems.Clear();
 
 			var currentItem = treeView1.SelectedNode?.Tag;
-			Automation.BflanTemplate[] templates = null;
+			LoadedTemplate[] templates = null;
 
             if (currentItem != null) 
 			{
@@ -287,20 +327,20 @@ namespace BflytPreview
 					return;
 
 				if (currentItem is Pai1Section) // Contains PaiEntry[]
-                    templates = BflanTemplates.Where(x => x.Target == Automation.BflanTemplateKind.Pai1).ToArray();
+                    templates = BflanTemplates.Where(x => x.Manifest.Target == Automation.BflanTemplateKind.Pai1).ToArray();
 				else if (currentItem is Pai1Section.PaiEntry) // contains PaiTag[]
-					templates = BflanTemplates.Where(x => x.Target == Automation.BflanTemplateKind.PaiEntry).ToArray();
+					templates = BflanTemplates.Where(x => x.Manifest.Target == Automation.BflanTemplateKind.PaiEntry).ToArray();
                 else if (currentItem is Pai1Section.PaiTag) // contains PaiTagEntry[]
-                    templates = BflanTemplates.Where(x => x.Target == Automation.BflanTemplateKind.PaiTag).ToArray();
+                    templates = BflanTemplates.Where(x => x.Manifest.Target == Automation.BflanTemplateKind.PaiTag).ToArray();
 				else if (currentItem is Pai1Section.PaiTagEntry) // contains Keyframe[]
-                    templates = BflanTemplates.Where(x => x.Target == Automation.BflanTemplateKind.PaiTagEntry).ToArray();
+                    templates = BflanTemplates.Where(x => x.Manifest.Target == Automation.BflanTemplateKind.PaiTagEntry).ToArray();
             }
 
 			if (templates != null && templates.Length != 0)
 			{
 				foreach (var t in templates)
 				{
-					var item = templatesToolStripMenuItem.DropDownItems.Add(t.Name);
+					var item = templatesToolStripMenuItem.DropDownItems.Add(t.Manifest.Name);
 					item.Tag = t;
                     item.Click += templateDynamicItem_Click;
                 }
@@ -316,23 +356,23 @@ namespace BflytPreview
 			if (!(treeView1.SelectedNode?.Tag is IBflanGenericCollection bflanItem))
 				return;
 
-            var template = ((ToolStripItem)sender).Tag as Automation.BflanTemplate;
+            var template = ((ToolStripItem)sender).Tag as LoadedTemplate;
 			if (template == null) return;
 
-			if (!File.Exists(template.FileName))
+			if (!File.Exists(template.FullPathToTemplate))
 			{
-				MessageBox.Show($"The file {template.FileName} associated with this template was not found");
+				MessageBox.Show($"The file {template.FullPathToTemplate} associated with this template was not found");
 				return;
 			}
 
-			var content = File.ReadAllText(template.FileName);
-			using var importer = new ValueImportForm(template, content);
+			var content = File.ReadAllText(template.FullPathToTemplate);
+			using var importer = new ValueImportForm(template.Manifest, content);
 			importer.ShowDialog();
 
 			if (importer.Result == null)
 				return;
 
-			object[] deserialized = template.DeserializeContent(importer.Result);
+			object[] deserialized = template.Manifest.DeserializeContent(importer.Result);
 
 			foreach (var obj in deserialized)
                 bflanItem.InsertElement(obj);
