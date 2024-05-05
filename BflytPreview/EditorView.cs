@@ -269,9 +269,28 @@ namespace BflytPreview
 			GL.End();
 		}
 
+		object TryGetSelectedFocusTag() 
+		{
+			if (treeView1.SelectedNode == null) return null;
+			if (treeView1.SelectedNode.Tag is BasePane) return treeView1.SelectedNode.Tag;
+			if (treeView1.SelectedNode.Tag is TextureTag) return ((TextureTag)treeView1.SelectedNode.Tag).TexName;
+			if (treeView1.SelectedNode.Tag is BflytMaterial) return treeView1.SelectedNode.Tag;
+			return null;
+		}
+
 		public void UpdateView(object focus = null)
 		{
+			TreeNode focusElement = null;
+			
+			if (focus == null)
+			{
+				// if there is no explicit focus change, try to keep the current one
+				focus = TryGetSelectedFocusTag();
+			}
+
+			treeView1.SuspendLayout();
 			treeView1.Nodes.Clear();
+
 			{
 				string target = focus as string;
 				var texNode = treeView1.Nodes.Add("Textures");
@@ -282,9 +301,11 @@ namespace BflytPreview
 					{
 						var n = texNode.Nodes.Add($"{index++} : {t}");
 						n.Tag = new TextureTag(t);
-						if (target != null && t == target) n.Expand();
+						if (target != null && t == target) 
+							focusElement = n;
 					}
 			}
+
 			{
 				var target = focus as BflytMaterial;
 				var matNode = treeView1.Nodes.Add("Materials");
@@ -294,17 +315,26 @@ namespace BflytPreview
 					{
 						var n = matNode.Nodes.Add($"{index++} : {t}");
 						n.Tag = t;
-						if (target != null & t == target) n.Expand();
+						if (target != null & t == target)
+							focusElement = n;
 					}
 			}
-			RecursiveAddNode(layout.ElementsRoot, treeView1.Nodes, focus as BasePane);
-			RecursiveAddNode(layout.RootGroup, treeView1.Nodes, focus as BasePane);
+
+			RecursiveAddNode(layout.ElementsRoot, treeView1.Nodes, focus as BasePane, ref focusElement);
+			RecursiveAddNode(layout.RootGroup, treeView1.Nodes, focus as BasePane, ref focusElement);
 
 			var FullInfoNode = treeView1.Nodes.Add("Full hierarchy");
 			foreach (var r in layout.RootPanes)
-				RecursiveAddNode(r, FullInfoNode.Nodes, focus as BasePane);
+				RecursiveAddNode(r, FullInfoNode.Nodes, focus as BasePane, ref focusElement);
 
+			treeView1.ResumeLayout();
 			glControl.Invalidate();
+
+			if (focusElement != null)
+			{
+				treeView1.SelectedNode = focusElement;
+				focusElement.Expand();
+			}
 		}
 
 		/*void RenderImg()
@@ -351,13 +381,16 @@ namespace BflytPreview
             pictureBox1.Image = b;
         }*/
 
-		public static void RecursiveAddNode(BflytFile.BasePane p, TreeNodeCollection node, BasePane focus)
+		public static void RecursiveAddNode(BflytFile.BasePane p, TreeNodeCollection node, BasePane focus, ref TreeNode focusElement)
 		{
 			var TargetNode = node.Add(p.ToString());
 			TargetNode.Tag = p;
-			if (focus == p) TargetNode.Expand();
+
+			if (focus == p && focusElement == null)
+				focusElement = TargetNode;
+
 			foreach (var c in p.Children)
-				RecursiveAddNode(c, TargetNode.Nodes, focus);
+				RecursiveAddNode(c, TargetNode.Nodes, focus, ref focusElement);
 		}
 
 		private void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
@@ -566,13 +599,16 @@ namespace BflytPreview
 		{
 			if (treeView1.SelectedNode != null)
 			{
-				if (((BasePane)treeView1.SelectedNode.Tag).Parent == null)
+				var parent = ((BasePane)treeView1.SelectedNode.Tag).Parent;
+				if (parent == null)
 				{
 					MessageBox.Show("You can't remove a root pane");
 					return;
 				}
+				
 				layout.RemovePane((BasePane)treeView1.SelectedNode.Tag);
-				UpdateView();
+				
+				UpdateView(parent);
 			}
 		}
 
