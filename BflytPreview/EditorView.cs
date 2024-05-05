@@ -45,6 +45,13 @@ namespace BflytPreview
 
 		public static int texture;
 
+		// This represents the whole file while the other treeview roots represent the logical hierarchy
+		TreeNode AllPanesRoot;
+		TreeNode Pan1Root;
+		TreeNode Grp1Root;
+		TreeNode TexturesRoot;
+		TreeNode MaterialsRoot;
+
 		public EditorView(BflytFile _layout, IFileWriter saveTo)
 		{
 			KeyPreview = true;
@@ -278,6 +285,14 @@ namespace BflytPreview
 			return null;
 		}
 
+		TreeNode FindRoot(TreeNode item)
+		{	
+			if (item == null) return null;
+			while (item.Parent != null)
+				item = item.Parent;
+			return item;
+		}
+
 		public void UpdateView(object focus = null)
 		{
 			TreeNode focusElement = null;
@@ -293,13 +308,13 @@ namespace BflytPreview
 
 			{
 				string target = focus as string;
-				var texNode = treeView1.Nodes.Add("Textures");
-				texNode.Tag = new TextureTag();
+				TexturesRoot = treeView1.Nodes.Add("Textures");
+				TexturesRoot.Tag = new TextureTag();
 				int index = 0;
 				if (layout.Tex1 != null)
 					foreach (var t in layout.Tex1.Textures)
 					{
-						var n = texNode.Nodes.Add($"{index++} : {t}");
+						var n = TexturesRoot.Nodes.Add($"{index++} : {t}");
 						n.Tag = new TextureTag(t);
 						if (target != null && t == target) 
 							focusElement = n;
@@ -308,24 +323,30 @@ namespace BflytPreview
 
 			{
 				var target = focus as BflytMaterial;
-				var matNode = treeView1.Nodes.Add("Materials");
+				MaterialsRoot = treeView1.Nodes.Add("Materials");
 				int index = 0;
 				if (layout.Mat1 != null)
 					foreach (var t in layout.Mat1.Materials)
 					{
-						var n = matNode.Nodes.Add($"{index++} : {t}");
+						var n = MaterialsRoot.Nodes.Add($"{index++} : {t}");
 						n.Tag = t;
 						if (target != null & t == target)
 							focusElement = n;
 					}
 			}
 
-			RecursiveAddNode(layout.ElementsRoot, treeView1.Nodes, focus as BasePane, ref focusElement);
-			RecursiveAddNode(layout.RootGroup, treeView1.Nodes, focus as BasePane, ref focusElement);
+			Pan1Root = null;
+			RecursiveAddNode(layout.ElementsRoot, treeView1.Nodes, focus as BasePane, ref focusElement, ref Pan1Root);
 
-			var FullInfoNode = treeView1.Nodes.Add("Full hierarchy");
+			Grp1Root = null;
+			RecursiveAddNode(layout.RootGroup, treeView1.Nodes, focus as BasePane, ref focusElement, ref Grp1Root);
+
+			AllPanesRoot = treeView1.Nodes.Add("Full hierarchy");
 			foreach (var r in layout.RootPanes)
-				RecursiveAddNode(r, FullInfoNode.Nodes, focus as BasePane, ref focusElement);
+			{
+				// We don't care about ref AllPanesRoot here, since it is not null it won't be changed
+				RecursiveAddNode(r, AllPanesRoot.Nodes, focus as BasePane, ref focusElement, ref AllPanesRoot);
+			}
 
 			treeView1.ResumeLayout();
 			glControl.Invalidate();
@@ -381,16 +402,19 @@ namespace BflytPreview
             pictureBox1.Image = b;
         }*/
 
-		public static void RecursiveAddNode(BflytFile.BasePane p, TreeNodeCollection node, BasePane focus, ref TreeNode focusElement)
+		public static void RecursiveAddNode(BflytFile.BasePane p, TreeNodeCollection node, BasePane focus, ref TreeNode focusElement, ref TreeNode outRoot)
 		{
 			var TargetNode = node.Add(p.ToString());
+			if (outRoot == null)
+				outRoot = TargetNode;
+
 			TargetNode.Tag = p;
 
 			if (focus == p && focusElement == null)
 				focusElement = TargetNode;
 
 			foreach (var c in p.Children)
-				RecursiveAddNode(c, TargetNode.Nodes, focus, ref focusElement);
+				RecursiveAddNode(c, TargetNode.Nodes, focus, ref focusElement, ref outRoot);
 		}
 
 		private void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
@@ -708,36 +732,58 @@ namespace BflytPreview
 			UpdateView(p);
 		}
 
-		//TODO
-		//private void TreeView1_ItemDrag(object sender, ItemDragEventArgs e)
-		//{
-		//	if (((TreeNode)e.Item).Tag is Pan1Pane && ((TreeNode)e.Item).Tag != layout.RootPane)
-		//	{
-		//		DoDragDrop(e.Item, DragDropEffects.Move);
-		//	}
-		//}
+		#region Pane drag and drop
+		// Reference https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.treeview.itemdrag?view=windowsdesktop-8.0
+		private void treeView1_ItemDrag(object sender, ItemDragEventArgs e)
+		{
+			// Only allow dragging pan1 panes
+			if (e.Item is TreeNode node && node.Tag is Pan1Pane pane)
+			{
+				// Only when they are not a root
+				if (pane.Parent == null) return;
+				// Only from the logical hierarchy, in theory this check doesn't really matter
+				if (FindRoot(node) != Pan1Root) return;
 
-		//private void TreeView1_DragEnter(object sender, DragEventArgs e)
-		//{
-		//	e.Effect = DragDropEffects.Move;
-		//}
+				DoDragDrop(e.Item, DragDropEffects.Move);
+			}
+		}
 
-		//private void TreeView1_DragDrop(object sender, DragEventArgs e)
-		//{
-		//	if (!e.Data.GetDataPresent(typeof(TreeNode))) return;
+		private void treeView1_DragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = e.AllowedEffect;
+		}
 
-		//	TreeNode sourceNode = e.Data.GetData(typeof(TreeView)) as TreeNode;
+		private void treeView1_DragOver(object sender, DragEventArgs e)
+		{
+			// Retrieve the client coordinates of the mouse position.
+			Point targetPoint = treeView1.PointToClient(new Point(e.X, e.Y));
 
-		//	var item = new TreeNode(sourceNode.Text);
+			// Select the node at the mouse position.
+			treeView1.SelectedNode = treeView1.GetNodeAt(targetPoint);
+		}
 
+		private void treeView1_DragDrop(object sender, DragEventArgs e)
+		{
+			// Retrieve the client coordinates of the drop location.
+			Point targetPoint = treeView1.PointToClient(new Point(e.X, e.Y));
 
-		//	System.Drawing.Point pt = ((TreeView)sender).PointToClient(new System.Drawing.Point(e.X, e.Y));
-		//	TreeNode DestinationNode = ((TreeView)sender).GetNodeAt(pt);
+			// Retrieve the node at the drop location.
+			BasePane target = treeView1.GetNodeAt(targetPoint).Tag as BasePane;
 
-		//	DestinationNode.Nodes.Add(item);
-		//	DestinationNode.Expand();
+			// Retrieve the node that was dragged.
+			BasePane dragged = ((TreeNode)e.Data.GetData(typeof(TreeNode))).Tag as BasePane;
 
-		//}
+			if (target == null || dragged == null) return;
+
+			// Confirm that the node at the drop location is not 
+			// the dragged node or a descendant of the dragged node.
+			if (target == dragged || dragged.ContainsChild(target)) return;
+			
+			layout.RemovePane(dragged);
+			layout.AddPane(-1, target, dragged);
+			UpdateView(dragged);
+		}
+		#endregion
 
 		private void EditorView_KeyDown(object sender, KeyEventArgs e)
         {
