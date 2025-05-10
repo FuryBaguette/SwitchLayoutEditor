@@ -30,7 +30,7 @@ jobs:
         msbuild -p:Configuration=Release
         del %GITHUB_WORKSPACE%\SwitchLayoutEditor\BflytPreview\bin\Release\*.xml
       shell: cmd
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: LayoutEditor
         path: ${{ github.workspace }}/SwitchLayoutEditor/BflytPreview/bin/Release/
