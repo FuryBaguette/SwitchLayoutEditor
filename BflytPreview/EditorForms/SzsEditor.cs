@@ -74,7 +74,12 @@ namespace BflytPreview.EditorForms
 
 		private void SzsEditor_Load(object sender, EventArgs e)
 		{
-			if (loadedSarc == null)
+#if !DEBUG
+			extractNamesInClipboardToolStripMenuItem.Visible = false;
+			exportFileListToClipboardToolStripMenuItem.Visible = false;
+#endif
+
+            if (loadedSarc == null)
 			{
 				MessageBox.Show("No sarc has been loaded");
 				this.Close();
@@ -333,11 +338,31 @@ namespace BflytPreview.EditorForms
 						listBox1.Items.Add(k);
 		}
 
-		//private void openAllBflanToolStripMenuItem_Click(object sender, EventArgs e)
-		//{
-		//	foreach (var k in loadedSarc.Files.Keys)
-		//		if (k.EndsWith("bflan"))
-		//			MainForm.OpenFile(loadedSarc.Files[k], k);
-		//}
-	}
+        private void extractNamesInClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+			var names = Clipboard.GetText()
+				.Split('\n')
+				.Select(x => x.Trim())
+				.Where(x => x != "")
+				.ToArray();
+
+			ExtractMultipleFiles(names);
+        }
+
+        private void exportFileListToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var names = loadedSarc.Files.Keys
+                .Select(x => x.Trim())
+                .Where(x => x != "")
+                .ToArray();
+            Clipboard.SetText(string.Join("\n", names));
+        }
+
+        //private void openAllBflanToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //	foreach (var k in loadedSarc.Files.Keys)
+        //		if (k.EndsWith("bflan"))
+        //			MainForm.OpenFile(loadedSarc.Files[k], k);
+        //}
+    }
 }

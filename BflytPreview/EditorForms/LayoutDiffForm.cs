@@ -99,13 +99,25 @@ namespace BflytPreview.EditorForms
 		{
 			try
 			{
-				bool? HideOnlineButton = null;
+				bool HideOnlineButton = false;
 				if (cb11Compat.Visible)
 					HideOnlineButton = cb11Compat.Checked;
 
-				var (res,msg) = LayoutDiff.Diff(Original, Edited, new LayoutDiff.DiffOptions { HideOnlineButton = HideOnlineButton });
-				if (msg != null)
-					MessageBox.Show(msg);
+				var diff = new LayoutDiff(Original, Edited, new LayoutDiff.DiffOptions { 
+					HideOnlineButton = HideOnlineButton,
+                    IgnoreMissingPanes = cbIgnoreMissingPanes.Checked,
+                    // Also ignore these since we can't shouldn't import animations if panes are missing
+                    IgnoreAnimations = cbIgnoreMissingPanes.Checked,
+                    IgnoreGroups = cbIgnoreMissingPanes.Checked,
+                    IgnoreMaterials = cbIgnoreMissingPanes.Checked,
+                });
+                
+				var res = diff.ComputeDiff();
+				var log = diff.OutputLog;
+
+                if (!string.IsNullOrWhiteSpace(log))
+					MessageBox.Show(log);
+
 				if (res != null)
 				{
 					SaveFileDialog sav = new SaveFileDialog() { Filter = "json file|*.json" };

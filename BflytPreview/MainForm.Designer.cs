@@ -34,6 +34,7 @@
             this.openBFLYTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bFLANToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createSzsFromFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.layoutDiffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -77,7 +78,8 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openBFLYTToolStripMenuItem,
-            this.importJSONToolStripMenuItem});
+            this.importJSONToolStripMenuItem,
+            this.createSzsFromFolderToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -85,7 +87,7 @@
             // openBFLYTToolStripMenuItem
             // 
             this.openBFLYTToolStripMenuItem.Name = "openBFLYTToolStripMenuItem";
-            this.openBFLYTToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.openBFLYTToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.openBFLYTToolStripMenuItem.Text = "Open file";
             this.openBFLYTToolStripMenuItem.Click += new System.EventHandler(this.openBFLYTToolStripMenuItem_Click);
             // 
@@ -94,15 +96,22 @@
             this.importJSONToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.bFLANToolStripMenuItem});
             this.importJSONToolStripMenuItem.Name = "importJSONToolStripMenuItem";
-            this.importJSONToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.importJSONToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.importJSONToolStripMenuItem.Text = "Import JSON";
             // 
             // bFLANToolStripMenuItem
             // 
             this.bFLANToolStripMenuItem.Name = "bFLANToolStripMenuItem";
-            this.bFLANToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.bFLANToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.bFLANToolStripMenuItem.Text = "BFLAN Animation";
             this.bFLANToolStripMenuItem.Click += new System.EventHandler(this.BFLANToolStripMenuItem_Click);
+            // 
+            // createSzsFromFolderToolStripMenuItem
+            // 
+            this.createSzsFromFolderToolStripMenuItem.Name = "createSzsFromFolderToolStripMenuItem";
+            this.createSzsFromFolderToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.createSzsFromFolderToolStripMenuItem.Text = "Create Szs from folder";
+            this.createSzsFromFolderToolStripMenuItem.Click += new System.EventHandler(this.createSzsFromFolderToolStripMenuItem_Click);
             // 
             // toolsToolStripMenuItem
             // 
@@ -115,7 +124,7 @@
             // layoutDiffToolStripMenuItem
             // 
             this.layoutDiffToolStripMenuItem.Name = "layoutDiffToolStripMenuItem";
-            this.layoutDiffToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.layoutDiffToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.layoutDiffToolStripMenuItem.Text = "Layout diff";
             this.layoutDiffToolStripMenuItem.Click += new System.EventHandler(this.layoutDiffToolStripMenuItem_Click);
             // 
@@ -283,6 +292,7 @@
         private System.Windows.Forms.ToolStripMenuItem checkUpdateToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem importJSONToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem bFLANToolStripMenuItem;
-	}
+        private System.Windows.Forms.ToolStripMenuItem createSzsFromFolderToolStripMenuItem;
+    }
 }
 

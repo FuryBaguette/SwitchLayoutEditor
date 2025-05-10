@@ -768,7 +768,7 @@ namespace BflytPreview
 			Point targetPoint = treeView1.PointToClient(new Point(e.X, e.Y));
 
 			// Retrieve the node at the drop location.
-			BasePane target = treeView1.GetNodeAt(targetPoint).Tag as BasePane;
+			BasePane target = treeView1.GetNodeAt(targetPoint)?.Tag as BasePane;
 
 			// Retrieve the node that was dragged.
 			BasePane dragged = ((TreeNode)e.Data.GetData(typeof(TreeNode))).Tag as BasePane;

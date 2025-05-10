@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using SwitchThemes.Common.Bflyt;
 using SwitchThemes.Common.Bflan;
 using System.Text;
+using System.Linq;
+using SARCExt;
 
 namespace BflytPreview
 {
@@ -56,17 +58,19 @@ namespace BflytPreview
 			this.Text += $" - Release {Program.AppRelease}";
 #if DEBUG
 			this.Text += " - This is a debug build, auto updates are disabled.";
+			createSzsFromFolderToolStripMenuItem.Visible = true;
 #else
 			Task.Run(() => CheckForUpdates(false));
+			createSzsFromFolderToolStripMenuItem.Visible = false;
 #endif
-			//#if DEBUG
-			//			string AutoLaunch = @"RdtBase.bflyt";
-			//			if (!File.Exists(AutoLaunch)) return;
-			//			OpenFile(File.ReadAllBytes(AutoLaunch), AutoLaunch);
-			//#endif
-		}
+            //#if DEBUG
+            //			string AutoLaunch = @"RdtBase.bflyt";
+            //			if (!File.Exists(AutoLaunch)) return;
+            //			OpenFile(File.ReadAllBytes(AutoLaunch), AutoLaunch);
+            //#endif
+        }
 
-		public void OpenForm(Form f)
+        public void OpenForm(Form f)
 		{
 			this.IsMdiContainer = true;
 			f.TopLevel = false;
@@ -129,6 +133,38 @@ namespace BflytPreview
 					"If you want to open a json layout open the target szs first and then load it from the window that appears.\r\n\r\n" +
 					"More details: " + ex.ToString());
 			}
+		}
+
+		private void createSzsFromFolderToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			using var folderBrowser = new FolderBrowserDialog();
+			if (folderBrowser.ShowDialog() == DialogResult.OK)
+			{
+				using var saveFileDialog = new SaveFileDialog
+				{
+					Filter = "szs files|*.szs",
+					FileName = "new.szs"
+				};
+
+				if (saveFileDialog.ShowDialog() != DialogResult.OK)
+					return;
+
+				var root = folderBrowser.SelectedPath;
+				var files = Directory.GetFiles(folderBrowser.SelectedPath, "*", SearchOption.AllDirectories)
+					.Select(x => x.Remove(0, root.Length + 1))
+					.ToArray();
+
+				var szs = new SARCExt.SarcData();
+				foreach (var file in files)
+				{
+					var name = file.Replace('\\', '/');
+					var data = File.ReadAllBytes(Path.Combine(root, file));
+					szs.Files.Add(name, data);
+                }
+
+                var s = SARC.Pack(szs);
+                File.WriteAllBytes(saveFileDialog.FileName, ManagedYaz0.Compress(s.Item2, 3, s.Item1));
+            }
 		}
     }
 
