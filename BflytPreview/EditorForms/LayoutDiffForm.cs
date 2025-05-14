@@ -43,7 +43,6 @@ namespace BflytPreview.EditorForms
 			if (cb11Compat.Tag != null) return;
 			if (sarc == null) return;		
 			cb11Compat.Visible = (DefaultTemplates.GetFor(sarc)?.NXThemeName ?? "home") == "home";
-			cb11Compat.Checked = true;
 			cb11Compat.Tag = "checked";
 		}
 
