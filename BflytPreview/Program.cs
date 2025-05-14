@@ -12,7 +12,7 @@ namespace BflytPreview
 	static class Program
 	{
         //Increase this by one for each release on github
-        public const int AppRelease = 15;
+        public const int AppRelease = 16;
 
 		/// <summary>
 		/// Punto di ingresso principale dell'applicazione.
