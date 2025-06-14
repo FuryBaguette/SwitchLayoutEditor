@@ -1,19 +1,11 @@
 ﻿using SARCExt;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using SwitchThemes.Common;
-using SwitchThemes.Common.Serializers;
-using SwitchThemes.Common.Bntxx;
-using Syroot.BinaryData;
-using SwitchThemes.Common.Bflyt;
 
 namespace BflytPreview.EditorForms
 {
@@ -314,8 +306,9 @@ namespace BflytPreview.EditorForms
 					MessageBox.Show("Loaded JSON patch");
 				}
 				else MessageBox.Show("Failed to load the JSON patch.");
-            }
-
+			}
+			else
+				MessageBox.Show("The JSON patch is not compatible with this SZS file.");
         }
 
 		private void listBox1_KeyDown(object sender, KeyEventArgs e)
@@ -358,11 +351,27 @@ namespace BflytPreview.EditorForms
             Clipboard.SetText(string.Join("\n", names));
         }
 
-        //private void openAllBflanToolStripMenuItem_Click(object sender, EventArgs e)
-        //{
-        //	foreach (var k in loadedSarc.Files.Keys)
-        //		if (k.EndsWith("bflan"))
-        //			MainForm.OpenFile(loadedSarc.Files[k], k);
-        //}
+        private void checkLayoutCompatibilityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+			using var open = new OpenFileDialog()
+			{
+				Filter = "Layout Patch|*.json",
+				Multiselect = false
+			};
+
+            if (open.ShowDialog() != DialogResult.OK) 
+				return;
+
+            LayoutPatch patch = LayoutPatch.Load(File.ReadAllText(open.FileName));
+
+			var res = LayoutCompatibility.ValidateLayout(loadedSarc, patch);
+			if (res.Count == 0)
+				MessageBox.Show("No compatibility issues found.");
+			else
+			{
+				var asString = LayoutCompatibility.StringifyIssues(res);
+				MainForm.OpenForm(new TextView(this.Text + " - layout compat result", asString));
+            }
+        }
     }
 }

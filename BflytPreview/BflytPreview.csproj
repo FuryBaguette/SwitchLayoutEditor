@@ -185,6 +185,12 @@
     <Compile Include="EditorForms\SzsEditor.Designer.cs">
       <DependentUpon>SzsEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="EditorForms\TextView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditorForms\TextView.Designer.cs">
+      <DependentUpon>TextView.cs</DependentUpon>
+    </Compile>
     <Compile Include="EditorView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -221,6 +227,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="EditorForms\SzsEditor.resx">
       <DependentUpon>SzsEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditorForms\TextView.resx">
+      <DependentUpon>TextView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EditorView.resx">
       <DependentUpon>EditorView.cs</DependentUpon>

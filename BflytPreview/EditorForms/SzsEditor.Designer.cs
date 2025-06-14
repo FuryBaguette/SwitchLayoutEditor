@@ -52,8 +52,9 @@
             this.thisFileIsTheEditedSzsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadJSONPatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractNamesInClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tb_search = new System.Windows.Forms.TextBox();
             this.exportFileListToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tb_search = new System.Windows.Forms.TextBox();
+            this.checkLayoutCompatibilityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -69,7 +70,7 @@
             this.listBox1.Location = new System.Drawing.Point(0, 27);
             this.listBox1.Name = "listBox1";
             this.listBox1.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBox1.Size = new System.Drawing.Size(303, 212);
+            this.listBox1.Size = new System.Drawing.Size(352, 238);
             this.listBox1.Sorted = true;
             this.listBox1.TabIndex = 4;
             this.listBox1.DoubleClick += new System.EventHandler(this.listBox1_DoubleClick);
@@ -130,7 +131,7 @@
             // numericUpDown1
             // 
             this.numericUpDown1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.numericUpDown1.Location = new System.Drawing.Point(130, 253);
+            this.numericUpDown1.Location = new System.Drawing.Point(130, 279);
             this.numericUpDown1.Maximum = new decimal(new int[] {
             9,
             0,
@@ -149,7 +150,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 256);
+            this.label1.Location = new System.Drawing.Point(8, 282);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(122, 13);
             this.label1.TabIndex = 6;
@@ -205,7 +206,7 @@
             this.toolsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(303, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(352, 24);
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -215,7 +216,8 @@
             this.layoutDiffToolStripMenuItem,
             this.loadJSONPatchToolStripMenuItem,
             this.extractNamesInClipboardToolStripMenuItem,
-            this.exportFileListToClipboardToolStripMenuItem});
+            this.exportFileListToClipboardToolStripMenuItem,
+            this.checkLayoutCompatibilityToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -257,17 +259,6 @@
             this.extractNamesInClipboardToolStripMenuItem.Text = "Extract file names from the clipboard";
             this.extractNamesInClipboardToolStripMenuItem.Click += new System.EventHandler(this.extractNamesInClipboardToolStripMenuItem_Click);
             // 
-            // tb_search
-            // 
-            this.tb_search.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tb_search.Location = new System.Drawing.Point(195, 253);
-            this.tb_search.Name = "tb_search";
-            this.tb_search.Size = new System.Drawing.Size(100, 20);
-            this.tb_search.TabIndex = 8;
-            this.tb_search.Text = "Search";
-            this.tb_search.TextChanged += new System.EventHandler(this.tb_search_TextChanged);
-            // 
             // exportFileListToClipboardToolStripMenuItem
             // 
             this.exportFileListToClipboardToolStripMenuItem.Name = "exportFileListToClipboardToolStripMenuItem";
@@ -275,11 +266,29 @@
             this.exportFileListToClipboardToolStripMenuItem.Text = "Write file list to clipboard";
             this.exportFileListToClipboardToolStripMenuItem.Click += new System.EventHandler(this.exportFileListToClipboardToolStripMenuItem_Click);
             // 
+            // tb_search
+            // 
+            this.tb_search.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tb_search.Location = new System.Drawing.Point(195, 279);
+            this.tb_search.Name = "tb_search";
+            this.tb_search.Size = new System.Drawing.Size(149, 20);
+            this.tb_search.TabIndex = 8;
+            this.tb_search.Text = "Search";
+            this.tb_search.TextChanged += new System.EventHandler(this.tb_search_TextChanged);
+            // 
+            // checkLayoutCompatibilityToolStripMenuItem
+            // 
+            this.checkLayoutCompatibilityToolStripMenuItem.Name = "checkLayoutCompatibilityToolStripMenuItem";
+            this.checkLayoutCompatibilityToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
+            this.checkLayoutCompatibilityToolStripMenuItem.Text = "Check layout compatibility";
+            this.checkLayoutCompatibilityToolStripMenuItem.Click += new System.EventHandler(this.checkLayoutCompatibilityToolStripMenuItem_Click);
+            // 
             // SzsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(303, 279);
+            this.ClientSize = new System.Drawing.Size(352, 305);
             this.Controls.Add(this.tb_search);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.menuStrip1);
@@ -330,5 +339,6 @@
 		private System.Windows.Forms.TextBox tb_search;
         private System.Windows.Forms.ToolStripMenuItem extractNamesInClipboardToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportFileListToClipboardToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem checkLayoutCompatibilityToolStripMenuItem;
     }
 }
