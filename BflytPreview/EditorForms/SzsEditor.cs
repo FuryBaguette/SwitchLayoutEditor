@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using SwitchThemes.Common;
+using SwitchThemes.Common.Patching;
 
 namespace BflytPreview.EditorForms
 {
@@ -176,14 +177,14 @@ namespace BflytPreview.EditorForms
             }
         }
 
-        byte[] PackArchive()
+        byte[] PackArchive(int compressionLevel)
         {
-            if (numericUpDown1.Value == 0)
+            if (compressionLevel == 0)
                 return SARC.Pack(loadedSarc).Item2;
             else
             {
                 var s = SARC.Pack(loadedSarc);
-                return ManagedYaz0.Compress(s.Item2, (int)numericUpDown1.Value, s.Item1);
+                return ManagedYaz0.Compress(s.Item2, compressionLevel, s.Item1);
             }
         }
 
@@ -192,8 +193,10 @@ namespace BflytPreview.EditorForms
             var sav = new SaveFileDialog() { Filter = "szs file|*.szs|sarc file|*.sarc" };
             if (sav.ShowDialog() != DialogResult.OK)
                 return;
+
+            var level = Path.GetExtension(sav.FileName) == ".sarc" ? 0 : (int)numericUpDown1.Value;
             SaveTo = new DiskFileProvider(sav.FileName);
-            SaveTo.Save(PackArchive());
+            SaveTo.Save(PackArchive(level));
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e) =>
@@ -258,7 +261,7 @@ namespace BflytPreview.EditorForms
         {
             if (SaveTo == null)
                 SaveSzsAs();
-            else SaveTo.Save(PackArchive());
+            else SaveTo.Save(PackArchive((int)numericUpDown1.Value));
         }
 
         void FormBringToFront()
@@ -295,12 +298,13 @@ namespace BflytPreview.EditorForms
             var opn = new OpenFileDialog();
             if (opn.ShowDialog() != DialogResult.OK) return;
 
+            // Loadedsarc is modified in-place
             SzsPatcher P = new SzsPatcher(loadedSarc);
             LayoutPatch JSONLayout = LayoutPatch.Load(File.ReadAllText(opn.FileName));
 
             if (P.PatchLayouts(JSONLayout))
             {
-                loadedSarc = P.GetFinalSarc();
+                P.FinalizeBntx();
                 MessageBox.Show("Loaded JSON patch");
             }
             else MessageBox.Show("Failed to load the JSON patch.");
